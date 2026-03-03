@@ -3,7 +3,7 @@ using UnityEngine;
 public class PlayerScript : MonoBehaviour
 {
     // -------- MOVIMIENTO --------
-    private float speed = 7f;
+    private float speed;
     public float Minspeed = 7f, Maxspeed = 15f;
     public float jumpforce = 6f;
 
@@ -25,14 +25,19 @@ public class PlayerScript : MonoBehaviour
     private float rotationX = 0f;
 
     void Start()
-    {
-        rb = GetComponent<Rigidbody>();
-        anim = GetComponent<Animator>();
+{
+    rb = GetComponent<Rigidbody>();
+    anim = GetComponent<Animator>();
 
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-    }
+    if (rb == null)
+        Debug.LogError("Rigidbody NO encontrado");
 
+    if (anim == null)
+        Debug.LogError("Animator NO encontrado");
+
+    rb.freezeRotation = true;
+    rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+}
     void Update()
     {
         if (!IsWin)
@@ -73,9 +78,11 @@ public class PlayerScript : MonoBehaviour
     {
         if (!IsWin)
         {
-            Vector3 move = new Vector3(x, 0, z) * speed * Time.fixedDeltaTime;
-            rb.MovePosition(rb.position + transform.TransformDirection(move));
+            // MOVIMIENTO ESTABLE CON FÍSICA
+            Vector3 move = transform.TransformDirection(new Vector3(x, 0, z)) * speed;
+            rb.linearVelocity = new Vector3(move.x, rb.linearVelocity.y, move.z);
 
+            // SALTO
             if (jumpRequest && IsGrounded)
             {
                 rb.AddForce(Vector3.up * jumpforce, ForceMode.Impulse);
@@ -107,12 +114,16 @@ public class PlayerScript : MonoBehaviour
     }
 
     void OnTriggerEnter(Collider other)
+{
+    if (other.CompareTag("GameOver"))
     {
-        if (other.CompareTag("GameOver"))
-        {
-            rb.linearVelocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+
+        if (SpawnPoint != null)
             transform.position = SpawnPoint.position;
-        }
+        else
+            Debug.LogError("SpawnPoint NO está asignado");
     }
+}
 }
