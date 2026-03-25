@@ -1,7 +1,18 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerScript : MonoBehaviour
 {
+    private float jumpTimer = 0f;
+    private bool isJumping = false;
+
+    public float attackDistance = 2f;
+    public float attackDamage = 20f;
+
+    // -------- VIDA --------
+    public float maxHealth = 100f;
+    public float currentHealth;
+
     // -------- MOVIMIENTO --------
     private float speed;
     public float Minspeed = 7f, Maxspeed = 15f;
@@ -9,7 +20,7 @@ public class PlayerScript : MonoBehaviour
 
     private Rigidbody rb;
     private Animator anim;
-
+    public bool hasKey = false;
     public bool IsGrounded;
     private bool IsWin;
     public Transform SpawnPoint;
@@ -25,42 +36,57 @@ public class PlayerScript : MonoBehaviour
     private float rotationX = 0f;
 
     void Start()
-{
-    rb = GetComponent<Rigidbody>();
-    anim = GetComponent<Animator>();
+    {
+        currentHealth = maxHealth;
 
-    if (rb == null)
-        Debug.LogError("Rigidbody NO encontrado");
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
 
-    if (anim == null)
-        Debug.LogError("Animator NO encontrado");
+        rb = GetComponent<Rigidbody>();
+        anim = GetComponent<Animator>();
 
-    rb.freezeRotation = true;
-    rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-}
+        rb.freezeRotation = true;
+        rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+    }
+
     void Update()
     {
         if (!IsWin)
         {
-            // -------- INPUT --------
             x = Input.GetAxis("Horizontal");
             z = Input.GetAxis("Vertical");
 
             speed = Input.GetKey(KeyCode.LeftShift) ? Maxspeed : Minspeed;
 
-            // -------- ANIMACIONES --------
             float moveAmount = Mathf.Abs(x) + Mathf.Abs(z);
 
-            if (moveAmount == 0)
-                anim.SetInteger("States", 0); // Idle
-            else if (Input.GetKey(KeyCode.LeftShift))
-                anim.SetInteger("States", 2); // Run
-            else
-                anim.SetInteger("States", 1); // Walking
+            // -------- ANIMACIONES DE MOVIMIENTO --------
+            if (IsGrounded)
+            {
+                if (moveAmount == 0)
+                    anim.SetInteger("States", 0);
+                else if (Input.GetKey(KeyCode.LeftShift))
+                    anim.SetInteger("States", 2);
+                else
+                    anim.SetInteger("States", 1);
+            }
 
             // -------- SALTO --------
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Space) && IsGrounded)
+            {
                 jumpRequest = true;
+                anim.SetInteger("States", 3);
+
+                isJumping = true;
+                jumpTimer = 0f;
+            }
+
+            // -------- ATAQUE --------
+            if (Input.GetKeyDown(KeyCode.X))
+            {
+                anim.SetInteger("States", 4);
+                AttackEnemy();
+            }
 
             // -------- CAMARA --------
             float mouseX = Input.GetAxis("Mouse X") * Sencibility;
@@ -68,9 +94,45 @@ public class PlayerScript : MonoBehaviour
 
             rotationX -= mouseY;
             rotationX = Mathf.Clamp(rotationX, -LimitX, LimitX);
-            cam.localRotation = Quaternion.Euler(rotationX, 0f, 0f);
 
+            cam.localRotation = Quaternion.Euler(rotationX, 0f, 0f);
             transform.Rotate(Vector3.up * mouseX);
+        }
+
+        // -------- DETECCION DE CAIDA --------
+        if (!IsGrounded)
+        {
+            if (isJumping)
+            {
+                jumpTimer += Time.deltaTime;
+
+                if (jumpTimer >= 1f)
+                {
+                    isJumping = false;
+                }
+            }
+            else
+            {
+                if (rb.linearVelocity.y < 0) // solo si realmente está cayendo
+                {
+                    anim.SetInteger("States", 5);
+                }
+            }
+        }
+    }
+
+    void AttackEnemy()
+    {
+        Collider[] hits = Physics.OverlapSphere(transform.position, attackDistance);
+
+        foreach (Collider hit in hits)
+        {
+            EnemyHealth enemy = hit.GetComponent<EnemyHealth>();
+
+            if (enemy != null)
+            {
+                enemy.TakeDamage(attackDamage);
+            }
         }
     }
 
@@ -78,11 +140,9 @@ public class PlayerScript : MonoBehaviour
     {
         if (!IsWin)
         {
-            // MOVIMIENTO ESTABLE CON FÍSICA
             Vector3 move = transform.TransformDirection(new Vector3(x, 0, z)) * speed;
             rb.linearVelocity = new Vector3(move.x, rb.linearVelocity.y, move.z);
 
-            // SALTO
             if (jumpRequest && IsGrounded)
             {
                 rb.AddForce(Vector3.up * jumpforce, ForceMode.Impulse);
@@ -95,7 +155,10 @@ public class PlayerScript : MonoBehaviour
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
+        {
             IsGrounded = true;
+            isJumping = false;
+        }
 
         if (collision.gameObject.CompareTag("End"))
         {
@@ -114,16 +177,34 @@ public class PlayerScript : MonoBehaviour
     }
 
     void OnTriggerEnter(Collider other)
-{
-    if (other.CompareTag("GameOver"))
     {
-        rb.linearVelocity = Vector3.zero;
-        rb.angularVelocity = Vector3.zero;
+        if (other.CompareTag("GameOver"))
+        {
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
 
-        if (SpawnPoint != null)
-            transform.position = SpawnPoint.position;
-        else
-            Debug.LogError("SpawnPoint NO está asignado");
+            if (SpawnPoint != null)
+                transform.position = SpawnPoint.position;
+        }
     }
-}
+
+    // -------- RECIBIR DAÑO --------
+    public void TakeDamage(float percent)
+    {
+        float damage = maxHealth * percent;
+        currentHealth -= damage;
+
+        Debug.Log("Vida restante: " + currentHealth);
+
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
+    }
+
+    void Die()
+    {
+        Debug.Log("Jugador muerto");
+        SceneManager.LoadScene("GameOver");
+    }
 }
