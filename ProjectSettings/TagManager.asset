@@ -7,11 +7,12 @@ TagManager:
   - End
   - Ground
   - GameOver
+  - Interactuable
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Interactuable
   - Water
   - UI
   - 
