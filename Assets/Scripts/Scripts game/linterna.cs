@@ -1,26 +1,39 @@
 using UnityEngine;
 
-public class NewMonoBehaviourScript : MonoBehaviour
+public class Flashlight : MonoBehaviour
 {
     public Light LuzLinterna;
+
+    private bool linternaBloqueada = true;
+
     void Start()
     {
-
+        if (LuzLinterna != null)
+            LuzLinterna.enabled = false;
     }
 
-    // Update is called once per frame
     void Update()
     {
+        if (linternaBloqueada) return;
+
         if (Input.GetKeyDown(KeyCode.F))
         {
-            if (LuzLinterna.enabled == true)
-            {
-                LuzLinterna.enabled = false;
-            }
-            else if (LuzLinterna.enabled == false)
-            {
-                LuzLinterna.enabled = true;
-            }
+            LuzLinterna.enabled = !LuzLinterna.enabled;
         }
+    }
+
+    /// <summary>
+    /// Llamar desde el ObjetoInteractuable del Flashlight (OnInteractuado).
+    /// Desbloquea la linterna y destruye el objeto de la escena.
+    /// </summary>
+    public void RecogerLinterna(GameObject objetoFlashlight)
+    {
+        linternaBloqueada = false;
+
+        if (LuzLinterna != null)
+            LuzLinterna.enabled = true;
+
+        if (objetoFlashlight != null)
+            Destroy(objetoFlashlight);
     }
 }
