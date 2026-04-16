@@ -1,27 +1,20 @@
 using UnityEngine;
 
-/// <summary>
-/// GOTY - Sistema de interacción contextual.
-/// Lanza un raycast desde la cámara; si golpea un IInteractuable,
-/// muestra el ícono y permite presionar E para activarlo.
-/// </summary>
 public class InteractionSystem : MonoBehaviour
 {
     [Header("Configuración")]
     [SerializeField] private float alcanceInteraccion = 2.5f;
-    [SerializeField] private LayerMask capasInteractuables;
     [SerializeField] private Transform camaraTransform;
 
     [Header("UI Referencia")]
-    [SerializeField] private GameObject iconoInteraccion;   // Canvas World o Screen
-    [SerializeField] private TMPro.TextMeshProUGUI textoAccion; // "Examinar" / "Recoger"
+    [SerializeField] private GameObject iconoInteraccion;
+    [SerializeField] private TMPro.TextMeshProUGUI textoAccion;
 
     private IInteractuable objetoActual = null;
     private bool puedeInteractuar = false;
 
     void Update()
     {
-        // Bloquear interacción mientras hay narración activa
         if (NarracionManager.Instance != null && NarracionManager.Instance.EstaActivo())
         {
             MostrarIcono(false, "");
@@ -31,9 +24,7 @@ public class InteractionSystem : MonoBehaviour
         BuscarObjetoInteractuable();
 
         if (puedeInteractuar && Input.GetKeyDown(KeyCode.E))
-        {
             objetoActual?.Interactuar();
-        }
     }
 
     private void BuscarObjetoInteractuable()
@@ -41,13 +32,13 @@ public class InteractionSystem : MonoBehaviour
         Ray rayo = new Ray(camaraTransform.position, camaraTransform.forward);
         RaycastHit hit;
 
-        if (Physics.Raycast(rayo, out hit, alcanceInteraccion, capasInteractuables))
+        // Raycast contra TODO, no solo interactuables
+        if (Physics.Raycast(rayo, out hit, alcanceInteraccion))
         {
             IInteractuable interactuable = hit.collider.GetComponent<IInteractuable>();
 
             if (interactuable != null && interactuable.EstaActivo())
             {
-                // Nuevo objeto detectado
                 if (interactuable != objetoActual)
                 {
                     objetoActual = interactuable;
@@ -59,7 +50,6 @@ public class InteractionSystem : MonoBehaviour
             }
         }
 
-        // Sin objeto válido
         if (objetoActual != null)
         {
             objetoActual = null;
@@ -78,12 +68,10 @@ public class InteractionSystem : MonoBehaviour
             textoAccion.text = texto;
     }
 
-    // Visualización del alcance en editor
     void OnDrawGizmosSelected()
     {
         if (camaraTransform == null) return;
         Gizmos.color = Color.yellow;
-        Gizmos.DrawRay(camaraTransform.position,
-                       camaraTransform.forward * alcanceInteraccion);
+        Gizmos.DrawRay(camaraTransform.position, camaraTransform.forward * alcanceInteraccion);
     }
 }

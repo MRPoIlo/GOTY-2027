@@ -4,9 +4,9 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [Header("Movimiento")]
-    [SerializeField] private float velocidadCaminar = 2.5f;
-    [SerializeField] private float velocidadCorrer  = 4.0f;
-    [SerializeField] private float velocidadAgachado = 1.5f;
+    [SerializeField] private float velocidadCaminar = 3f;
+    [SerializeField] private float velocidadCorrer = 4.0f;
+    [SerializeField] private float velocidadAgachado = 2.0f;
 
     [Header("Cámara")]
     [SerializeField] private float sensibilidadX = 2.0f;
@@ -15,34 +15,28 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform camaraTransform;
 
     [Header("Agacharse")]
-    [SerializeField] private float alturaNormal   = 1.6f;
+    [SerializeField] private float alturaNormal = 1.6f;
     [SerializeField] private float alturaAgachado = 1.0f;
+    [SerializeField] private float zNormal = 0f;       // ← nuevo campo ajustable
     [SerializeField] private float zAgachado = 0.4f;
     [SerializeField] private float velocidadTransicion = 8f;
 
     [Header("Animaciones")]
     [SerializeField] private Animator anim;
 
-    // Referencias internas
     private CharacterController cc;
     private float rotacionX = 0f;
     private bool bloqueado = false;
 
-    // Gravedad
     private Vector3 velocidadVertical;
     private const float gravedad = -9.81f;
 
     private float h, v;
     private bool agachado = false;
 
-    private float alturaOriginalCollider;
-    private float zOriginal;
-
     void Awake()
     {
         cc = GetComponent<CharacterController>();
-        alturaOriginalCollider = cc.height;
-        zOriginal = camaraTransform.localPosition.z;
         BloqueoCursor(true);
     }
 
@@ -83,7 +77,7 @@ public class PlayerController : MonoBehaviour
         bool corriendo = Input.GetKey(KeyCode.LeftShift) && !agachado;
 
         float velocidad = velocidadCaminar;
-        if (agachado)      velocidad = velocidadAgachado;
+        if (agachado) velocidad = velocidadAgachado;
         else if (corriendo) velocidad = velocidadCorrer;
 
         Vector3 direccion = transform.right * h + transform.forward * v;
@@ -103,11 +97,11 @@ public class PlayerController : MonoBehaviour
     private void AjustarAlturaCamara()
     {
         float alturaObjetivo = agachado ? alturaAgachado : alturaNormal;
-        float zObjetivo      = agachado ? zAgachado : zOriginal;
+        float zObjetivo = agachado ? zAgachado : zNormal;
 
         Vector3 pos = camaraTransform.localPosition;
         pos.y = Mathf.Lerp(pos.y, alturaObjetivo, Time.deltaTime * velocidadTransicion);
-        pos.z = Mathf.Lerp(pos.z, zObjetivo,      Time.deltaTime * velocidadTransicion);
+        pos.z = Mathf.Lerp(pos.z, zObjetivo, Time.deltaTime * velocidadTransicion);
         camaraTransform.localPosition = pos;
     }
 
@@ -115,23 +109,15 @@ public class PlayerController : MonoBehaviour
     {
         if (agachado)
         {
-            cc.height = 1f;
-            Vector3 centro = cc.center;
-            centro.y = 0.75f;
-            cc.center = centro;
+            cc.height = alturaAgachado;
+            cc.center = new Vector3(cc.center.x, alturaAgachado / 2f, cc.center.z);
         }
         else
         {
-            cc.height = 2f;
-            Vector3 centro = cc.center;
-            centro.y = 1.25f;
-            cc.center = centro;
+            cc.height = alturaNormal;
+            cc.center = new Vector3(cc.center.x, alturaNormal / 2f, cc.center.z);
         }
-        cc.radius = 0.3f;
     }
-
-    // ─── Animaciones ─────────────────────────────────────────────────────────
-    // States: 0=Idle  1=Walk  2=Run  3=CrouchIdle  4=CrouchWalk
 
     private void ActualizarAnimacion(float moveAmount, bool corriendo)
     {
@@ -143,12 +129,10 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        if (moveAmount == 0f)       anim.SetInteger("States", 0);
-        else if (corriendo)         anim.SetInteger("States", 2);
-        else                        anim.SetInteger("States", 1);
+        if (moveAmount == 0f) anim.SetInteger("States", 0);
+        else if (corriendo) anim.SetInteger("States", 2);
+        else anim.SetInteger("States", 1);
     }
-
-    // ─── API pública ──────────────────────────────────────────────────────────
 
     public void SetBloqueado(bool estado)
     {
@@ -165,6 +149,6 @@ public class PlayerController : MonoBehaviour
     private void BloqueoCursor(bool bloquear)
     {
         Cursor.lockState = bloquear ? CursorLockMode.Locked : CursorLockMode.None;
-        Cursor.visible   = !bloquear;
+        Cursor.visible = !bloquear;
     }
 }
