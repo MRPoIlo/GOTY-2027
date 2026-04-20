@@ -28,7 +28,7 @@ public class PrologoManager : MonoBehaviour
     private static readonly string[] NarracionPuertaBloqueada = new[]
     {
         "No puedo salir así.",
-        "Hay algo que todavía no he visto."
+        "Hay algo que todavía no me visto."
     };
 
     [Header("Referencia a UI Fade")]
@@ -36,7 +36,7 @@ public class PrologoManager : MonoBehaviour
     [SerializeField] private float duracionFade = 2.5f;
 
     [Header("Siguiente escena")]
-    [SerializeField] private string escenaSiguiente = "Escena2_Sala";
+    [SerializeField] private string escenaSiguiente = "Nivel1"; // ← aquí está el cambio
 
     [Header("Condición de avance")]
     [Tooltip("Cuántos objetos debe examinar el jugador antes de poder salir")]
@@ -73,19 +73,12 @@ public class PrologoManager : MonoBehaviour
     }
 
     // ─── Llamados desde TriggerZona ──────────────────────────────────────────
-
-    /// <summary>Conectar al TriggerZona del pasillo (OnZonaActivada).</summary>
     public void EntrarAlPasillo()
     {
         NarracionManager.Instance?.Narrar(NarracionPasillo);
     }
 
     // ─── Llamados desde ObjetoInteractuable.OnInteractuado ───────────────────
-
-    /// <summary>
-    /// Llamar desde cada ObjetoInteractuable.OnInteractuado en el Inspector.
-    /// Lleva la cuenta de objetos examinados y desbloquea la salida.
-    /// </summary>
     public void RegistrarObjetoExaminado()
     {
         objetosExaminados++;
@@ -100,15 +93,10 @@ public class PrologoManager : MonoBehaviour
     private void DesbloquearSalida()
     {
         puertaDesbloqueada = true;
-        // Opcional: reproducir audio o efecto visual de que algo cambió
         NarracionManager.Instance?.Narrar("Algo se ha movido.");
         Debug.Log("[Prólogo] Salida desbloqueada.");
     }
 
-    /// <summary>
-    /// Llamar desde la Puerta_Salida → OnInteractuado.
-    /// Si ya está desbloqueada, termina el prólogo. Si no, da pista.
-    /// </summary>
     public void IntentarSalir()
     {
         if (finalizando) return;
@@ -124,7 +112,6 @@ public class PrologoManager : MonoBehaviour
     }
 
     // ─── Transición final ─────────────────────────────────────────────────────
-
     private IEnumerator TerminarPrologo()
     {
         finalizando = true;
@@ -142,11 +129,10 @@ public class PrologoManager : MonoBehaviour
         }
 
         yield return StartCoroutine(Fade(1f, duracionFade));
-        SceneManager.LoadScene(escenaSiguiente);
+        SceneManager.LoadScene("Nivel 1"); // ← aquí carga Nivel1
     }
 
     // ─── Fade ─────────────────────────────────────────────────────────────────
-
     private IEnumerator Fade(float objetivo, float duracion)
     {
         if (pantallaFade == null) yield break;
