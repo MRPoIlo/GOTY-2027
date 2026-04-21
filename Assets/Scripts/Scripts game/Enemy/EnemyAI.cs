@@ -1,22 +1,27 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.AI;
-using UnityEngine.SceneManagement; // 👈 para reiniciar la escena
+using UnityEngine.SceneManagement;
 
 public class EnemyAI : MonoBehaviour
 {
+    [Header("Jugador")]
     public Transform player;
+
+    [Header("Detección")]
     public float visionRange = 5f;
     public float visionAngle = 60f;
     public float detectionTime = 3f;
-    public float catchDistance = 1.5f; // 👈 distancia mínima para jumpscare
+    public float catchDistance = 1.5f;
 
+    [Header("UI Estado")]
     public Image stateIcon;
     public Sprite noVisualizaSprite;
     public Sprite visualizaSprite;
     public Sprite persigueSprite;
 
-    public GameObject jumpscareUI; // 👈 asigna un Canvas o imagen de jumpscare
+    [Header("Jumpscare")]
+    public GameObject jumpscareUI;
 
     private NavMeshAgent agent;
     private Animator animator;
@@ -31,11 +36,15 @@ public class EnemyAI : MonoBehaviour
             stateIcon.sprite = noVisualizaSprite;
 
         if (jumpscareUI != null)
-            jumpscareUI.SetActive(false); // oculto al inicio
+            jumpscareUI.SetActive(false);
     }
 
     void Update()
     {
+        // Patrulla básica: si no persigue, se queda quieto o camina aleatorio
+        PatrullaAleatoria();
+
+        // Detección del jugador
         Vector3 dirToPlayer = player.position - transform.position;
         float angle = Vector3.Angle(transform.forward, dirToPlayer);
 
@@ -63,18 +72,19 @@ public class EnemyAI : MonoBehaviour
             agent.ResetPath();
         }
 
-        // 👇 Actualiza animaciones con la velocidad del agente
+        // Actualiza el parámetro Speed en el Animator
         if (animator != null)
-        {
-            float velocidad = agent.velocity.magnitude;
-            animator.SetFloat("Speed", velocidad);
-        }
+            animator.SetFloat("Speed", agent.velocity.magnitude);
 
-        // 👇 Si alcanza al jugador, dispara jumpscare
         if (Vector3.Distance(transform.position, player.position) <= catchDistance)
-        {
             TriggerJumpscare();
-        }
+    }
+
+    private void PatrullaAleatoria()
+    {
+        // Aquí puedes poner lógica de patrulla si quieres
+        // Por ejemplo: agent.SetDestination(puntoAleatorio.position);
+        // Si no, el enemigo se queda quieto hasta detectar al jugador
     }
 
     void TriggerJumpscare()
@@ -82,7 +92,6 @@ public class EnemyAI : MonoBehaviour
         if (jumpscareUI != null)
             jumpscareUI.SetActive(true);
 
-        // reinicia el nivel después de 2 segundos
         Invoke("RestartLevel", 2f);
     }
 

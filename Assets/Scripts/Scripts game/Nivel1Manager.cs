@@ -4,23 +4,17 @@ using UnityEngine.SceneManagement;
 
 public class NivelManager1 : MonoBehaviour
 {
-    // ── Narración de apertura del Nivel 1 ────────────────────────────────
-    private static readonly string[] NarracionInicio = new[]
-    {
+    private static readonly string[] NarracionInicio = {
         "La habitación de mis padres.",
         "Aquí todo parece detenido en el tiempo."
     };
 
-    // ── Narración al completar las interacciones ─────────────────────────
-    private static readonly string[] NarracionEnemigo = new[]
-    {
+    private static readonly string[] NarracionEnemigo = {
         "Escucho pasos...",
         "No debería estar aquí."
     };
 
-    // ── Narración al intentar salir antes de completar ───────────────────
-    private static readonly string[] NarracionPuertaBloqueada = new[]
-    {
+    private static readonly string[] NarracionPuertaBloqueada = {
         "Todavía hay cosas que debo enfrentar.",
         "No puedo salir sin mirar atrás."
     };
@@ -30,19 +24,20 @@ public class NivelManager1 : MonoBehaviour
     [SerializeField] private float duracionFade = 2.5f;
 
     [Header("Siguiente escena")]
-    [SerializeField] private string escenaSiguiente = "Nivel2";
+    [SerializeField] private string escenaSiguiente = "Nivel2Baño";
 
     [Header("Condición de avance")]
-    [Tooltip("Cuántos objetos debe examinar el jugador antes de activar al enemigo")]
     [SerializeField] private int objetosRequeridosParaEnemigo = 3;
 
-    // Estado interno
     private int interaccionesCompletadas = 0;
     private bool enemigoActivado = false;
     private bool finalizando = false;
 
     [Header("Referencia al enemigo")]
     public EnemyAI enemigo;
+
+    [Header("Puerta narrativa")]
+    [SerializeField] private GameObject puertaEntrada; // ← referencia al GameObject de la puerta
 
     private PlayerController player;
 
@@ -56,11 +51,9 @@ public class NivelManager1 : MonoBehaviour
 
     IEnumerator Start()
     {
-        // Fade inicial
         yield return StartCoroutine(Fade(0f, duracionFade));
         yield return new WaitForSeconds(0.5f);
 
-        // Narración inicial
         if (NarracionManager.Instance != null)
         {
             NarracionManager.Instance.Narrar(NarracionInicio);
@@ -86,8 +79,16 @@ public class NivelManager1 : MonoBehaviour
     {
         enemigoActivado = true;
         NarracionManager.Instance?.Narrar(NarracionEnemigo);
-        enemigo.gameObject.SetActive(true);
-        Debug.Log("[Nivel1] Enemigo activado.");
+
+        // Desactiva la puerta visual y su collider
+        if (puertaEntrada != null)
+        {
+            puertaEntrada.SetActive(false); // oculta el objeto
+            Collider col = puertaEntrada.GetComponent<Collider>();
+            if (col != null) col.enabled = false; // desactiva el collider
+            Debug.Log("[Nivel1] Puerta desactivada, el padre entra.");
+        }
+
     }
 
     public void IntentarSalir()
@@ -104,7 +105,6 @@ public class NivelManager1 : MonoBehaviour
         }
     }
 
-    // ─── Transición final ────────────────────────────────────────────────
     private IEnumerator TerminarNivel1()
     {
         finalizando = true;
@@ -112,9 +112,8 @@ public class NivelManager1 : MonoBehaviour
 
         if (NarracionManager.Instance != null)
         {
-            string[] narracionFinal = new[]
-            {
-                "La puerta se abre.",
+            string[] narracionFinal = {
+                "La puerta del baño se abre.",
                 "El silencio me acompaña hacia lo desconocido."
             };
             NarracionManager.Instance.Narrar(narracionFinal);
@@ -125,7 +124,6 @@ public class NivelManager1 : MonoBehaviour
         SceneManager.LoadScene(escenaSiguiente);
     }
 
-    // ─── Fade ────────────────────────────────────────────────────────────
     private IEnumerator Fade(float objetivo, float duracion)
     {
         if (pantallaFade == null) yield break;
