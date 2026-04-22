@@ -1,36 +1,29 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.Events;
 
-/// <summary>
-/// GOTY — Nivel 3 (Ático)
-/// Representa un cuadro familiar roto. Al examinarlo muestra un fragmento
-/// de recuerdo de Lena y se registra en el AticoManager.
-/// </summary>
 public class CuadroRecuerdo : MonoBehaviour, IInteractuable
 {
     [Header("Identificación")]
-    [Tooltip("Número del recuerdo en la historia real (1=más antiguo, 4=más reciente)")]
     public int ordenCronologico = 1;
-
-    [Tooltip("Descripción corta para el menú de ordenamiento")]
     public string descripcionCorta = "Recuerdo 1";
+
+    [Header("Imagen del cuadro")]
+    public Sprite imagenCuadro;
 
     [Header("Narración al examinar")]
     [SerializeField, TextArea(2, 5)]
     private string[] lineasNarracion;
 
     [Header("Visual")]
-    [Tooltip("Material del cuadro roto (estado inicial)")]
     public Material materialRoto;
-    [Tooltip("Material del cuadro completo (estado resuelto)")]
     public Material materialCompleto;
 
     [Header("Evento")]
     public UnityEvent OnExaminado;
 
-    // Estado
     private bool examinado = false;
-    private bool resuelto = false;
+    private bool resuelto  = false;
     private Renderer rend;
 
     void Awake()
@@ -40,37 +33,51 @@ public class CuadroRecuerdo : MonoBehaviour, IInteractuable
             rend.material = materialRoto;
     }
 
-    // ─── IInteractuable ───────────────────────────────────────────────────────
-
     public void Interactuar()
     {
-        if (resuelto) return;
-
+        if (resuelto || examinado) return;
         examinado = true;
+        StartCoroutine(SecuenciaInteraccion());
+    }
 
-        NarracionManager.Instance?.Narrar(lineasNarracion);
+    private IEnumerator SecuenciaInteraccion()
+    {
+        // 1. Mostrar imagen
+        VisualizadorCuadro.Instance?.Mostrar(imagenCuadro, descripcionCorta);
 
-        // Registrar en el manager para habilitar el menú de ordenamiento
+        // 2. Esperar que el jugador cierre la imagen
+        yield return new WaitUntil(() =>
+            VisualizadorCuadro.Instance == null ||
+            !VisualizadorCuadro.Instance.EstaMostrando());
+
+        // 3. Mostrar narración del cuadro
+        if (lineasNarracion != null && lineasNarracion.Length > 0)
+        {
+            NarracionManager.Instance?.Narrar(lineasNarracion);
+
+            // 4. Esperar que termine la narración
+            yield return new WaitUntil(() =>
+                NarracionManager.Instance == null ||
+                !NarracionManager.Instance.EstaActivo());
+        }
+
+        // 5. SOLO DESPUÉS de todo lo anterior, registrar en el manager
+        // Así el menú del puzzle nunca interrumpe la narración del cuadro
         AticoManager.Instance?.RegistrarCuadroExaminado(this);
 
         OnExaminado?.Invoke();
     }
 
     public string ObtenerTextoAccion() => resuelto ? "Observar" : "Examinar";
-    public bool EstaActivo() => true;
+    public bool EstaActivo() => !examinado && !resuelto;
 
-    // ─── API pública ──────────────────────────────────────────────────────────
-
-    public bool FueExaminado() => examinado;
-    public bool EstaResuelto() => resuelto;
+    public bool FueExaminado()     => examinado;
+    public bool EstaResuelto()     => resuelto;
     public string GetDescripcion() => descripcionCorta;
 
-    /// <summary>El AticoManager llama esto cuando el orden fue correcto.</summary>
     public void MarcarResuelto()
     {
         resuelto = true;
-
-        // Cambiar material al cuadro completo
         if (materialCompleto != null && rend != null)
             rend.material = materialCompleto;
     }

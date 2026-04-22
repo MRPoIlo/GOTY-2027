@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(Animator))]
 public class SombraMama : MonoBehaviour
 {
     [Header("Referencias de escena")]
@@ -18,40 +17,67 @@ public class SombraMama : MonoBehaviour
     [SerializeField] private ParticleSystem particulasPolvo;
 
     [Header("Renderer para fade")]
-    [SerializeField] private Renderer[] renderers; // aquí arrastras el Renderer del hijo “CuerpoSombra”
+    [SerializeField] private Renderer[] renderers;
 
     private Animator anim;
     private bool secuenciaIniciada = false;
 
     void Awake()
     {
-        anim = GetComponent<Animator>();
-        gameObject.SetActive(false);
-        Debug.Log("[SombraMama] Awake: objeto raíz oculto.");
+        anim = GetComponentInChildren<Animator>();
     }
+
+    // ─── API pública ──────────────────────────────────────────────────────────
 
     public void IniciarSecuencia()
     {
         if (secuenciaIniciada) return;
         secuenciaIniciada = true;
+
+        // Activar el GameObject
         gameObject.SetActive(true);
-        Debug.Log("[SombraMama] IniciarSecuencia: activando sombra.");
-        StartCoroutine(SecuenciaProteccion());
+
+        // Arrancar la corrutina desde un objeto que siempre está activo
+        // usando el AticoManager como puente
+        AticoManager.Instance?.StartCoroutine(SecuenciaProteccion());
     }
+
+    // ─── Secuencia completa ───────────────────────────────────────────────────
 
     private IEnumerator SecuenciaProteccion()
     {
-        Debug.Log("[SombraMama] SecuenciaProteccion: inicio.");
+        Debug.Log("[SombraMama] PASO 1 - Iniciando secuencia");
 
-        // 1. Aparecer
+        // Posicionar
         transform.position = puntoOrigen.position;
-        transform.LookAt(puertoObjetivo);
+
+        Vector3 dir = puertoObjetivo.position - transform.position;
+        dir.y = 0f;
+        if (dir != Vector3.zero)
+            transform.rotation = Quaternion.LookRotation(dir);
+
+        SetAlpha(0f);
         particulasPolvo?.Play();
+        if (anim != null) anim.SetBool("Caminando", false);
 
+        // Fade in
         yield return StartCoroutine(FadeAlpha(0f, 1f, 1.5f));
-        Debug.Log("[SombraMama] Fade-in completado.");
+        Debug.Log("[SombraMama] PASO 2 - Apareci, narrando");
 
-        // 2. Caminar hacia la puerta
+        // Narración de aparición
+        NarracionManager.Instance?.Detener();
+        yield return new WaitForSeconds(0.5f);
+
+        NarracionManager.Instance?.Narrar(new string[]
+        {
+            "Hay algo en el fondo del ático.",
+            "Una figura."
+        });
+
+        yield return StartCoroutine(EsperarNarracion(8f));
+        Debug.Log("[SombraMama] PASO 3 - Caminando");
+
+        // Caminar
         if (anim != null) anim.SetBool("Caminando", true);
 
         while (Vector3.Distance(transform.position, puertoObjetivo.position) > 0.2f)
@@ -61,43 +87,77 @@ public class SombraMama : MonoBehaviour
                 puertoObjetivo.position,
                 velocidadCaminar * Time.deltaTime);
 
-            Debug.Log("[SombraMama] Moviéndose... posición actual: " + transform.position);
-            transform.LookAt(puertoObjetivo.position);
+            Vector3 direccion = puertoObjetivo.position - transform.position;
+            direccion.y = 0f;
+            if (direccion != Vector3.zero)
+                transform.rotation = Quaternion.LookRotation(direccion);
+
             yield return null;
         }
 
         if (anim != null) anim.SetBool("Caminando", false);
-        Debug.Log("[SombraMama] Llegó al puertoObjetivo.");
+        Debug.Log("[SombraMama] PASO 4 - Llego a la puerta");
 
-        // 3. Alejar sombra del padre
+        // Narración al llegar
+        NarracionManager.Instance?.Narrar(new string[]
+        {
+            "Se puso entre mí y la puerta.",
+            "No dijo nada. Nunca decía nada."
+        });
+        yield return StartCoroutine(EsperarNarracion(10f));
+        Debug.Log("[SombraMama] PASO 5 - Alejando al padre");
+
+        // Alejar padre
         if (sombraPadre != null)
             yield return StartCoroutine(AlejarSombra());
 
-        // 4. Abrir puerta
+        // Abrir puerta
         if (puertaBlockeada != null)
             puertaBlockeada.SetActive(false);
 
-        // 5. Pausa
+        Debug.Log("[SombraMama] PASO 6 - Pausa final");
         yield return new WaitForSeconds(tiempoEsperaFinal);
 
-        // 6. Fade out
+        NarracionManager.Instance?.Narrar(new string[]
+        {
+            "Nunca supe si lo hacía a propósito.",
+            "Pero siempre estaba."
+        });
+        yield return StartCoroutine(EsperarNarracion(10f));
+
+        Debug.Log("[SombraMama] PASO 7 - Desvaneciendo");
         yield return StartCoroutine(FadeAlpha(1f, 0f, 2.5f));
+
         particulasPolvo?.Stop();
         gameObject.SetActive(false);
 
-        Debug.Log("[SombraMama] Secuencia terminada.");
+        Debug.Log("[SombraMama] PASO 8 - Secuencia terminada");
         AticoManager.Instance?.OnSecuenciaMamaTerminada();
+    }
+
+    // ─── Helpers ─────────────────────────────────────────────────────────────
+
+    private IEnumerator EsperarNarracion(float timeout)
+    {
+        yield return new WaitForSeconds(0.2f);
+        float t = 0f;
+        while (t < timeout)
+        {
+            if (NarracionManager.Instance == null || !NarracionManager.Instance.EstaActivo())
+                yield break;
+            t += Time.deltaTime;
+            yield return null;
+        }
+        Debug.LogWarning("[SombraMama] Timeout — continuando");
     }
 
     private IEnumerator AlejarSombra()
     {
         if (sombraPadre == null) yield break;
-
         Vector3 posInicial = sombraPadre.transform.position;
-        Vector3 posFinal = posInicial + Vector3.back * 5f;
+        Vector3 posFinal   = posInicial + Vector3.back * 5f;
         float t = 0f;
         float duracion = 1.5f;
-
         while (t < duracion)
         {
             t += Time.deltaTime;
@@ -105,7 +165,6 @@ public class SombraMama : MonoBehaviour
                 Vector3.Lerp(posInicial, posFinal, t / duracion);
             yield return null;
         }
-
         sombraPadre.SetActive(false);
     }
 
@@ -126,17 +185,17 @@ public class SombraMama : MonoBehaviour
         foreach (var r in renderers)
         {
             if (r == null) continue;
-            if (r.material.HasProperty("_Color"))
-            {
-                Color c = r.material.color;
-                c.a = alpha;
-                r.material.color = c;
-            }
-            else if (r.material.HasProperty("_BaseColor"))
+            if (r.material.HasProperty("_BaseColor"))
             {
                 Color c = r.material.GetColor("_BaseColor");
                 c.a = alpha;
                 r.material.SetColor("_BaseColor", c);
+            }
+            else if (r.material.HasProperty("_Color"))
+            {
+                Color c = r.material.color;
+                c.a = alpha;
+                r.material.color = c;
             }
         }
     }
