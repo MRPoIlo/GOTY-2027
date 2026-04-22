@@ -17,7 +17,7 @@ public class PlayerController : MonoBehaviour
     [Header("Agacharse")]
     [SerializeField] private float alturaNormal = 1.6f;
     [SerializeField] private float alturaAgachado = 1.0f;
-    [SerializeField] private float zNormal = 0f;       // ← nuevo campo ajustable
+    [SerializeField] private float zNormal = 0f;
     [SerializeField] private float zAgachado = 0.4f;
     [SerializeField] private float velocidadTransicion = 8f;
 
@@ -34,15 +34,22 @@ public class PlayerController : MonoBehaviour
     private float h, v;
     private bool agachado = false;
 
+    // Referencia al PausaManager local
+    private PausaManager pausaManager;
+
     void Awake()
     {
         cc = GetComponent<CharacterController>();
         BloqueoCursor(true);
+
+        // Buscar el PausaManager de la escena
+        pausaManager = FindObjectOfType<PausaManager>();
     }
 
     void Update()
     {
-        if (bloqueado)
+        // Si está bloqueado o el juego está pausado, no mover
+        if (bloqueado || (pausaManager != null && pausaManager.juegoPausado))
         {
             ActualizarAnimacion(0f, false);
             return;

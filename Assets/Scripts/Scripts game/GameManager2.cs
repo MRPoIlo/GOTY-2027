@@ -7,6 +7,9 @@ public class GameManager2 : MonoBehaviour
     public bool tieneLinterna = false;
     public bool prologoCompletado = false;
 
+    // NUEVO: flag para el destornillador
+    public bool tieneDestornillador = false;
+
     void Awake()
     {
         if (Instance != null && Instance != this)

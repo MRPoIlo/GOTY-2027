@@ -8,6 +8,11 @@ TagManager:
   - Ground
   - GameOver
   - Interactuable
+  - CinemachineTarget
+  - 'PanelOpciones '
+  - PanelMenu
+  - Undefined
+  - MenuPausa
   layers:
   - Default
   - TransparentFX

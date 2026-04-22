@@ -2,8 +2,11 @@ using UnityEngine;
 
 public class Flashlight : MonoBehaviour
 {
-    public Light LuzLinterna;
+    [SerializeField] private Light LuzLinterna;
     private bool linternaBloqueada = true;
+    private bool encendida = false;
+
+    private PausaManager pausaManager;
 
     void Start()
     {
@@ -12,14 +15,27 @@ public class Flashlight : MonoBehaviour
 
         if (GameManager2.Instance != null && GameManager2.Instance.tieneLinterna)
             linternaBloqueada = false;
+
+        pausaManager = FindObjectOfType<PausaManager>();
     }
 
     void Update()
     {
+        if (pausaManager != null)
+        {
+            if (pausaManager.juegoPausado || pausaManager.EnOpciones)
+                return;
+        }
+
         if (linternaBloqueada) return;
 
         if (Input.GetKeyDown(KeyCode.F))
-            LuzLinterna.enabled = !LuzLinterna.enabled;
+        {
+            encendida = !encendida;
+
+            if (LuzLinterna != null)
+                LuzLinterna.enabled = encendida;
+        }
     }
 
     public void DesbloquearLinterna()
@@ -27,7 +43,10 @@ public class Flashlight : MonoBehaviour
         linternaBloqueada = false;
 
         if (LuzLinterna != null)
+        {
+            encendida = true;
             LuzLinterna.enabled = true;
+        }
 
         if (GameManager2.Instance != null)
             GameManager2.Instance.tieneLinterna = true;

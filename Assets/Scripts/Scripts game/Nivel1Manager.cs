@@ -37,13 +37,13 @@ public class NivelManager1 : MonoBehaviour
     public EnemyAI enemigo;
 
     [Header("Puerta narrativa")]
-    [SerializeField] private GameObject puertaEntrada; // ← referencia al GameObject de la puerta
+    [SerializeField] private GameObject puertaEntrada; // referencia al objeto puerta
 
     private PlayerController player;
 
     void Awake()
     {
-        player = FindObjectOfType<PlayerController>();
+        player = FindFirstObjectByType<PlayerController>();
         player?.SetBloqueado(true);
 
         if (pantallaFade != null) pantallaFade.alpha = 1f;
@@ -83,12 +83,11 @@ public class NivelManager1 : MonoBehaviour
         // Desactiva la puerta visual y su collider
         if (puertaEntrada != null)
         {
-            puertaEntrada.SetActive(false); // oculta el objeto
+            puertaEntrada.SetActive(false);
             Collider col = puertaEntrada.GetComponent<Collider>();
-            if (col != null) col.enabled = false; // desactiva el collider
+            if (col != null) col.enabled = false;
             Debug.Log("[Nivel1] Puerta desactivada, el padre entra.");
         }
-
     }
 
     public void IntentarSalir()

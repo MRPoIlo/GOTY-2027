@@ -119,6 +119,11 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &25279178 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 95131089595418587, guid: 87dcfd1ea9a39344fa7469ca31628a07, type: 3}
+  m_PrefabInstance: {fileID: 1694796115}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &55652447 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9018196631762674993, guid: b1b56453c9c4ca4429a7920fd96feee6, type: 3}
@@ -278,6 +283,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 048d6e86d512bd84a86d2db989393628, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Flashlight
+  LuzLinterna: {fileID: 0}
 --- !u!114 &173535081
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3374,6 +3380,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b1b56453c9c4ca4429a7920fd96feee6, type: 3}
+--- !u!1 &1650322425 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7261988744689352360, guid: 87dcfd1ea9a39344fa7469ca31628a07, type: 3}
+  m_PrefabInstance: {fileID: 1694796115}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1651400225
 GameObject:
   m_ObjectHideFlags: 0
@@ -3584,30 +3595,18 @@ PrefabInstance:
     - target: {fileID: 1374889197948368189, guid: 87dcfd1ea9a39344fa7469ca31628a07, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1938453031}
+      objectReference: {fileID: 1938170396}
     - target: {fileID: 1374889197948368189, guid: 87dcfd1ea9a39344fa7469ca31628a07, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: SalirJuego
       objectReference: {fileID: 0}
-    - target: {fileID: 2059738791784551538, guid: 87dcfd1ea9a39344fa7469ca31628a07, type: 3}
-      propertyPath: m_Color.a
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2761521225038429818, guid: 87dcfd1ea9a39344fa7469ca31628a07, type: 3}
-      propertyPath: m_Color.a
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 3710655776850145505, guid: 87dcfd1ea9a39344fa7469ca31628a07, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4929086937328100149, guid: 87dcfd1ea9a39344fa7469ca31628a07, type: 3}
       propertyPath: m_Name
       value: MenuPausa
-      objectReference: {fileID: 0}
-    - target: {fileID: 4929086937328100149, guid: 87dcfd1ea9a39344fa7469ca31628a07, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7261988744689352360, guid: 87dcfd1ea9a39344fa7469ca31628a07, type: 3}
       propertyPath: m_IsActive
@@ -3615,7 +3614,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7705168481896063236, guid: 87dcfd1ea9a39344fa7469ca31628a07, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8381279540172798366, guid: 87dcfd1ea9a39344fa7469ca31628a07, type: 3}
       propertyPath: m_Pivot.x
@@ -3700,7 +3699,7 @@ PrefabInstance:
     - target: {fileID: 8754943444375608090, guid: 87dcfd1ea9a39344fa7469ca31628a07, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1938453031}
+      objectReference: {fileID: 1938170396}
     - target: {fileID: 8754943444375608090, guid: 87dcfd1ea9a39344fa7469ca31628a07, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: Continuar
@@ -3710,16 +3709,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 87dcfd1ea9a39344fa7469ca31628a07, type: 3}
---- !u!1 &1694796116 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7261988744689352360, guid: 87dcfd1ea9a39344fa7469ca31628a07, type: 3}
-  m_PrefabInstance: {fileID: 1694796115}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1694796117 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 95131089595418587, guid: 87dcfd1ea9a39344fa7469ca31628a07, type: 3}
-  m_PrefabInstance: {fileID: 1694796115}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1726224148
 GameObject:
   m_ObjectHideFlags: 0
@@ -4013,7 +4002,7 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1800734030}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &1938453030
+--- !u!1 &1938170395
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4021,8 +4010,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1938453032}
-  - component: {fileID: 1938453031}
+  - component: {fileID: 1938170397}
+  - component: {fileID: 1938170396}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -4030,32 +4019,31 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1938453031
+--- !u!114 &1938170396
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1938453030}
+  m_GameObject: {fileID: 1938170395}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: afe3450a94d44bf469c06fb5a1f8edcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PausaManager
-  panelMenu: {fileID: 1694796116}
-  panelOpciones: {fileID: 1694796117}
+  menuPausa: {fileID: 1650322425}
+  panelOpciones: {fileID: 25279178}
   player: {fileID: 173535082}
   canvasNarracion: {fileID: 1073298555}
   juegoPausado: 0
   tieneDestornillador: 0
-  escenaMenuPrincipal: MainMenu
---- !u!4 &1938453032
+--- !u!4 &1938170397
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1938453030}
+  m_GameObject: {fileID: 1938170395}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 312.31946, y: 369.25, z: 0}
@@ -4555,8 +4543,8 @@ SceneRoots:
   - {fileID: 470884290}
   - {fileID: 331099199}
   - {fileID: 2078891040}
+  - {fileID: 1938170397}
   - {fileID: 949141825}
-  - {fileID: 1938453032}
   - {fileID: 1685894159}
   - {fileID: 1562397550}
   - {fileID: 1073298552}
