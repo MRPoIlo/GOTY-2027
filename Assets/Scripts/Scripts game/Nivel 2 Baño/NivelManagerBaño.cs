@@ -11,10 +11,23 @@ public class NivelManagerBaño : MonoBehaviour
     [SerializeField] private float duracionFade = 2.5f;
 
     [Header("Siguiente escena")]
-    [SerializeField] private string escenaSiguiente = "Nivel3";
+    [SerializeField] private string escenaSiguiente = "Nivel3Atico";
+
+    [Header("Mini-juego Rejilla")]
+    [SerializeField] private GameObject canvasMiniJuegoRejilla; // Canvas con los 4 tornillos
+    [SerializeField] private GameObject objetoDestornillador;   // GameObject del destornillador en la escena
+
+    [Header("Mensaje entrada rejilla")]
+    [SerializeField] private GameObject mensajePresionaE;       // UI con "Presione E para entrar"
 
     private PausaManager pausaManager;
     private NarracionManager narracionManager;
+    private PlayerController playerController;
+
+    // Estados internos
+    private bool miniJuegoActivo = false;
+    private bool rejillaAbierta = false;
+    private bool esperandoEntrada = false;
 
     private void Awake()
     {
@@ -27,35 +40,90 @@ public class NivelManagerBaño : MonoBehaviour
 
         pausaManager = FindObjectOfType<PausaManager>();
         narracionManager = FindObjectOfType<NarracionManager>();
+        playerController = FindObjectOfType<PlayerController>();
     }
 
+    private void Start()
+    {
+        if (canvasMiniJuegoRejilla != null) canvasMiniJuegoRejilla.SetActive(false);
+        if (mensajePresionaE != null) mensajePresionaE.SetActive(false);
+
+        // 🔹 El destornillador ahora siempre existe en escena, no lo desactivamos
+    }
+
+    private void Update()
+    {
+        // Cuando la rejilla está abierta y el jugador presiona E, se carga la siguiente escena
+        if (esperandoEntrada && Input.GetKeyDown(KeyCode.E))
+        {
+            esperandoEntrada = false;
+            if (mensajePresionaE != null) mensajePresionaE.SetActive(false);
+            StartCoroutine(FinalizarNivel());
+        }
+    }
+
+    // Llamado desde el trigger/interacción con la rejilla
     public void IntentarAbrirRejilla()
     {
+        if (miniJuegoActivo || rejillaAbierta) return;
+
         if (pausaManager != null && !pausaManager.tieneDestornillador)
         {
             narracionManager?.Narrar("Está cerrada... necesito algo para abrirla.");
+            objetoDestornillador.GetComponent<DestornilladorItem>()?.HabilitarRecogida();
         }
         else
         {
-            narracionManager?.Narrar("Debo quitar los tornillos para abrir la rejilla.");
-            // Aquí activas tu mini‑juego
+            AbrirMiniJuego();
         }
     }
 
-    public void CompletarMiniJuego()
+    // Activa el Canvas del mini-juego y bloquea al jugador
+    private void AbrirMiniJuego()
     {
-        StartCoroutine(FinalizarNivel());
+        miniJuegoActivo = true;
+        playerController?.SetBloqueado(true);
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        if (canvasMiniJuegoRejilla != null)
+            canvasMiniJuegoRejilla.SetActive(true);
     }
 
-    private IEnumerator FinalizarNivel()
+    // Llamado por MiniJuegoRejilla cuando los 4 tornillos han sido retirados
+    public void CompletarMiniJuego()
     {
-        string[] narracionFinal = {
-            "La rejilla se abre.",
-            "El aire frío me envuelve mientras avanzo."
-        };
-        narracionManager?.Narrar(narracionFinal);
+        miniJuegoActivo = false;
+        rejillaAbierta = true;
+
+        if (canvasMiniJuegoRejilla != null)
+            canvasMiniJuegoRejilla.SetActive(false);
+
+        // 🔹 Mantener al jugador bloqueado hasta que presione E para salir
+        playerController?.SetBloqueado(true);
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
+        narracionManager?.Narrar("Ya está abierta, puedo entrar.");
+        StartCoroutine(MostrarMensajeEntradaTrasNarracion());
+    }
+
+    // Paso 5: mostrar "Presione E para entrar" cuando la narración termine
+    private IEnumerator MostrarMensajeEntradaTrasNarracion()
+    {
         yield return new WaitUntil(() => narracionManager == null || !narracionManager.EstaActivo());
 
+        if (mensajePresionaE != null)
+            mensajePresionaE.SetActive(true);
+
+        esperandoEntrada = true;
+    }
+
+    // Fade y carga de escena
+    private IEnumerator FinalizarNivel()
+    {
+        playerController?.SetBloqueado(true);
         yield return StartCoroutine(Fade(1f, duracionFade));
         SceneManager.LoadScene(escenaSiguiente);
     }

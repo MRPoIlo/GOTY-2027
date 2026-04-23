@@ -7,7 +7,7 @@ public class SombraMama : MonoBehaviour
     [SerializeField] private Transform puntoOrigen;
     [SerializeField] private Transform puertoObjetivo;
     [SerializeField] private GameObject sombraPadre;
-    [SerializeField] private GameObject puertaBlockeada;
+    [SerializeField] private PuertaAtico puerta; // 🔹 referencia al script PuertaNivel
 
     [Header("Movimiento")]
     [SerializeField] private float velocidadCaminar = 0.8f;
@@ -28,27 +28,21 @@ public class SombraMama : MonoBehaviour
     }
 
     // ─── API pública ──────────────────────────────────────────────────────────
-
     public void IniciarSecuencia()
     {
         if (secuenciaIniciada) return;
         secuenciaIniciada = true;
 
-        // Activar el GameObject
         gameObject.SetActive(true);
 
-        // Arrancar la corrutina desde un objeto que siempre está activo
-        // usando el AticoManager como puente
         AticoManager.Instance?.StartCoroutine(SecuenciaProteccion());
     }
 
     // ─── Secuencia completa ───────────────────────────────────────────────────
-
     private IEnumerator SecuenciaProteccion()
     {
         Debug.Log("[SombraMama] PASO 1 - Iniciando secuencia");
 
-        // Posicionar
         transform.position = puntoOrigen.position;
 
         Vector3 dir = puertoObjetivo.position - transform.position;
@@ -60,11 +54,8 @@ public class SombraMama : MonoBehaviour
         particulasPolvo?.Play();
         if (anim != null) anim.SetBool("Caminando", false);
 
-        // Fade in
         yield return StartCoroutine(FadeAlpha(0f, 1f, 1.5f));
-        Debug.Log("[SombraMama] PASO 2 - Apareci, narrando");
 
-        // Narración de aparición
         NarracionManager.Instance?.Detener();
         yield return new WaitForSeconds(0.5f);
 
@@ -75,9 +66,7 @@ public class SombraMama : MonoBehaviour
         });
 
         yield return StartCoroutine(EsperarNarracion(8f));
-        Debug.Log("[SombraMama] PASO 3 - Caminando");
 
-        // Caminar
         if (anim != null) anim.SetBool("Caminando", true);
 
         while (Vector3.Distance(transform.position, puertoObjetivo.position) > 0.2f)
@@ -96,26 +85,24 @@ public class SombraMama : MonoBehaviour
         }
 
         if (anim != null) anim.SetBool("Caminando", false);
-        Debug.Log("[SombraMama] PASO 4 - Llego a la puerta");
 
-        // Narración al llegar
         NarracionManager.Instance?.Narrar(new string[]
         {
             "Se puso entre mí y la puerta.",
             "No dijo nada. Nunca decía nada."
         });
         yield return StartCoroutine(EsperarNarracion(10f));
-        Debug.Log("[SombraMama] PASO 5 - Alejando al padre");
 
-        // Alejar padre
         if (sombraPadre != null)
             yield return StartCoroutine(AlejarSombra());
 
-        // Abrir puerta
-        if (puertaBlockeada != null)
-            puertaBlockeada.SetActive(false);
+        // 🔹 En vez de desactivar la puerta, la habilitamos
+        if (puerta != null)
+        {
+            puerta.HabilitarPuerta();
+            Debug.Log("[SombraMama] Puerta habilitada, ahora puede usarse para salir.");
+        }
 
-        Debug.Log("[SombraMama] PASO 6 - Pausa final");
         yield return new WaitForSeconds(tiempoEsperaFinal);
 
         NarracionManager.Instance?.Narrar(new string[]
@@ -125,18 +112,15 @@ public class SombraMama : MonoBehaviour
         });
         yield return StartCoroutine(EsperarNarracion(10f));
 
-        Debug.Log("[SombraMama] PASO 7 - Desvaneciendo");
         yield return StartCoroutine(FadeAlpha(1f, 0f, 2.5f));
 
         particulasPolvo?.Stop();
         gameObject.SetActive(false);
 
-        Debug.Log("[SombraMama] PASO 8 - Secuencia terminada");
         AticoManager.Instance?.OnSecuenciaMamaTerminada();
     }
 
     // ─── Helpers ─────────────────────────────────────────────────────────────
-
     private IEnumerator EsperarNarracion(float timeout)
     {
         yield return new WaitForSeconds(0.2f);
@@ -148,14 +132,13 @@ public class SombraMama : MonoBehaviour
             t += Time.deltaTime;
             yield return null;
         }
-        Debug.LogWarning("[SombraMama] Timeout — continuando");
     }
 
     private IEnumerator AlejarSombra()
     {
         if (sombraPadre == null) yield break;
         Vector3 posInicial = sombraPadre.transform.position;
-        Vector3 posFinal   = posInicial + Vector3.back * 5f;
+        Vector3 posFinal = posInicial + Vector3.back * 5f;
         float t = 0f;
         float duracion = 1.5f;
         while (t < duracion)

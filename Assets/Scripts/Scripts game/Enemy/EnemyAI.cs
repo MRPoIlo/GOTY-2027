@@ -23,6 +23,10 @@ public class EnemyAI : MonoBehaviour
     [Header("Jumpscare")]
     public GameObject jumpscareUI;
 
+    [Header("Patrulla")]
+    [SerializeField] private Transform[] puntosPatrulla;
+    private int indicePatrulla = 0;
+
     private NavMeshAgent agent;
     private Animator animator;
     private float currentDetection = 0f;
@@ -37,12 +41,16 @@ public class EnemyAI : MonoBehaviour
 
         if (jumpscareUI != null)
             jumpscareUI.SetActive(false);
+
+        // 🔹 Iniciar patrulla en el primer punto
+        if (puntosPatrulla.Length > 0)
+            agent.SetDestination(puntosPatrulla[indicePatrulla].position);
     }
 
     void Update()
     {
-        // Patrulla básica: si no persigue, se queda quieto o camina aleatorio
-        PatrullaAleatoria();
+        // Patrulla básica
+        Patrulla();
 
         // Detección del jugador
         Vector3 dirToPlayer = player.position - transform.position;
@@ -69,10 +77,15 @@ public class EnemyAI : MonoBehaviour
             if (stateIcon != null && noVisualizaSprite != null)
                 stateIcon.sprite = noVisualizaSprite;
 
-            agent.ResetPath();
+            // 🔹 Si no persigue, vuelve a patrullar
+            if (puntosPatrulla.Length > 0 && !agent.pathPending && agent.remainingDistance < 0.5f)
+            {
+                indicePatrulla = (indicePatrulla + 1) % puntosPatrulla.Length;
+                agent.SetDestination(puntosPatrulla[indicePatrulla].position);
+            }
         }
 
-        // Actualiza el parámetro Speed en el Animator
+        // Actualiza animación
         if (animator != null)
             animator.SetFloat("Speed", agent.velocity.magnitude);
 
@@ -80,11 +93,16 @@ public class EnemyAI : MonoBehaviour
             TriggerJumpscare();
     }
 
-    private void PatrullaAleatoria()
+    private void Patrulla()
     {
-        // Aquí puedes poner lógica de patrulla si quieres
-        // Por ejemplo: agent.SetDestination(puntoAleatorio.position);
-        // Si no, el enemigo se queda quieto hasta detectar al jugador
+        if (puntosPatrulla.Length == 0) return;
+
+        // Si no está persiguiendo, sigue patrullando
+        if (!agent.pathPending && agent.remainingDistance < 0.5f)
+        {
+            indicePatrulla = (indicePatrulla + 1) % puntosPatrulla.Length;
+            agent.SetDestination(puntosPatrulla[indicePatrulla].position);
+        }
     }
 
     void TriggerJumpscare()

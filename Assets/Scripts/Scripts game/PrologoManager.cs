@@ -9,7 +9,9 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class PrologoManager : MonoBehaviour
 {
-    // ── Narración de apertura (al despertar) ─────────────────────────────────
+    public static PrologoManager Instance { get; private set; }
+
+    // ── Narración de apertura ────────────────────────────────────────────────
     private static readonly string[] NarracionDespiertar = new[]
     {
         "Esta habitación…",
@@ -24,11 +26,11 @@ public class PrologoManager : MonoBehaviour
         "Aquí aprendí a caminar sin hacer ruido."
     };
 
-    // ── Narración al intentar la puerta de salida ────────────────────────────
+    // ── Narración al intentar la puerta bloqueada ────────────────────────────
     private static readonly string[] NarracionPuertaBloqueada = new[]
     {
         "No puedo salir así.",
-        "Hay algo que todavía no me visto."
+        "Hay algo que todavía no he visto."
     };
 
     [Header("Referencia a UI Fade")]
@@ -36,11 +38,13 @@ public class PrologoManager : MonoBehaviour
     [SerializeField] private float duracionFade = 2.5f;
 
     [Header("Siguiente escena")]
-    [SerializeField] private string escenaSiguiente = "Nivel1"; // ← aquí está el cambio
+    [SerializeField] private string escenaSiguiente = "Nivel1";
 
     [Header("Condición de avance")]
-    [Tooltip("Cuántos objetos debe examinar el jugador antes de poder salir")]
     [SerializeField] private int objetosRequeridosParaSalir = 3;
+
+    [Header("Puerta de salida")]
+    [SerializeField] private PuertaNivel puertaSalida; // referencia directa a la puerta
 
     // Estado interno
     private int objetosExaminados = 0;
@@ -51,6 +55,9 @@ public class PrologoManager : MonoBehaviour
 
     void Awake()
     {
+        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
+        Instance = this;
+
         player = FindObjectOfType<PlayerController>();
         player?.SetBloqueado(true);
 
@@ -63,11 +70,9 @@ public class PrologoManager : MonoBehaviour
 
         yield return new WaitForSeconds(0.5f);
 
-        if (NarracionManager.Instance != null)
-        {
-            NarracionManager.Instance.Narrar(NarracionDespiertar);
-            yield return new WaitUntil(() => NarracionManager.Instance == null || !NarracionManager.Instance.EstaActivo());
-        }
+        NarracionManager.Instance?.Narrar(NarracionDespiertar);
+        yield return new WaitUntil(() =>
+            NarracionManager.Instance == null || !NarracionManager.Instance.EstaActivo());
 
         player?.SetBloqueado(false);
     }
@@ -93,6 +98,7 @@ public class PrologoManager : MonoBehaviour
     private void DesbloquearSalida()
     {
         puertaDesbloqueada = true;
+        puertaSalida.HabilitarPuerta(); // 🔹 habilita la puerta
         NarracionManager.Instance?.Narrar("Algo se ha movido.");
         Debug.Log("[Prólogo] Salida desbloqueada.");
     }
@@ -117,19 +123,17 @@ public class PrologoManager : MonoBehaviour
         finalizando = true;
         player?.SetBloqueado(true);
 
-        if (NarracionManager.Instance != null)
+        NarracionManager.Instance?.Narrar(new string[]
         {
-            string[] narracionFinal = new[]
-            {
-                "La puerta cede.",
-                "Quizás ya estoy listo para ver el resto."
-            };
-            NarracionManager.Instance.Narrar(narracionFinal);
-            yield return new WaitUntil(() => NarracionManager.Instance == null || !NarracionManager.Instance.EstaActivo());
-        }
+            "La puerta cede.",
+            "Quizás ya estoy listo para ver el resto."
+        });
+
+        yield return new WaitUntil(() =>
+            NarracionManager.Instance == null || !NarracionManager.Instance.EstaActivo());
 
         yield return StartCoroutine(Fade(1f, duracionFade));
-        SceneManager.LoadScene("Nivel 1"); // ← aquí carga Nivel1
+        SceneManager.LoadScene(escenaSiguiente);
     }
 
     // ─── Fade ─────────────────────────────────────────────────────────────────

@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class PuertaNivel : MonoBehaviour, IInteractuable
@@ -8,13 +8,13 @@ public class PuertaNivel : MonoBehaviour, IInteractuable
 
     private bool habilitada = false;
 
-    // Método público para habilitar la puerta (lo llamas desde el sistema de tu compañero)
+    // Mï¿½todo pï¿½blico para habilitar la puerta (lo llamas desde el sistema de tu compaï¿½ero)
     public void HabilitarPuerta()
     {
         habilitada = true;
     }
 
-    // Método de interacción (cuando el jugador interactúa con la puerta)
+    // Mï¿½todo de interacciï¿½n (cuando el jugador interactï¿½a con la puerta)
     public void Interactuar()
     {
         if (!habilitada) return;

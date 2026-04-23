@@ -3,11 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-/// <summary>
-/// GOTY — Director del Nivel 3 (Ático).
-/// Orquesta: entrada, exploración de cuadros, menú de ordenamiento,
-/// cuadro familiar, secuencia de la sombra mamá y salida.
-/// </summary>
 public class AticoManager : MonoBehaviour
 {
     public static AticoManager Instance { get; private set; }
@@ -20,7 +15,6 @@ public class AticoManager : MonoBehaviour
     [SerializeField] private List<CuadroRecuerdo> cuadros;
 
     [Header("Cuadro familiar completo")]
-    [Tooltip("El cuadro grande que aparece en la pared al ordenar correctamente")]
     [SerializeField] private GameObject cuadroFamiliarCompleto;
 
     [Header("Sombra del padre (bloqueando la puerta)")]
@@ -32,10 +26,11 @@ public class AticoManager : MonoBehaviour
     [Header("Siguiente escena")]
     [SerializeField] private string escenaSiguiente = "Nivel4";
 
-    // Estado
+    // Estado interno
     private List<CuadroRecuerdo> cuadrosExaminados = new List<CuadroRecuerdo>();
     private bool menuAbierto = false;
-    private bool nivelResuelto = false;
+    private bool puertaDesbloqueada = false;
+    private bool finalizando = false;
 
     private PlayerController player;
 
@@ -44,17 +39,15 @@ public class AticoManager : MonoBehaviour
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
         player = FindObjectOfType<PlayerController>();
+        player?.SetBloqueado(true);
+
+        if (pantallaFade != null) pantallaFade.alpha = 1f;
     }
 
     IEnumerator Start()
     {
-        player?.SetBloqueado(true);
-
-        if (pantallaFade != null) pantallaFade.alpha = 1f;
-
         yield return StartCoroutine(Fade(0f, duracionFade));
 
-        // Narración de entrada al ático
         NarracionManager.Instance?.Narrar(new string[]
         {
             "El ático.",
@@ -69,19 +62,11 @@ public class AticoManager : MonoBehaviour
     }
 
     // ─── Registro de cuadros examinados ──────────────────────────────────────
-
-    /// <summary>
-    /// CuadroRecuerdo lo llama al ser examinado.
-    /// Cuando los 4 están examinados, abre el menú de ordenamiento.
-    /// </summary>
     public void RegistrarCuadroExaminado(CuadroRecuerdo cuadro)
     {
         if (!cuadrosExaminados.Contains(cuadro))
             cuadrosExaminados.Add(cuadro);
 
-        Debug.Log($"[Ático] Cuadros examinados: {cuadrosExaminados.Count}/{cuadros.Count}");
-
-        // Cuando el jugador examina todos, abrir el menú
         if (cuadrosExaminados.Count >= cuadros.Count && !menuAbierto)
         {
             menuAbierto = true;
@@ -91,11 +76,8 @@ public class AticoManager : MonoBehaviour
 
     private IEnumerator AbrirMenuConDelay()
     {
-        // Esperar que termine la narración del último cuadro
         yield return new WaitUntil(() =>
             NarracionManager.Instance == null || !NarracionManager.Instance.EstaActivo());
-
-        yield return new WaitForSeconds(0.8f);
 
         NarracionManager.Instance?.Narrar(
             "Recuerdo estos momentos. Pero no sé en qué orden pasaron.");
@@ -107,8 +89,6 @@ public class AticoManager : MonoBehaviour
     }
 
     // ─── Resultado del menú de ordenamiento ──────────────────────────────────
-
-    /// <summary>MenuOrdenamiento llama esto cuando el orden es correcto.</summary>
     public void OnOrdenCorrecto()
     {
         StartCoroutine(SecuenciaOrdenCorrecto());
@@ -116,11 +96,9 @@ public class AticoManager : MonoBehaviour
 
     private IEnumerator SecuenciaOrdenCorrecto()
     {
-        // Marcar todos los cuadros como resueltos
         foreach (var cuadro in cuadros)
             cuadro.MarcarResuelto();
 
-        // Narración de comprensión
         NarracionManager.Instance?.Narrar(new string[]
         {
             "Sí. Así fue.",
@@ -130,7 +108,6 @@ public class AticoManager : MonoBehaviour
         yield return new WaitUntil(() =>
             NarracionManager.Instance == null || !NarracionManager.Instance.EstaActivo());
 
-        // Mostrar cuadro familiar completo
         if (cuadroFamiliarCompleto != null)
         {
             cuadroFamiliarCompleto.SetActive(true);
@@ -144,9 +121,6 @@ public class AticoManager : MonoBehaviour
                 NarracionManager.Instance == null || !NarracionManager.Instance.EstaActivo());
         }
 
-        yield return new WaitForSeconds(1f);
-
-        // Iniciar secuencia de la sombra mamá
         if (sombraMama != null)
         {
             sombraMama.gameObject.SetActive(true);
@@ -157,38 +131,56 @@ public class AticoManager : MonoBehaviour
     /// <summary>SombraMama llama esto cuando termina su secuencia.</summary>
     public void OnSecuenciaMamaTerminada()
     {
-        if (!nivelResuelto)
+        if (!puertaDesbloqueada)
         {
-            nivelResuelto = true;
-            StartCoroutine(TerminarNivel());
+            puertaDesbloqueada = true;
+            NarracionManager.Instance?.Narrar(new string[]
+            {
+                "La puerta está abierta.",
+                "Puedo salir cuando quiera."
+            });
+            Debug.Log("[Ático] Puerta desbloqueada.");
         }
     }
 
-    // ─── Transición final ─────────────────────────────────────────────────────
+    // ─── Llamado desde la puerta ─────────────────────────────────────────────
+    public void IntentarSalir()
+    {
+        if (finalizando) return;
+
+        if (puertaDesbloqueada)
+        {
+            StartCoroutine(TerminarNivel());
+        }
+        else
+        {
+            NarracionManager.Instance?.Narrar(new string[]
+            {
+                "Todavía no puedo salir.",
+                "Algo me retiene aquí."
+            });
+        }
+    }
 
     private IEnumerator TerminarNivel()
     {
+        finalizando = true;
         player?.SetBloqueado(true);
 
         NarracionManager.Instance?.Narrar(new string[]
         {
-            "La puerta está abierta.",
-            "Puedo seguir."
+            "La puerta cede.",
+            "El silencio me acompaña hacia lo desconocido."
         });
 
         yield return new WaitUntil(() =>
             NarracionManager.Instance == null || !NarracionManager.Instance.EstaActivo());
-
-        // Guardar progreso en GameManager
-        if (GameManager2.Instance != null)
-            GameManager2.Instance.prologoCompletado = true; // Reutilizar o agregar nivel3Completado
 
         yield return StartCoroutine(Fade(1f, duracionFade));
         SceneManager.LoadScene(escenaSiguiente);
     }
 
     // ─── Fade ─────────────────────────────────────────────────────────────────
-
     private IEnumerator Fade(float objetivo, float duracion)
     {
         if (pantallaFade == null) yield break;

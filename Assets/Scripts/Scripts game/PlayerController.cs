@@ -34,7 +34,6 @@ public class PlayerController : MonoBehaviour
     private float h, v;
     private bool agachado = false;
 
-    // Referencia al PausaManager local
     private PausaManager pausaManager;
 
     void Awake()
@@ -42,15 +41,26 @@ public class PlayerController : MonoBehaviour
         cc = GetComponent<CharacterController>();
         BloqueoCursor(true);
 
-        // Buscar el PausaManager de la escena
         pausaManager = FindObjectOfType<PausaManager>();
+    }
+
+    void Start()
+    {
+        // 🔹 Forzar al jugador a estar en el suelo al inicio
+        if (cc != null && !cc.isGrounded)
+        {
+            cc.Move(Vector3.down * 2f);
+        }
     }
 
     void Update()
     {
-        // Si está bloqueado o el juego está pausado, no mover
-        if (bloqueado || (pausaManager != null && pausaManager.juegoPausado))
+        bool pausado = pausaManager != null && pausaManager.juegoPausado;
+
+        if (bloqueado || pausado)
         {
+            // Mantener gravedad aunque esté bloqueado
+            AplicarGravedad();
             ActualizarAnimacion(0f, false);
             return;
         }
@@ -90,15 +100,22 @@ public class PlayerController : MonoBehaviour
         Vector3 direccion = transform.right * h + transform.forward * v;
         direccion = Vector3.ClampMagnitude(direccion, 1f);
 
-        if (cc.isGrounded && velocidadVertical.y < 0)
-            velocidadVertical.y = -2f;
-
-        velocidadVertical.y += gravedad * Time.deltaTime;
+        AplicarGravedad();
 
         cc.Move((direccion * velocidad + velocidadVertical) * Time.deltaTime);
 
         float moveAmount = Mathf.Abs(h) + Mathf.Abs(v);
         ActualizarAnimacion(moveAmount, corriendo);
+    }
+
+    private void AplicarGravedad()
+    {
+        if (cc.isGrounded && velocidadVertical.y < 0)
+            velocidadVertical.y = -2f;
+
+        velocidadVertical.y += gravedad * Time.deltaTime;
+
+        cc.Move(velocidadVertical * Time.deltaTime);
     }
 
     private void AjustarAlturaCamara()
@@ -145,6 +162,12 @@ public class PlayerController : MonoBehaviour
     {
         bloqueado = estado;
         BloqueoCursor(!estado);
+
+        // 🔹 Forzar snap al suelo al desbloquear
+        if (!estado && !cc.isGrounded)
+        {
+            cc.Move(Vector3.down * 2f);
+        }
     }
 
     public void ActualizarSensibilidad(float x, float y)

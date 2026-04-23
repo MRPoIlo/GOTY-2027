@@ -1,37 +1,52 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class PuertaNivel1 : MonoBehaviour
 {
-    [Header("Configuraci�n")]
-    [SerializeField] private string escenaSiguiente = "Nivel2Ba�o"; // c�mbialo al nombre real de tu escena
+    [Header("Configuración")]
+    [SerializeField] private string escenaSiguiente = "Nivel2Baño";
     [SerializeField] private string mensajeAbrir = "Presiona E para abrir la puerta";
 
-    private bool jugadorCerca = false;
+    [Header("Interacción")]
+    [SerializeField] private float rangoInteraccion = 2.5f; // 🔹 distancia máxima para interactuar
 
-    private void OnTriggerEnter(Collider other)
+    private Transform jugador;
+    private bool mostrandoMensaje = false;
+
+    void Start()
     {
-        if (other.CompareTag("Player"))
-        {
-            jugadorCerca = true;
-            NarracionManager.Instance?.Narrar(mensajeAbrir);
-        }
+        // Buscar al jugador por tag
+        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+        if (playerObj != null)
+            jugador = playerObj.transform;
     }
 
-    private void OnTriggerExit(Collider other)
+    void Update()
     {
-        if (other.CompareTag("Player"))
-        {
-            jugadorCerca = false;
-            NarracionManager.Instance?.OcultarMensaje();
-        }
-    }
+        if (jugador == null) return;
 
-    private void Update()
-    {
-        if (jugadorCerca && Input.GetKeyDown(KeyCode.E))
+        float distancia = Vector3.Distance(transform.position, jugador.position);
+
+        if (distancia <= rangoInteraccion)
         {
-            AbrirPuerta();
+            if (!mostrandoMensaje)
+            {
+                NarracionManager.Instance?.Narrar(mensajeAbrir);
+                mostrandoMensaje = true;
+            }
+
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                AbrirPuerta();
+            }
+        }
+        else
+        {
+            if (mostrandoMensaje)
+            {
+                NarracionManager.Instance?.OcultarMensaje();
+                mostrandoMensaje = false;
+            }
         }
     }
 
