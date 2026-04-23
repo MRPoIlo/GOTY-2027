@@ -62,12 +62,14 @@ public class PausaManager : MonoBehaviour
     public void AbrirOpciones()
     {
         if (panelOpciones != null) panelOpciones.SetActive(true);
+        if (panelMenu != null) panelMenu.SetActive(false);
         EnOpciones = true;
     }
 
     public void CerrarOpciones()
     {
         if (panelOpciones != null) panelOpciones.SetActive(false);
+        if (panelMenu != null) panelMenu.SetActive(true); // 🔹 vuelve al menú
         EnOpciones = false;
     }
 
