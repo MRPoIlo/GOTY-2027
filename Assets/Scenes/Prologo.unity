@@ -436,7 +436,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 048d6e86d512bd84a86d2db989393628, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Flashlight
-  LuzLinterna: {fileID: 0}
+--- !u!114 &177513257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 177513246}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdb899c517b138941af2ba846e7c90e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Flashlight
+  LuzLinterna: {fileID: 1030455732}
 --- !u!1 &253971384
 GameObject:
   m_ObjectHideFlags: 0
@@ -6648,6 +6660,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8bc909df20379d246a143ad7dd998403, type: 3}
       insertIndex: -1
       addedObject: {fileID: 177513255}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8bc909df20379d246a143ad7dd998403, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 177513257}
   m_SourcePrefab: {fileID: 100100000, guid: 8bc909df20379d246a143ad7dd998403, type: 3}
 --- !u!1 &1863345733
 GameObject:

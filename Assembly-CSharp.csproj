@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Scripts game\PrologoDirector.cs" />
+    <Compile Include="Assets\Scripts\Scripts game\Nivel 4 Vestibulo\ObjetoSonoro.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextEventHandler.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\EnvMapAnimator.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Prologo\PausaManager.cs" />
@@ -61,7 +62,9 @@
     <Compile Include="Assets\Scripts\Scripts game\GameManager2.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark02.cs" />
     <Compile Include="Assets\Scripts\Scripts game\NarracionManager.cs" />
+    <Compile Include="Assets\Scripts\Scripts game\Nivel 4 Vestibulo\VestibuloManager.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Nivel 2 Baño\TriggerBaño.cs" />
+    <Compile Include="Assets\Scripts\Scripts game\Nivel 4 Vestibulo\ZonaSalida.cs" />
     <Compile Include="Assets\Scripts\UIManager.cs" />
     <Compile Include="Assets\Scripts\Scripts game\linterna\FlashLightPickUp.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Cambio de escenas\PuertaNivel.cs" />
