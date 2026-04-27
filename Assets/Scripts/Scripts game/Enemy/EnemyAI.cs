@@ -9,9 +9,9 @@ public class EnemyAI : MonoBehaviour
     public Transform player;
 
     [Header("Detección")]
-    public float visionRange = 5f;
-    public float visionAngle = 60f;
-    public float detectionTime = 3f;
+    public float visionRange = 6f;
+    public float visionAngle = 90f;
+    public float detectionTime = 1f;
     public float catchDistance = 1.5f;
 
     [Header("UI Estado")]
@@ -27,82 +27,150 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private Transform[] puntosPatrulla;
     private int indicePatrulla = 0;
 
+    [Header("Movimiento")]
+    public float velocidadGiro = 5f;
+
     private NavMeshAgent agent;
     private Animator animator;
+
     private float currentDetection = 0f;
+    private float tiempoPerdido = 0f;
+
+    private bool activo = false;
+    private bool persiguiendo = false;
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponentInChildren<Animator>();
 
-        if (stateIcon != null && noVisualizaSprite != null)
-            stateIcon.sprite = noVisualizaSprite;
+        agent.updateRotation = false;
+        agent.isStopped = true;
 
         if (jumpscareUI != null)
             jumpscareUI.SetActive(false);
-
-        // 🔹 Iniciar patrulla en el primer punto
-        if (puntosPatrulla.Length > 0)
-            agent.SetDestination(puntosPatrulla[indicePatrulla].position);
     }
 
     void Update()
     {
-        // Patrulla básica
-        Patrulla();
+        if (!activo) return;
 
-        // Detección del jugador
         Vector3 dirToPlayer = player.position - transform.position;
+        float distancia = dirToPlayer.magnitude;
         float angle = Vector3.Angle(transform.forward, dirToPlayer);
 
-        if (dirToPlayer.magnitude < visionRange && angle < visionAngle / 2f)
+        bool veJugador = distancia < visionRange && angle < visionAngle / 2f;
+
+        // ================= DETECCIÓN ESTABLE =================
+        if (veJugador)
         {
             currentDetection += Time.deltaTime;
+            tiempoPerdido = 0.3f; // 🔥 tolerancia
 
-            if (stateIcon != null && visualizaSprite != null)
-                stateIcon.sprite = visualizaSprite;
-
-            if (currentDetection >= detectionTime)
+            if (!persiguiendo && currentDetection >= detectionTime)
             {
-                if (stateIcon != null && persigueSprite != null)
-                    stateIcon.sprite = persigueSprite;
+                persiguiendo = true;
+                agent.isStopped = false;
 
-                agent.SetDestination(player.position);
+                Debug.Log("🔥 PERSECUCIÓN ACTIVADA");
             }
         }
         else
         {
-            currentDetection = 0f;
-            if (stateIcon != null && noVisualizaSprite != null)
-                stateIcon.sprite = noVisualizaSprite;
+            tiempoPerdido -= Time.deltaTime;
 
-            // 🔹 Si no persigue, vuelve a patrullar
-            if (puntosPatrulla.Length > 0 && !agent.pathPending && agent.remainingDistance < 0.5f)
+            if (tiempoPerdido <= 0f)
             {
-                indicePatrulla = (indicePatrulla + 1) % puntosPatrulla.Length;
-                agent.SetDestination(puntosPatrulla[indicePatrulla].position);
+                currentDetection = 0f;
+
+                if (persiguiendo)
+                {
+                    persiguiendo = false;
+                    IrAPatrulla();
+
+                    Debug.Log("👀 Perdió al jugador");
+                }
             }
         }
 
-        // Actualiza animación
+        // ================= UI =================
+        if (stateIcon != null)
+        {
+            if (persiguiendo && persigueSprite != null)
+                stateIcon.sprite = persigueSprite;
+            else if (veJugador && visualizaSprite != null)
+                stateIcon.sprite = visualizaSprite;
+            else if (noVisualizaSprite != null)
+                stateIcon.sprite = noVisualizaSprite;
+        }
+
+        // ================= MOVIMIENTO =================
+        if (persiguiendo)
+        {
+            agent.SetDestination(player.position);
+            GirarSuave(dirToPlayer);
+        }
+        else
+        {
+            Patrulla();
+        }
+
+        // Animación
         if (animator != null)
             animator.SetFloat("Speed", agent.velocity.magnitude);
 
-        if (Vector3.Distance(transform.position, player.position) <= catchDistance)
+        // Jumpscare
+        if (distancia <= catchDistance)
             TriggerJumpscare();
     }
 
-    private void Patrulla()
+    void GirarSuave(Vector3 direccion)
+    {
+        direccion.y = 0;
+
+        if (direccion == Vector3.zero) return;
+
+        Quaternion rot = Quaternion.LookRotation(direccion);
+        transform.rotation = Quaternion.Slerp(
+            transform.rotation,
+            rot,
+            Time.deltaTime * velocidadGiro
+        );
+    }
+
+    void Patrulla()
     {
         if (puntosPatrulla.Length == 0) return;
 
-        // Si no está persiguiendo, sigue patrullando
         if (!agent.pathPending && agent.remainingDistance < 0.5f)
         {
             indicePatrulla = (indicePatrulla + 1) % puntosPatrulla.Length;
             agent.SetDestination(puntosPatrulla[indicePatrulla].position);
         }
+
+        Vector3 dir = puntosPatrulla[indicePatrulla].position - transform.position;
+        GirarSuave(dir);
+    }
+
+    void IrAPatrulla()
+    {
+        if (puntosPatrulla.Length == 0) return;
+
+        agent.isStopped = false;
+        agent.SetDestination(puntosPatrulla[indicePatrulla].position);
+    }
+
+    public void Activar()
+    {
+        if (agent == null || puntosPatrulla.Length == 0) return;
+
+        activo = true;
+        indicePatrulla = 0;
+
+        agent.isStopped = false;
+        agent.SetDestination(puntosPatrulla[indicePatrulla].position);
+
+        Debug.Log("Enemigo ACTIVADO");
     }
 
     void TriggerJumpscare()

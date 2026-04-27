@@ -80,7 +80,6 @@ public class NivelManager1 : MonoBehaviour
         enemigoActivado = true;
         NarracionManager.Instance?.Narrar(NarracionEnemigo);
 
-        // Desactiva la puerta visual y su collider
         if (puertaEntrada != null)
         {
             puertaEntrada.SetActive(false);
@@ -88,7 +87,15 @@ public class NivelManager1 : MonoBehaviour
             if (col != null) col.enabled = false;
             Debug.Log("[Nivel1] Puerta desactivada, el padre entra.");
         }
+
+        // 🔹 Activar rutina del enemigo después de 5 segundos
+        if (enemigo != null)
+        {
+            enemigo.Activar();
+            Debug.Log("[Nivel1] Rutina del enemigo activada con delay.");
+        }
     }
+
 
     public void IntentarSalir()
     {
