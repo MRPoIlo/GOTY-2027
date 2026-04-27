@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 public class SalaCocinaManager : MonoBehaviour
@@ -11,141 +12,126 @@ public class SalaCocinaManager : MonoBehaviour
     [SerializeField] private CanvasGroup pantallaFade;
     [SerializeField] private float duracionFade = 1.5f;
 
-    [Header("Referencias de escena")]
-    [SerializeField] private GameObject televisorRoto;
-    [SerializeField] private GameObject cocinaDesordenada;
+    [Header("Cajas")]
     [SerializeField] private List<GameObject> cajasBloqueando;
+
+    [Header("Spawn")]
     [SerializeField] private Transform spawnJugador;
 
-    [Header("Padre")]
-    [SerializeField] private AudioClip sonidoPasos;
-    [SerializeField] private float tiempoLlegarPadre = 4f;
-    private bool padreActivo = false;
+    [Header("Mensajes")]
+    [TextArea]
+    [SerializeField] private List<string> mensajesCajas;
 
-    [Header("Siguiente escena")]
+    [Header("Escena")]
     [SerializeField] private string escenaSiguiente = "Nivel6Sotano";
 
-    // Estado
-    private bool nivelTerminado = false;
-    private bool reiniciando = false;
-    private AudioSource audioSource;
+    // 🔹 NUEVO: Evento para sincronizar inicialización del enemigo
+    [Header("Eventos")]
+    public UnityEvent OnJugadorListo;
+
     private PlayerController player;
+    private bool nivelTerminado = false;
 
     void Awake()
     {
-        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
         player = FindObjectOfType<PlayerController>();
-
-        audioSource = GetComponent<AudioSource>();
-        if (audioSource == null)
-            audioSource = gameObject.AddComponent<AudioSource>();
     }
 
     IEnumerator Start()
     {
+        // 🔹 Bloquear jugador durante intro
         player?.SetBloqueado(true);
 
+        // 🔹 Fade inicial
         if (pantallaFade != null) pantallaFade.alpha = 1f;
-
         yield return StartCoroutine(Fade(0f, duracionFade));
 
-        // Narración inicial
+        // 🔹 Narración inicial más profunda e inmersiva
         NarracionManager.Instance?.Narrar(new string[]
         {
-            "La sala y la cocina.",
-            "El televisor encendido, pero roto.",
-            "La cocina, un caos que habla por sí sola."
+            "El frío de la cocina me atraviesa...",
+            "Las sombras se mueven en silencio.",
+            "La única salida es el sótano, pero está bloqueada.",
+            "Debo mover esas cajas... sin que me escuche."
         });
-        yield return StartCoroutine(EsperarNarracion(10f));
 
+        // 🔹 Esperar que termine la narración
+        yield return new WaitForSeconds(8f);
+
+        // 🔹 Desbloquear jugador
         player?.SetBloqueado(false);
+
+        // 🔹 CRÍTICO: Notificar que el jugador está listo
+        Debug.Log("✅ Jugador desbloqueado - Notificando a enemigo");
+        OnJugadorListo?.Invoke();
     }
 
-    // ─── Interacción con cajas ───────────────────────────────────────────────
+    // ───── CAJAS ─────
     public void MoverCaja(GameObject caja)
     {
-        if (cajasBloqueando.Contains(caja))
-        {
-            cajasBloqueando.Remove(caja);
-            caja.SetActive(false);
-            Debug.Log("[SalaCocina] Caja movida. Restantes: " + cajasBloqueando.Count);
+        if (!cajasBloqueando.Contains(caja)) return;
 
-            if (cajasBloqueando.Count == 0)
+        int index = cajasBloqueando.IndexOf(caja);
+        cajasBloqueando.Remove(caja);
+        caja.SetActive(false);
+
+        // 🔹 Mensaje educativo más inmersivo
+        if (index < mensajesCajas.Count)
+        {
+            NarracionManager.Instance?.Narrar(new string[]
             {
-                NarracionManager.Instance?.Narrar(new string[]
-                {
-                    "El camino al sótano está libre.",
-                    "Pero debo tener cuidado con él."
-                });
-            }
+                mensajesCajas[index]
+            });
         }
-    }
 
-    // ─── Activación del padre ────────────────────────────────────────────────
-    public void EscucharRuido()
-    {
-        if (padreActivo || nivelTerminado || reiniciando) return;
-
-        padreActivo = true;
-        StartCoroutine(SecuenciaPadre());
-    }
-
-    private IEnumerator SecuenciaPadre()
-    {
-        Debug.Log("[SalaCocina] Padre activado, llega en " + tiempoLlegarPadre + "s");
-
-        if (sonidoPasos != null)
+        // 🔹 Ruido → enemigo investiga
+        EnemyNivel5 enemy = FindObjectOfType<EnemyNivel5>();
+        if (enemy != null)
         {
-            audioSource.clip = sonidoPasos;
-            audioSource.loop = true;
-            audioSource.Play();
+            enemy.Investigar(caja.transform.position);
         }
 
-        yield return new WaitForSeconds(tiempoLlegarPadre);
-
-        if (nivelTerminado || reiniciando) yield break;
-
-        audioSource.Stop();
-        yield return StartCoroutine(ReiniciarNivel());
+        // 🔹 Última caja - narración más profunda
+        if (cajasBloqueando.Count == 0)
+        {
+            NarracionManager.Instance?.Narrar(new string[]
+            {
+                "El camino está libre...",
+                "Pero él sigue ahí afuera.",
+                "Debo moverme con cuidado."
+            });
+        }
     }
 
-    // ─── Reinicio ────────────────────────────────────────────────────────────
-    private IEnumerator ReiniciarNivel()
+    // ───── GAME OVER ─────
+    public void GameOver()
     {
-        reiniciando = true;
-        padreActivo = false;
+        if (nivelTerminado) return;
+        StartCoroutine(ReiniciarNivel());
+    }
+
+    IEnumerator ReiniciarNivel()
+    {
         player?.SetBloqueado(true);
 
-        yield return StartCoroutine(Fade(1f, duracionFade * 0.5f));
+        yield return StartCoroutine(Fade(1f, 1f));
 
+        // 🔹 Narración de muerte más impactante
         NarracionManager.Instance?.Narrar(new string[]
         {
-            "Sus pasos retumban.",
-            "Debo esconderme mejor."
+            "Sus pasos resonaron detrás de mí...",
+            "No fui lo suficientemente sigiloso.",
+            "El miedo me paraliza.",
+            "Debo intentarlo de nuevo."
         });
-        yield return StartCoroutine(EsperarNarracion(5f));
 
-        // Reset jugador
-        if (spawnJugador != null && player != null)
-        {
-            CharacterController cc = player.GetComponent<CharacterController>();
-            if (cc != null) cc.enabled = false;
-            player.transform.position = spawnJugador.position;
-            if (cc != null) cc.enabled = true;
-        }
+        yield return new WaitForSeconds(6f);
 
-        // Reset cajas
-        foreach (var caja in cajasBloqueando)
-            if (caja != null) { caja.SetActive(true); }
-
-        yield return StartCoroutine(Fade(0f, duracionFade));
-
-        reiniciando = false;
-        player?.SetBloqueado(false);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    // ─── Salida al sótano ────────────────────────────────────────────────────
+    // ───── SALIDA ─────
     public void OnJugadorEscapo()
     {
         if (nivelTerminado) return;
@@ -153,47 +139,41 @@ public class SalaCocinaManager : MonoBehaviour
         StartCoroutine(TerminarNivel());
     }
 
-    private IEnumerator TerminarNivel()
+    IEnumerator TerminarNivel()
     {
         player?.SetBloqueado(true);
-        audioSource.Stop();
 
+        // 🔹 Narración de victoria más profunda
         NarracionManager.Instance?.Narrar(new string[]
         {
-            "Abrí el camino al sótano.",
-            "El maltrato está en cada rincón."
+            "Lo logré... el camino al sótano está abierto.",
+            "Puedo sentir su respiración a lo lejos.",
+            "No hay tiempo que perder.",
+            "Debo descender antes de que me encuentre."
         });
-        yield return StartCoroutine(EsperarNarracion(10f));
+
+        yield return new WaitForSeconds(7f);
 
         yield return StartCoroutine(Fade(1f, duracionFade));
+
         SceneManager.LoadScene(escenaSiguiente);
     }
 
-    // ─── Helpers ─────────────────────────────────────────────────────────────
-    private IEnumerator EsperarNarracion(float timeout)
-    {
-        yield return new WaitForSeconds(0.2f);
-        float t = 0f;
-        while (t < timeout)
-        {
-            if (NarracionManager.Instance == null || !NarracionManager.Instance.EstaActivo())
-                yield break;
-            t += Time.deltaTime;
-            yield return null;
-        }
-    }
-
-    private IEnumerator Fade(float objetivo, float duracion)
+    // ───── FADE ─────
+    IEnumerator Fade(float objetivo, float duracion)
     {
         if (pantallaFade == null) yield break;
+
         float inicio = pantallaFade.alpha;
         float t = 0f;
+
         while (t < duracion)
         {
             t += Time.deltaTime;
             pantallaFade.alpha = Mathf.Lerp(inicio, objetivo, t / duracion);
             yield return null;
         }
+
         pantallaFade.alpha = objetivo;
     }
 }

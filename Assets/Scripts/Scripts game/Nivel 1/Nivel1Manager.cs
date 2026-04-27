@@ -34,16 +34,23 @@ public class NivelManager1 : MonoBehaviour
     private bool finalizando = false;
 
     [Header("Referencia al enemigo")]
-    public EnemyAI enemigo;
+    [SerializeField] private EnemyAI enemigo; // 🔥 ahora serializado bien
 
     [Header("Puerta narrativa")]
-    [SerializeField] private GameObject puertaEntrada; // referencia al objeto puerta
+    [SerializeField] private GameObject puertaEntrada;
 
     private PlayerController player;
 
     void Awake()
     {
         player = FindFirstObjectByType<PlayerController>();
+
+        // 🔥 SOLUCIÓN: si no lo asignas en Inspector, lo busca solo
+        if (enemigo == null)
+        {
+            enemigo = FindFirstObjectByType<EnemyAI>();
+        }
+
         player?.SetBloqueado(true);
 
         if (pantallaFade != null) pantallaFade.alpha = 1f;
@@ -63,7 +70,7 @@ public class NivelManager1 : MonoBehaviour
         player?.SetBloqueado(false);
     }
 
-    // ─── Llamados desde ObjetoInteractuable.OnInteractuado ───────────────
+    // ─── INTERACCIONES ─────────────────────────
     public void RegistrarInteraccion()
     {
         interaccionesCompletadas++;
@@ -78,25 +85,32 @@ public class NivelManager1 : MonoBehaviour
     private void ActivarEnemigo()
     {
         enemigoActivado = true;
+
         NarracionManager.Instance?.Narrar(NarracionEnemigo);
 
         if (puertaEntrada != null)
         {
             puertaEntrada.SetActive(false);
+
             Collider col = puertaEntrada.GetComponent<Collider>();
             if (col != null) col.enabled = false;
+
             Debug.Log("[Nivel1] Puerta desactivada, el padre entra.");
         }
 
-        // 🔹 Activar rutina del enemigo después de 5 segundos
+        // 🔥 ACTIVAR ENEMIGO (COMPATIBLE)
         if (enemigo != null)
         {
-            enemigo.Activar();
-            Debug.Log("[Nivel1] Rutina del enemigo activada con delay.");
+            enemigo.Activar(); // usa el método que agregamos
+            Debug.Log("[Nivel1] Enemigo activado correctamente.");
+        }
+        else
+        {
+            Debug.LogError("[Nivel1] No se encontró el enemigo.");
         }
     }
 
-
+    // ─── SALIDA ─────────────────────────
     public void IntentarSalir()
     {
         if (finalizando) return;
@@ -122,6 +136,7 @@ public class NivelManager1 : MonoBehaviour
                 "La puerta del baño se abre.",
                 "El silencio me acompaña hacia lo desconocido."
             };
+
             NarracionManager.Instance.Narrar(narracionFinal);
             yield return new WaitUntil(() => NarracionManager.Instance == null || !NarracionManager.Instance.EstaActivo());
         }
@@ -130,17 +145,21 @@ public class NivelManager1 : MonoBehaviour
         SceneManager.LoadScene(escenaSiguiente);
     }
 
+    // ─── FADE ─────────────────────────
     private IEnumerator Fade(float objetivo, float duracion)
     {
         if (pantallaFade == null) yield break;
+
         float inicio = pantallaFade.alpha;
         float t = 0f;
+
         while (t < duracion)
         {
             t += Time.deltaTime;
             pantallaFade.alpha = Mathf.Lerp(inicio, objetivo, t / duracion);
             yield return null;
         }
+
         pantallaFade.alpha = objetivo;
     }
 }

@@ -1008,10 +1008,10 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 463236617251174108, guid: 76b9d8179905d454e9bf6dcc847231ce, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 657148953}
+      addedObject: {fileID: 657148958}
     - targetCorrespondingSourceObject: {fileID: 463236617251174108, guid: 76b9d8179905d454e9bf6dcc847231ce, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 657148958}
+      addedObject: {fileID: 657148959}
   m_SourcePrefab: {fileID: 100100000, guid: 76b9d8179905d454e9bf6dcc847231ce, type: 3}
 --- !u!1 &293291179
 GameObject:
@@ -2063,36 +2063,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 583091413269648081, guid: 76b9d8179905d454e9bf6dcc847231ce, type: 3}
   m_PrefabInstance: {fileID: 237974263}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &657148953
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 657148945}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1458b3b6bfb657648b2157a8b880a259, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyAI
-  player: {fileID: 1896074171}
-  visionRange: 10
-  visionAngle: 60
-  detectionTime: 2
-  catchDistance: 1
-  stateIcon: {fileID: 1080384304}
-  noVisualizaSprite: {fileID: 21300000, guid: 660df92ff22593d4aa8798a730c4e2a5, type: 3}
-  visualizaSprite: {fileID: 21300000, guid: ebf4fda1c6a4a6e4fb6fb72703e175fc, type: 3}
-  persigueSprite: {fileID: 21300000, guid: c06dfda66e4398b4a83304ecbec23371, type: 3}
-  jumpscareUI: {fileID: 1484574393}
-  puntosPatrulla:
-  - {fileID: 1791109128}
-  - {fileID: 888701197}
-  - {fileID: 1674335868}
-  - {fileID: 385447446}
-  - {fileID: 1964801603}
-  - {fileID: 621887514}
-  velocidadGiro: 2
 --- !u!195 &657148958
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -2115,6 +2085,36 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &657148959
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 657148945}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1458b3b6bfb657648b2157a8b880a259, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAI
+  player: {fileID: 1896074171}
+  visionRange: 6
+  visionAngle: 90
+  detectionTime: 2
+  catchDistance: 1.5
+  stateIcon: {fileID: 1080384304}
+  noVisualizaSprite: {fileID: 21300000, guid: 660df92ff22593d4aa8798a730c4e2a5, type: 3}
+  visualizaSprite: {fileID: 21300000, guid: ebf4fda1c6a4a6e4fb6fb72703e175fc, type: 3}
+  persigueSprite: {fileID: 21300000, guid: c06dfda66e4398b4a83304ecbec23371, type: 3}
+  jumpscareUI: {fileID: 1484574393}
+  puntosPatrulla:
+  - {fileID: 1791109128}
+  - {fileID: 888701197}
+  - {fileID: 1674335868}
+  - {fileID: 385447446}
+  - {fileID: 1964801603}
+  - {fileID: 621887514}
+  velocidadGiro: 5
 --- !u!1 &776736010
 GameObject:
   m_ObjectHideFlags: 0
@@ -3959,7 +3959,7 @@ MonoBehaviour:
   duracionFade: 2.5
   escenaSiguiente: "Nivel 2 Ba\xF1o"
   objetosRequeridosParaEnemigo: 3
-  enemigo: {fileID: 657148953}
+  enemigo: {fileID: 0}
   puertaEntrada: {fileID: 1426833397}
 --- !u!4 &1367997207
 Transform:

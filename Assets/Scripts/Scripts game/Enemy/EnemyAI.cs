@@ -9,9 +9,9 @@ public class EnemyAI : MonoBehaviour
     public Transform player;
 
     [Header("Detección")]
-    public float visionRange = 6f;
-    public float visionAngle = 90f;
-    public float detectionTime = 1f;
+    public float visionRange = 10f;
+    public float visionAngle = 120f;
+    public float detectionTime = 2f;
     public float catchDistance = 1.5f;
 
     [Header("UI Estado")]
