@@ -13,7 +13,10 @@ public class TriggerZona : MonoBehaviour
 {
     [Header("Configuración")]
     [SerializeField] private bool usoUnico = true;
-    [SerializeField] private string tagJugador = "Player";
+
+    [Header("Jugador a detectar")]
+    [Tooltip("Arrastra aquí el GameObject del jugador")]
+    [SerializeField] private GameObject jugador;
 
     [Header("Narración opcional")]
     [Tooltip("Si tiene contenido, se muestra automáticamente al entrar")]
@@ -23,26 +26,48 @@ public class TriggerZona : MonoBehaviour
     [Header("Evento")]
     public UnityEvent OnZonaActivada;
 
+    [Header("Objeto asociado al mensaje")]
+    [Tooltip("Arrastra aquí el objeto que aparecerá/desaparecerá")]
+    [SerializeField] private GameObject objetoMensaje;
+
     private bool activado = false;
 
     void Awake()
     {
         // Asegura que el collider sea trigger
         GetComponent<Collider>().isTrigger = true;
+
+        // Ocultar objeto al inicio
+        if (objetoMensaje != null)
+            objetoMensaje.SetActive(false);
     }
 
     void OnTriggerEnter(Collider otro)
     {
         if (usoUnico && activado) return;
-        if (!otro.CompareTag(tagJugador)) return;
+        if (jugador != null && otro.gameObject != jugador) return;
 
         activado = true;
 
         // Narración automática
         if (narracionAlEntrar != null && narracionAlEntrar.Length > 0)
+        {
             NarracionManager.Instance?.Narrar(narracionAlEntrar);
 
+            // Mostrar objeto junto con el mensaje
+            if (objetoMensaje != null)
+                objetoMensaje.SetActive(true);
+        }
+
         OnZonaActivada?.Invoke();
+    }
+
+    // Método para ocultar mensaje y objeto
+    public void OcultarMensaje()
+    {
+        NarracionManager.Instance?.DetenerNarracion(); // si tienes este método
+        if (objetoMensaje != null)
+            objetoMensaje.SetActive(false);
     }
 
     public void Reactivar() => activado = false;
