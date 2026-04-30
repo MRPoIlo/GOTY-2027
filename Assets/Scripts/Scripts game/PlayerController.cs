@@ -46,7 +46,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        // 🔹 Forzar al jugador a estar en el suelo al inicio
+        // Forzar al jugador a estar en el suelo al inicio
         if (cc != null && !cc.isGrounded)
         {
             cc.Move(Vector3.down * 2f);
@@ -82,7 +82,9 @@ public class PlayerController : MonoBehaviour
         rotacionX -= mouseY;
         rotacionX = Mathf.Clamp(rotacionX, -limiteVertical, limiteVertical);
 
-        camaraTransform.localRotation = Quaternion.Euler(rotacionX, 0f, 0f);
+        if (camaraTransform != null)
+            camaraTransform.localRotation = Quaternion.Euler(rotacionX, 0f, 0f);
+
         transform.Rotate(Vector3.up * mouseX);
     }
 
@@ -120,6 +122,8 @@ public class PlayerController : MonoBehaviour
 
     private void AjustarAlturaCamara()
     {
+        if (camaraTransform == null) return;
+
         float alturaObjetivo = agachado ? alturaAgachado : alturaNormal;
         float zObjetivo = agachado ? zAgachado : zNormal;
 
@@ -163,11 +167,19 @@ public class PlayerController : MonoBehaviour
         bloqueado = estado;
         BloqueoCursor(!estado);
 
-        // 🔹 Forzar snap al suelo al desbloquear
+        Debug.Log($"[PlayerController] SetBloqueado({estado}) llamado en {gameObject.name}");
+
+        // Forzar snap al suelo al desbloquear
         if (!estado && !cc.isGrounded)
         {
             cc.Move(Vector3.down * 2f);
         }
+    }
+
+    // Nueva API pública para que otros scripts consulten el estado
+    public bool IsBloqueado()
+    {
+        return bloqueado;
     }
 
     public void ActualizarSensibilidad(float x, float y)

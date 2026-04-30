@@ -38,6 +38,7 @@ public class EnemyAI : MonoBehaviour
 
     private bool activo = false;
     private bool persiguiendo = false;
+    private bool yaActivoJumpscare = false;
 
     void Start()
     {
@@ -49,11 +50,20 @@ public class EnemyAI : MonoBehaviour
 
         if (jumpscareUI != null)
             jumpscareUI.SetActive(false);
+
+        // 🔥 Reset limpio (clave para build)
+        if (animator != null)
+        {
+            animator.Rebind();
+            animator.Update(0f);
+            animator.SetFloat("Speed", 0f);
+            animator.SetBool("Moving", false);
+        }
     }
 
     void Update()
     {
-        if (!activo) return;
+        if (!activo || yaActivoJumpscare) return;
 
         Vector3 dirToPlayer = player.position - transform.position;
         float distancia = dirToPlayer.magnitude;
@@ -61,18 +71,16 @@ public class EnemyAI : MonoBehaviour
 
         bool veJugador = distancia < visionRange && angle < visionAngle / 2f;
 
-        // ================= DETECCIÓN ESTABLE =================
+        // ================= DETECCIÓN =================
         if (veJugador)
         {
             currentDetection += Time.deltaTime;
-            tiempoPerdido = 0.3f; // 🔥 tolerancia
+            tiempoPerdido = 0.3f;
 
             if (!persiguiendo && currentDetection >= detectionTime)
             {
                 persiguiendo = true;
                 agent.isStopped = false;
-
-                Debug.Log("🔥 PERSECUCIÓN ACTIVADA");
             }
         }
         else
@@ -87,8 +95,6 @@ public class EnemyAI : MonoBehaviour
                 {
                     persiguiendo = false;
                     IrAPatrulla();
-
-                    Debug.Log("👀 Perdió al jugador");
                 }
             }
         }
@@ -115,9 +121,18 @@ public class EnemyAI : MonoBehaviour
             Patrulla();
         }
 
-        // Animación
-        if (animator != null)
-            animator.SetFloat("Speed", agent.velocity.magnitude);
+        // 🔥 ANIMACIÓN CORREGIDA PARA BUILD
+        if (animator != null && agent != null)
+        {
+            float velocidadActual = agent.velocity.magnitude;
+
+            animator.SetFloat("Speed", velocidadActual);
+
+            bool moving = velocidadActual > 0.1f ||
+                          (agent.hasPath && agent.remainingDistance > 0.1f);
+
+            animator.SetBool("Moving", moving);
+        }
 
         // Jumpscare
         if (distancia <= catchDistance)
@@ -127,7 +142,6 @@ public class EnemyAI : MonoBehaviour
     void GirarSuave(Vector3 direccion)
     {
         direccion.y = 0;
-
         if (direccion == Vector3.zero) return;
 
         Quaternion rot = Quaternion.LookRotation(direccion);
@@ -169,16 +183,28 @@ public class EnemyAI : MonoBehaviour
 
         agent.isStopped = false;
         agent.SetDestination(puntosPatrulla[indicePatrulla].position);
-
-        Debug.Log("Enemigo ACTIVADO");
     }
 
     void TriggerJumpscare()
     {
+        if (yaActivoJumpscare) return;
+        yaActivoJumpscare = true;
+
+        agent.isStopped = true;
+        agent.velocity = Vector3.zero;
+
+        if (animator != null)
+        {
+            animator.Rebind();
+            animator.Update(0f);
+            animator.SetFloat("Speed", 0f);
+            animator.SetBool("Moving", false);
+        }
+
         if (jumpscareUI != null)
             jumpscareUI.SetActive(true);
 
-        Invoke("RestartLevel", 2f);
+        Invoke(nameof(RestartLevel), 2f);
     }
 
     void RestartLevel()

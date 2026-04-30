@@ -43,6 +43,10 @@ public class EnemyNivel5 : MonoBehaviour
     private bool jumpscareActivo = false;
     private bool inicializado = false;
 
+    [Header("NavMesh Fix")]
+    public float navmeshWaitTimeout = 5f;
+    private float reintentoIntervalo = 0.25f;
+
     void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -52,66 +56,61 @@ public class EnemyNivel5 : MonoBehaviour
         {
             agent.updateRotation = false;
             agent.speed = velocidadPatrulla;
-            agent.isStopped = true; // enemigo detenido al inicio
+            agent.isStopped = true;
+            agent.ResetPath();
         }
 
         if (animator != null)
         {
+            animator.Rebind();
+            animator.Update(0f);
             animator.SetFloat("Speed", 0f);
         }
+
+        if (stateIcon != null && noVisualizaSprite != null)
+            stateIcon.sprite = noVisualizaSprite;
     }
 
     void Start()
-    {
-        SalaCocinaManager manager = FindObjectOfType<SalaCocinaManager>();
-        if (manager != null)
-        {
-            manager.OnJugadorListo.AddListener(InicializarEnemigo);
-            Debug.Log("🎯 Enemigo esperando señal de inicio...");
-        }
-        else
-        {
-            Debug.LogWarning("⚠️ No se encontró SalaCocinaManager, inicializando directamente");
-            StartCoroutine(InicializarEnemigoCoroutine());
-        }
-    }
-
-    public void InicializarEnemigo()
     {
         StartCoroutine(InicializarEnemigoCoroutine());
     }
 
     IEnumerator InicializarEnemigoCoroutine()
     {
-        yield return null; // esperar un frame
+        yield return null;
+        yield return null;
 
-        if (agent == null || !agent.isOnNavMesh)
+        float waited = 0f;
+        while (!agent.isOnNavMesh && waited < navmeshWaitTimeout)
         {
-            Debug.LogError("❌ Enemigo no está sobre el NavMesh");
-            yield break;
+            waited += reintentoIntervalo;
+            yield return new WaitForSeconds(reintentoIntervalo);
         }
 
         agent.isStopped = false;
         agent.speed = velocidadPatrulla;
+        agent.ResetPath();
 
-        if (puntosPatrulla != null && puntosPatrulla.Length > 0)
+        if (player == null)
+        {
+            var pc = FindObjectOfType<PlayerController>();
+            if (pc != null) player = pc.transform;
+        }
+
+        if (puntosPatrulla.Length > 0)
         {
             indicePatrulla = 0;
             agent.SetDestination(puntosPatrulla[0].position);
-            inicializado = true;
-            Debug.Log("✅ Enemigo inicializado - Patrullando hacia punto 0");
         }
+
+        inicializado = true;
     }
 
     void Update()
     {
         if (!inicializado || jumpscareActivo) return;
-        if (player == null || agent == null || !agent.isOnNavMesh) return;
-
-        // 🔹 Debug de estado del agente
-        Debug.Log("Agent isStopped: " + agent.isStopped +
-                  " | hasPath: " + agent.hasPath +
-                  " | velocity: " + agent.velocity);
+        if (player == null || !agent.isOnNavMesh) return;
 
         Vector3 dirToPlayer = player.position - transform.position;
         float distancia = dirToPlayer.magnitude;
@@ -119,6 +118,7 @@ public class EnemyNivel5 : MonoBehaviour
 
         bool veJugador = distancia < visionRange && angle < visionAngle / 2f;
 
+        // DETECCIÓN
         if (veJugador)
         {
             currentDetection += Time.deltaTime;
@@ -129,31 +129,30 @@ public class EnemyNivel5 : MonoBehaviour
                 persiguiendo = true;
                 investigando = false;
                 agent.speed = velocidadPersecucion;
-                agent.isStopped = false;
-                Debug.Log("🔥 PERSECUCIÓN ACTIVADA");
             }
         }
         else
         {
             tiempoPerdido -= Time.deltaTime;
+
             if (tiempoPerdido <= 0f)
             {
                 currentDetection = 0f;
+
                 if (persiguiendo)
                 {
                     persiguiendo = false;
                     agent.speed = velocidadPatrulla;
                     IrAPatrulla();
-                    Debug.Log("👀 Perdió al jugador");
                 }
             }
         }
 
         ActualizarIconoEstado(veJugador);
 
+        // MOVIMIENTO
         if (persiguiendo)
         {
-            agent.isStopped = false;
             agent.SetDestination(player.position);
         }
         else if (!investigando)
@@ -163,45 +162,43 @@ public class EnemyNivel5 : MonoBehaviour
 
         RotarHaciaMovimiento();
 
+        // 🔥 ANIMACIÓN (FIX BUILD)
+        float velocidadActual = agent.velocity.magnitude;
         if (animator != null)
-        {
-            float velocidadActual = agent.velocity.magnitude;
             animator.SetFloat("Speed", velocidadActual);
-            Debug.Log("Animator Speed param: " + velocidadActual);
-        }
 
+        // CAPTURA
         if (distancia <= catchDistance)
-        {
             TriggerJumpscare();
-        }
     }
 
     void RotarHaciaMovimiento()
     {
         if (agent.velocity.sqrMagnitude > 0.1f)
         {
-            Vector3 direccion = agent.velocity.normalized;
-            direccion.y = 0;
-            if (direccion != Vector3.zero)
-            {
-                Quaternion rotacionObjetivo = Quaternion.LookRotation(direccion);
-                transform.rotation = Quaternion.Slerp(transform.rotation, rotacionObjetivo, Time.deltaTime * 5f);
-            }
+            Vector3 dir = agent.velocity.normalized;
+            dir.y = 0;
+
+            Quaternion rot = Quaternion.LookRotation(dir);
+            transform.rotation = Quaternion.Slerp(transform.rotation, rot, Time.deltaTime * 5f);
         }
     }
 
     void ActualizarIconoEstado(bool veJugador)
     {
         if (stateIcon == null) return;
-        if (persiguiendo && persigueSprite != null) stateIcon.sprite = persigueSprite;
-        else if (veJugador && visualizaSprite != null) stateIcon.sprite = visualizaSprite;
-        else if (noVisualizaSprite != null) stateIcon.sprite = noVisualizaSprite;
+
+        if (persiguiendo && persigueSprite != null)
+            stateIcon.sprite = persigueSprite;
+        else if (veJugador && visualizaSprite != null)
+            stateIcon.sprite = visualizaSprite;
+        else if (noVisualizaSprite != null)
+            stateIcon.sprite = noVisualizaSprite;
     }
 
     void Patrulla()
     {
-        if (puntosPatrulla == null || puntosPatrulla.Length == 0) return;
-        if (!agent.isOnNavMesh) return;
+        if (puntosPatrulla.Length == 0) return;
 
         if (!agent.pathPending && agent.remainingDistance < 0.5f)
         {
@@ -212,89 +209,53 @@ public class EnemyNivel5 : MonoBehaviour
 
     void IrAPatrulla()
     {
-        if (puntosPatrulla == null || puntosPatrulla.Length == 0) return;
-        if (!agent.isOnNavMesh) return;
+        if (puntosPatrulla.Length == 0) return;
 
-        agent.isStopped = false;
         agent.SetDestination(puntosPatrulla[indicePatrulla].position);
     }
 
     public void Investigar(Vector3 punto)
     {
-        if (!inicializado || !agent.isOnNavMesh) return;
+        if (!inicializado) return;
 
         investigando = true;
         persiguiendo = false;
 
-        agent.isStopped = false;
         agent.speed = velocidadPatrulla;
         agent.SetDestination(punto);
 
-        StartCoroutine(VolverAPatrullaDelay(3f));
+        StartCoroutine(VolverAPatrulla());
     }
 
-    IEnumerator VolverAPatrullaDelay(float delay)
+    IEnumerator VolverAPatrulla()
     {
-        yield return new WaitForSeconds(delay);
-        if (!persiguiendo && investigando)
-        {
-            investigando = false;
-            IrAPatrulla();
-        }
+        yield return new WaitForSeconds(3f);
+
+        investigando = false;
+        IrAPatrulla();
     }
 
     void TriggerJumpscare()
     {
         if (jumpscareActivo) return;
-        jumpscareActivo = true;
-        inicializado = false;
 
-        if (agent != null)
-        {
-            agent.isStopped = true;
-            agent.velocity = Vector3.zero;
-        }
+        jumpscareActivo = true;
+
+        agent.isStopped = true;
+        agent.velocity = Vector3.zero;
 
         if (animator != null)
-        {
             animator.SetFloat("Speed", 0f);
-        }
 
         if (jumpscareUI != null)
-        {
             jumpscareUI.SetActive(true);
-        }
 
-        this.enabled = false;
-        StartCoroutine(RecargarEscena());
+        StartCoroutine(Reiniciar());
     }
 
-    IEnumerator RecargarEscena()
+    IEnumerator Reiniciar()
     {
-        yield return new WaitForSecondsRealtime(2f);
+        yield return new WaitForSeconds(2f);
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
-
-    void OnDestroy()
-    {
-        SalaCocinaManager manager = FindObjectOfType<SalaCocinaManager>();
-        if (manager != null)
-        {
-            manager.OnJugadorListo.RemoveListener(InicializarEnemigo);
-        }
-    }
-
-    void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, visionRange);
-
-        Vector3 forward = transform.forward * visionRange;
-        Vector3 leftBoundary = Quaternion.Euler(0, -visionAngle / 2f, 0) * forward;
-        Vector3 rightBoundary = Quaternion.Euler(0, visionAngle / 2f, 0) * forward;
-
-        Gizmos.color = Color.cyan;
-        Gizmos.DrawLine(transform.position, transform.position + leftBoundary);
-        Gizmos.DrawLine(transform.position, transform.position + rightBoundary);
     }
 }

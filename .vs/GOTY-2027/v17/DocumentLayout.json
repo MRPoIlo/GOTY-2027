@@ -3,6 +3,25 @@
   "WorkspaceRootPath": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\Nivel 5 Sala Cocina\\EnemyNivel5.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\Scripts\\Scripts game\\Nivel 5 Sala Cocina\\EnemyNivel5.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\maira\\Downloads\\SalaCocinaManager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\Nivel 1\\EnemyAI.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\Scripts\\Scripts game\\Nivel 1\\EnemyAI.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\PlayerController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\Scripts\\Scripts game\\PlayerController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\TriggerZona.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\Scripts\\Scripts game\\TriggerZona.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\ObjetoInteractuable.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\Scripts\\Scripts game\\ObjetoInteractuable.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -13,9 +32,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\Nivel 1\\Nivel1Manager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\Scripts\\Scripts game\\Nivel 1\\Nivel1Manager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\maira\\Downloads\\SalaCocinaManager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\Nivel 4 Vestibulo\\VestibuloManager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -52,10 +68,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\Nivel 1\\PuertaNivel1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\Scripts\\Scripts game\\Nivel 1\\PuertaNivel1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\PlayerController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\Scripts\\Scripts game\\PlayerController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\Nivel 2 Ba\u00F1o\\NivelManagerBa\u00F1o.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -157,11 +169,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 14,
               "Title": "AticoManager.cs",
               "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\Atico\\AticoManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Scripts game\\Atico\\AticoManager.cs",
@@ -174,31 +186,57 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Nivel1Manager.cs",
-              "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\Nivel 1\\Nivel1Manager.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Scripts game\\Nivel 1\\Nivel1Manager.cs",
-              "ToolTip": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\Nivel 1\\Nivel1Manager.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Scripts game\\Nivel 1\\Nivel1Manager.cs",
-              "ViewState": "AgIAAD4AAAAAAAAAAAAwwEwAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "EnemyNivel5.cs",
+              "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\Nivel 5 Sala Cocina\\EnemyNivel5.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Scripts game\\Nivel 5 Sala Cocina\\EnemyNivel5.cs",
+              "ToolTip": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\Nivel 5 Sala Cocina\\EnemyNivel5.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Scripts game\\Nivel 5 Sala Cocina\\EnemyNivel5.cs",
+              "ViewState": "AgIAAOMAAAAAAAAAAAAwwAQBAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-26T23:27:41.183Z"
+              "WhenOpened": "2026-04-28T19:35:20.513Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
+              "Title": "TriggerZona.cs",
+              "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\TriggerZona.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Scripts game\\TriggerZona.cs",
+              "ToolTip": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\TriggerZona.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Scripts game\\TriggerZona.cs",
+              "ViewState": "AgIAADgAAAAAAAAAAAAwwFkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-28T19:31:28.146Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "EnemyAI.cs",
+              "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\Nivel 1\\EnemyAI.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Scripts game\\Nivel 1\\EnemyAI.cs",
+              "ToolTip": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\Nivel 1\\EnemyAI.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Scripts game\\Nivel 1\\EnemyAI.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-28T19:27:46.152Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "SalaCocinaManager.cs",
               "DocumentMoniker": "C:\\Users\\maira\\Downloads\\SalaCocinaManager.cs",
               "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\..\\Downloads\\SalaCocinaManager.cs",
               "ToolTip": "C:\\Users\\maira\\Downloads\\SalaCocinaManager.cs",
               "RelativeToolTip": "..\\..\\..\\..\\..\\..\\Downloads\\SalaCocinaManager.cs",
-              "ViewState": "AgIAAD8AAAAAAAAAAAAwwGwAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAJMAAAAAAAAAAAAwwKEAAAA0AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-26T22:46:09.634Z"
+              "WhenOpened": "2026-04-26T22:46:09.634Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 8,
               "Title": "VestibuloManager.cs",
               "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\Nivel 4 Vestibulo\\VestibuloManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Scripts game\\Nivel 4 Vestibulo\\VestibuloManager.cs",
@@ -210,7 +248,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 5,
               "Title": "ObjetoInteractuable.cs",
               "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\ObjetoInteractuable.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Scripts game\\ObjetoInteractuable.cs",
@@ -218,12 +256,11 @@
               "RelativeToolTip": "Assets\\Scripts\\Scripts game\\ObjetoInteractuable.cs",
               "ViewState": "AgIAACoAAAAAAAAAAAAwwFEAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-20T19:23:32.585Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-20T19:23:32.585Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 11,
               "Title": "PuertaNivel.cs",
               "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\Cambio de escenas\\PuertaNivel.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Scripts game\\Cambio de escenas\\PuertaNivel.cs",
@@ -235,7 +272,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 10,
               "Title": "PrologoManager.cs",
               "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\PrologoManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Scripts game\\PrologoManager.cs",
@@ -247,7 +284,31 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 3,
+              "Title": "PlayerController.cs",
+              "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\PlayerController.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Scripts game\\PlayerController.cs",
+              "ToolTip": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\PlayerController.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Scripts game\\PlayerController.cs",
+              "ViewState": "AgIAAKIAAAAAAAAAAAAwwLYAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-21T15:12:41.765Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Nivel1Manager.cs",
+              "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\Nivel 1\\Nivel1Manager.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Scripts game\\Nivel 1\\Nivel1Manager.cs",
+              "ToolTip": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\Nivel 1\\Nivel1Manager.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Scripts game\\Nivel 1\\Nivel1Manager.cs",
+              "ViewState": "AgIAAD4AAAAAAAAAAAAwwEwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-26T23:27:41.183Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
               "Title": "MiniJuegoRejilla.cs",
               "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\Nivel 2 Ba\u00F1o\\MiniJuegoRejilla.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Scripts game\\Nivel 2 Ba\u00F1o\\MiniJuegoRejilla.cs",
@@ -259,7 +320,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 6,
               "Title": "EnemyAI.cs",
               "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\Enemy\\EnemyAI.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Scripts game\\Enemy\\EnemyAI.cs",
@@ -267,12 +328,11 @@
               "RelativeToolTip": "Assets\\Scripts\\Scripts game\\Enemy\\EnemyAI.cs",
               "ViewState": "AgIAACQAAAAAAAAAAAAAAA0AAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-20T19:15:24.122Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-20T19:15:24.122Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 12,
               "Title": "SombraMama.cs",
               "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\Atico\\SombraMama.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Scripts game\\Atico\\SombraMama.cs",
@@ -284,19 +344,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "PlayerController.cs",
-              "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\PlayerController.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Scripts game\\PlayerController.cs",
-              "ToolTip": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\PlayerController.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Scripts game\\PlayerController.cs",
-              "ViewState": "AgIAAJ4AAAAAAAAAAAAIwLgAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-21T15:12:41.765Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 9,
               "Title": "PausaManager.cs",
               "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\Prologo\\PausaManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Scripts game\\Prologo\\PausaManager.cs",
@@ -308,7 +356,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 22,
               "Title": "DragDestornillador.cs",
               "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\Nivel 2 Ba\u00F1o\\DragDestornillador.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Scripts game\\Nivel 2 Ba\u00F1o\\DragDestornillador.cs",
@@ -320,7 +368,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 23,
               "Title": "TornilloSlot.cs",
               "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\Nivel 2 Ba\u00F1o\\TornilloSlot.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Scripts game\\Nivel 2 Ba\u00F1o\\TornilloSlot.cs",
@@ -332,7 +380,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 15,
               "Title": "PrologoDirector.cs",
               "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\PrologoDirector.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Scripts game\\PrologoDirector.cs",
@@ -344,7 +392,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 13,
               "Title": "PuertaAtico.cs",
               "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\Atico\\PuertaAtico.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Scripts game\\Atico\\PuertaAtico.cs",
@@ -356,7 +404,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 17,
               "Title": "NivelManagerBa\u00F1o.cs",
               "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\Nivel 2 Ba\u00F1o\\NivelManagerBa\u00F1o.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Scripts game\\Nivel 2 Ba\u00F1o\\NivelManagerBa\u00F1o.cs",
@@ -368,7 +416,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 26,
               "Title": "InteractionSystem.cs",
               "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\InteractionSystem.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Scripts game\\InteractionSystem.cs",
@@ -380,7 +428,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 21,
               "Title": "VentRejilla.cs",
               "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\Nivel 2 Ba\u00F1o\\VentRejilla.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Scripts game\\Nivel 2 Ba\u00F1o\\VentRejilla.cs",
@@ -392,7 +440,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 16,
               "Title": "PuertaNivel1.cs",
               "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\Nivel 1\\PuertaNivel1.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Scripts game\\Nivel 1\\PuertaNivel1.cs",
@@ -404,7 +452,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 19,
               "Title": "RejillaInteraccion.cs",
               "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\Nivel 2 Ba\u00F1o\\RejillaInteraccion.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Scripts game\\Nivel 2 Ba\u00F1o\\RejillaInteraccion.cs",
@@ -416,7 +464,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 18,
               "Title": "DestornilladorItem.cs",
               "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\Nivel 2 Ba\u00F1o\\DestornilladorItem.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Scripts game\\Nivel 2 Ba\u00F1o\\DestornilladorItem.cs",
@@ -428,7 +476,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 24,
               "Title": "NarracionManager.cs",
               "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\NarracionManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Scripts game\\NarracionManager.cs",
@@ -440,7 +488,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 25,
               "Title": "Flashlight.cs",
               "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\linterna\\Flashlight.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Scripts game\\linterna\\Flashlight.cs",
@@ -452,7 +500,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 27,
               "Title": "TriggerRejillaVista.cs",
               "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\Nivel 2 Ba\u00F1o\\TriggerRejillaVista.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Scripts game\\Nivel 2 Ba\u00F1o\\TriggerRejillaVista.cs",
@@ -464,7 +512,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 28,
               "Title": "CajaPickup.cs",
               "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\Nivel 2 Ba\u00F1o\\CajaPickup.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Scripts game\\Nivel 2 Ba\u00F1o\\CajaPickup.cs",
@@ -476,7 +524,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 31,
               "Title": "ScrewdriverPickup.cs",
               "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\Nivel 2 Ba\u00F1o\\ScrewdriverPickup.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Scripts game\\Nivel 2 Ba\u00F1o\\ScrewdriverPickup.cs",
@@ -488,7 +536,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 30,
               "Title": "TimerBa\u00F1o.cs",
               "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\Nivel 2 Ba\u00F1o\\TimerBa\u00F1o.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Scripts game\\Nivel 2 Ba\u00F1o\\TimerBa\u00F1o.cs",
@@ -500,7 +548,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 30,
+              "DocumentIndex": 33,
               "Title": "TimerBa\u00F1o.cs",
               "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\TimerBa\u00F1o.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Scripts game\\TimerBa\u00F1o.cs",
@@ -512,7 +560,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 29,
               "Title": "TriggerBa\u00F1o.cs",
               "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\Nivel 2 Ba\u00F1o\\TriggerBa\u00F1o.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Scripts game\\Nivel 2 Ba\u00F1o\\TriggerBa\u00F1o.cs",
@@ -524,7 +572,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 31,
+              "DocumentIndex": 34,
               "Title": "FlashLightPickUp.cs",
               "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\linterna\\FlashLightPickUp.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Scripts game\\linterna\\FlashLightPickUp.cs",
@@ -536,7 +584,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 29,
+              "DocumentIndex": 32,
               "Title": "GameManager2.cs",
               "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\GameManager2.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Scripts game\\GameManager2.cs",
@@ -548,7 +596,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 32,
+              "DocumentIndex": 35,
               "Title": "FlashLightPickUp.cs",
               "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\FlashLightPickUp.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Scripts game\\FlashLightPickUp.cs",
@@ -560,7 +608,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 33,
+              "DocumentIndex": 36,
               "Title": "CuadroRecuerdo.cs",
               "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\CuadroRecuerdo.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Scripts game\\CuadroRecuerdo.cs",
@@ -572,7 +620,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 35,
+              "DocumentIndex": 38,
               "Title": "AticoManager.cs",
               "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\AticoManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Scripts game\\AticoManager.cs",
@@ -584,7 +632,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 34,
+              "DocumentIndex": 37,
               "Title": "MenuOrdenamiento.cs",
               "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\Scripts game\\Atico\\MenuOrdenamiento.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Scripts game\\Atico\\MenuOrdenamiento.cs",
@@ -596,7 +644,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 36,
+              "DocumentIndex": 39,
               "Title": "llave.cs",
               "DocumentMoniker": "C:\\Users\\maira\\OneDrive - UNIVERSIDAD DE CUNDINAMARCA\\UNIVERSIDAD\\SEMESTRE 6\\ING. DE SOFTWARE\\git2\\GOTY-2027\\Assets\\Scripts\\llave.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\llave.cs",

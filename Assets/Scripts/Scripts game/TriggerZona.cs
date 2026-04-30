@@ -65,7 +65,11 @@ public class TriggerZona : MonoBehaviour
     // Método para ocultar mensaje y objeto
     public void OcultarMensaje()
     {
-        NarracionManager.Instance?.DetenerNarracion(); // si tienes este método
+        // 🔧 Usamos los métodos reales de NarracionManager
+        NarracionManager.Instance?.Detener();
+        // o si prefieres cerrar panel y desbloquear jugador:
+        // NarracionManager.Instance?.OcultarMensaje();
+
         if (objetoMensaje != null)
             objetoMensaje.SetActive(false);
     }
