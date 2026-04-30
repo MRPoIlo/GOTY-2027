@@ -1,12 +1,10 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
 /// <summary>
 /// GOTY - Zona de trigger para activar narración u otros eventos
 /// al entrar a un área específica.
-///
-/// Uso: Crea un GameObject vacío, añade BoxCollider (Is Trigger = true)
-/// y este script. Conecta el evento en el Inspector.
 /// </summary>
 [RequireComponent(typeof(Collider))]
 public class TriggerZona : MonoBehaviour
@@ -15,29 +13,27 @@ public class TriggerZona : MonoBehaviour
     [SerializeField] private bool usoUnico = true;
 
     [Header("Jugador a detectar")]
-    [Tooltip("Arrastra aquí el GameObject del jugador")]
     [SerializeField] private GameObject jugador;
 
     [Header("Narración opcional")]
-    [Tooltip("Si tiene contenido, se muestra automáticamente al entrar")]
     [SerializeField, TextArea(2, 5)]
     private string[] narracionAlEntrar;
 
     [Header("Evento")]
     public UnityEvent OnZonaActivada;
 
-    [Header("Objeto asociado al mensaje")]
-    [Tooltip("Arrastra aquí el objeto que aparecerá/desaparecerá")]
+    [Header("Objeto asociado")]
+    [Tooltip("Aparece al entrar al trigger y desaparece después del tiempo indicado")]
     [SerializeField] private GameObject objetoMensaje;
+    [Tooltip("Segundos antes de que el objeto desaparezca. 0 = no desaparece solo")]
+    [SerializeField] private float tiempoDesaparecer = 1f;
 
     private bool activado = false;
 
     void Awake()
     {
-        // Asegura que el collider sea trigger
         GetComponent<Collider>().isTrigger = true;
 
-        // Ocultar objeto al inicio
         if (objetoMensaje != null)
             objetoMensaje.SetActive(false);
     }
@@ -49,27 +45,33 @@ public class TriggerZona : MonoBehaviour
 
         activado = true;
 
-        // Narración automática
+        // Narración
         if (narracionAlEntrar != null && narracionAlEntrar.Length > 0)
-        {
             NarracionManager.Instance?.Narrar(narracionAlEntrar);
 
-            // Mostrar objeto junto con el mensaje
-            if (objetoMensaje != null)
-                objetoMensaje.SetActive(true);
+        // Mostrar objeto y ocultarlo después del tiempo
+        if (objetoMensaje != null)
+        {
+            objetoMensaje.SetActive(true);
+
+            if (tiempoDesaparecer > 0f)
+                StartCoroutine(OcultarDespuesDe(tiempoDesaparecer));
         }
 
         OnZonaActivada?.Invoke();
     }
 
-    // Método para ocultar mensaje y objeto
+    private IEnumerator OcultarDespuesDe(float segundos)
+    {
+        yield return new WaitForSeconds(segundos);
+
+        if (objetoMensaje != null)
+            objetoMensaje.SetActive(false);
+    }
+
     public void OcultarMensaje()
     {
-        // 🔧 Usamos los métodos reales de NarracionManager
         NarracionManager.Instance?.Detener();
-        // o si prefieres cerrar panel y desbloquear jugador:
-        // NarracionManager.Instance?.OcultarMensaje();
-
         if (objetoMensaje != null)
             objetoMensaje.SetActive(false);
     }
