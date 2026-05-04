@@ -1,12 +1,16 @@
-using UnityEngine;
+﻿using UnityEngine;
 
-public class PuertaSotano : MonoBehaviour
+public class PuertaSotano : MonoBehaviour, IInteractuable
 {
-    private void OnTriggerEnter(Collider other)
+    [Header("Texto acción")]
+    [SerializeField] private string textoAccion = "Abrir puerta sótano";
+
+    public void Interactuar()
     {
-        if (other.CompareTag("Player"))
-        {
-            SalaCocinaManager.Instance.OnJugadorEscapo();
-        }
+        SalaCocinaManager.Instance.OnJugadorEscapo();
     }
+
+    public string ObtenerTextoAccion() => textoAccion;
+
+    public bool EstaActivo() => SalaCocinaManager.Instance.PuedeEscapar();
 }

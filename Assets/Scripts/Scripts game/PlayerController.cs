@@ -5,18 +5,18 @@ public class PlayerController : MonoBehaviour
 {
     [Header("Movimiento")]
     [SerializeField] private float velocidadCaminar = 3f;
-    [SerializeField] private float velocidadCorrer = 4.0f;
-    [SerializeField] private float velocidadAgachado = 2.0f;
+    [SerializeField] private float velocidadCorrer = 4f;
+    [SerializeField] private float velocidadAgachado = 2f;
 
     [Header("Cámara")]
-    [SerializeField] private float sensibilidadX = 2.0f;
-    [SerializeField] private float sensibilidadY = 2.0f;
+    [SerializeField] private float sensibilidadX = 2f;
+    [SerializeField] private float sensibilidadY = 2f;
     [SerializeField] private float limiteVertical = 80f;
     [SerializeField] private Transform camaraTransform;
 
     [Header("Agacharse")]
     [SerializeField] private float alturaNormal = 1.6f;
-    [SerializeField] private float alturaAgachado = 1.0f;
+    [SerializeField] private float alturaAgachado = 1f;
     [SerializeField] private float zNormal = 0f;
     [SerializeField] private float zAgachado = 0.4f;
     [SerializeField] private float velocidadTransicion = 8f;
@@ -25,49 +25,31 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Animator anim;
 
     private CharacterController cc;
-    private float rotacionX = 0f;
-    private bool bloqueado = false;
-
+    private float rotacionX;
+    private bool bloqueado;
     private Vector3 velocidadVertical;
-    private const float gravedad = -9.81f;
-
-    private float h, v;
-    private bool agachado = false;
-
+    private bool agachado;
+    private const float GRAVEDAD = -9.81f;
     private PausaManager pausaManager;
 
     void Awake()
     {
         cc = GetComponent<CharacterController>();
         BloqueoCursor(true);
-
         pausaManager = FindObjectOfType<PausaManager>();
     }
 
     void Start()
     {
-        // Forzar al jugador a estar en el suelo al inicio
-        if (cc != null && !cc.isGrounded)
-        {
-            cc.Move(Vector3.down * 2f);
-        }
+        if (!cc.isGrounded) cc.Move(Vector3.down * 2f);
     }
 
     void Update()
     {
         bool pausado = pausaManager != null && pausaManager.juegoPausado;
+        if (bloqueado || pausado) { AplicarGravedad(); ActualizarAnimacion(0f, false); return; }
 
-        if (bloqueado || pausado)
-        {
-            // Mantener gravedad aunque esté bloqueado
-            AplicarGravedad();
-            ActualizarAnimacion(0f, false);
-            return;
-        }
-
-        if (Input.GetKeyDown(KeyCode.LeftControl))
-            agachado = !agachado;
-
+        if (Input.GetKeyDown(KeyCode.LeftControl)) agachado = !agachado;
         ManejarCamara();
         ManejarMovimiento();
         AjustarAlturaCamara();
@@ -76,117 +58,67 @@ public class PlayerController : MonoBehaviour
 
     private void ManejarCamara()
     {
-        float mouseX = Input.GetAxis("Mouse X") * sensibilidadX;
-        float mouseY = Input.GetAxis("Mouse Y") * sensibilidadY;
-
-        rotacionX -= mouseY;
+        rotacionX -= Input.GetAxis("Mouse Y") * sensibilidadY;
         rotacionX = Mathf.Clamp(rotacionX, -limiteVertical, limiteVertical);
-
         if (camaraTransform != null)
             camaraTransform.localRotation = Quaternion.Euler(rotacionX, 0f, 0f);
-
-        transform.Rotate(Vector3.up * mouseX);
+        transform.Rotate(Vector3.up * Input.GetAxis("Mouse X") * sensibilidadX);
     }
 
     private void ManejarMovimiento()
     {
-        h = Input.GetAxis("Horizontal");
-        v = Input.GetAxis("Vertical");
-
+        float h = Input.GetAxis("Horizontal");
+        float v = Input.GetAxis("Vertical");
         bool corriendo = Input.GetKey(KeyCode.LeftShift) && !agachado;
 
-        float velocidad = velocidadCaminar;
-        if (agachado) velocidad = velocidadAgachado;
-        else if (corriendo) velocidad = velocidadCorrer;
-
-        Vector3 direccion = transform.right * h + transform.forward * v;
-        direccion = Vector3.ClampMagnitude(direccion, 1f);
+        float vel = agachado ? velocidadAgachado : corriendo ? velocidadCorrer : velocidadCaminar;
+        Vector3 dir = Vector3.ClampMagnitude(transform.right * h + transform.forward * v, 1f);
 
         AplicarGravedad();
-
-        cc.Move((direccion * velocidad + velocidadVertical) * Time.deltaTime);
-
-        float moveAmount = Mathf.Abs(h) + Mathf.Abs(v);
-        ActualizarAnimacion(moveAmount, corriendo);
+        cc.Move((dir * vel + velocidadVertical) * Time.deltaTime);
+        ActualizarAnimacion(Mathf.Abs(h) + Mathf.Abs(v), corriendo);
     }
 
     private void AplicarGravedad()
     {
-        if (cc.isGrounded && velocidadVertical.y < 0)
-            velocidadVertical.y = -2f;
-
-        velocidadVertical.y += gravedad * Time.deltaTime;
-
+        if (cc.isGrounded && velocidadVertical.y < 0) velocidadVertical.y = -2f;
+        velocidadVertical.y += GRAVEDAD * Time.deltaTime;
         cc.Move(velocidadVertical * Time.deltaTime);
     }
 
     private void AjustarAlturaCamara()
     {
         if (camaraTransform == null) return;
-
-        float alturaObjetivo = agachado ? alturaAgachado : alturaNormal;
-        float zObjetivo = agachado ? zAgachado : zNormal;
-
         Vector3 pos = camaraTransform.localPosition;
-        pos.y = Mathf.Lerp(pos.y, alturaObjetivo, Time.deltaTime * velocidadTransicion);
-        pos.z = Mathf.Lerp(pos.z, zObjetivo, Time.deltaTime * velocidadTransicion);
+        pos.y = Mathf.Lerp(pos.y, agachado ? alturaAgachado : alturaNormal, Time.deltaTime * velocidadTransicion);
+        pos.z = Mathf.Lerp(pos.z, agachado ? zAgachado : zNormal, Time.deltaTime * velocidadTransicion);
         camaraTransform.localPosition = pos;
     }
 
     private void AjustarCollider()
     {
-        if (agachado)
-        {
-            cc.height = alturaAgachado;
-            cc.center = new Vector3(cc.center.x, alturaAgachado / 2f, cc.center.z);
-        }
-        else
-        {
-            cc.height = alturaNormal;
-            cc.center = new Vector3(cc.center.x, alturaNormal / 2f, cc.center.z);
-        }
+        cc.height = agachado ? alturaAgachado : alturaNormal;
+        cc.center = new Vector3(cc.center.x, cc.height * 0.5f, cc.center.z);
     }
 
-    private void ActualizarAnimacion(float moveAmount, bool corriendo)
+    private void ActualizarAnimacion(float move, bool corriendo)
     {
         if (anim == null) return;
-
-        if (agachado)
-        {
-            anim.SetInteger("States", moveAmount == 0f ? 3 : 4);
-            return;
-        }
-
-        if (moveAmount == 0f) anim.SetInteger("States", 0);
-        else if (corriendo) anim.SetInteger("States", 2);
-        else anim.SetInteger("States", 1);
+        if (agachado) { anim.SetInteger("States", move == 0f ? 3 : 4); return; }
+        anim.SetInteger("States", move == 0f ? 0 : corriendo ? 2 : 1);
     }
 
     public void SetBloqueado(bool estado)
     {
         bloqueado = estado;
         BloqueoCursor(!estado);
-
-        Debug.Log($"[PlayerController] SetBloqueado({estado}) llamado en {gameObject.name}");
-
-        // Forzar snap al suelo al desbloquear
-        if (!estado && !cc.isGrounded)
-        {
-            cc.Move(Vector3.down * 2f);
-        }
+        Debug.Log($"[PC] SetBloqueado({estado}) en {gameObject.name}");
+        if (!estado && !cc.isGrounded) cc.Move(Vector3.down * 2f);
     }
 
-    // Nueva API pública para que otros scripts consulten el estado
-    public bool IsBloqueado()
-    {
-        return bloqueado;
-    }
+    public bool IsBloqueado() => bloqueado;
 
-    public void ActualizarSensibilidad(float x, float y)
-    {
-        sensibilidadX = x;
-        sensibilidadY = y;
-    }
+    public void ActualizarSensibilidad(float x, float y) { sensibilidadX = x; sensibilidadY = y; }
 
     private void BloqueoCursor(bool bloquear)
     {

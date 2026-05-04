@@ -15,22 +15,21 @@ public class SalaCocinaManager : MonoBehaviour
     [Header("Cajas")]
     [SerializeField] private List<GameObject> cajasBloqueando;
 
-    [Header("Spawn")]
-    [SerializeField] private Transform spawnJugador;
-
     [Header("Mensajes")]
-    [TextArea]
-    [SerializeField] private List<string> mensajesCajas;
+    [TextArea][SerializeField] private List<string> mensajesCajas;
 
     [Header("Escena")]
     [SerializeField] private string escenaSiguiente = "Nivel6Sotano";
 
-    // 🔹 NUEVO: Evento para sincronizar inicialización del enemigo
     [Header("Eventos")]
     public UnityEvent OnJugadorListo;
 
     private PlayerController player;
     private bool nivelTerminado = false;
+
+    // 🔹 Estados de progreso
+    private enum FaseJuego { TV, PuertaCocina, Cajas, PuertaSotano }
+    private FaseJuego faseActual = FaseJuego.TV;
 
     void Awake()
     {
@@ -40,43 +39,76 @@ public class SalaCocinaManager : MonoBehaviour
 
     IEnumerator Start()
     {
-        // 🔹 Bloquear jugador durante intro
+        // Bloquear jugador durante intro
         player?.SetBloqueado(true);
 
-        // 🔹 Fade inicial
+        // Fade inicial
         if (pantallaFade != null) pantallaFade.alpha = 1f;
         yield return StartCoroutine(Fade(0f, duracionFade));
 
-        // 🔹 Narración inicial más profunda e inmersiva
+        // Narración inicial
         NarracionManager.Instance?.Narrar(new string[]
         {
             "El frío de la cocina me atraviesa...",
             "Las sombras se mueven en silencio.",
-            "La única salida es el sótano, pero está bloqueada.",
-            "Debo mover esas cajas... sin que me escuche."
+            "Debo encontrar una salida."
         });
 
-        // 🔹 Esperar que termine la narración
-        yield return new WaitForSeconds(8f);
+        yield return new WaitForSeconds(6f);
 
-        // 🔹 Desbloquear jugador
+        // Desbloquear jugador
         player?.SetBloqueado(false);
 
-        // 🔹 CRÍTICO: Notificar que el jugador está listo
-        Debug.Log("✅ Jugador desbloqueado - Notificando a enemigo");
+        // Notificar que el jugador está listo
         OnJugadorListo?.Invoke();
     }
 
-    // ───── CAJAS ─────
+    // ───── INTERACCIONES ─────
+    public void InteractuarTV()
+    {
+        if (faseActual != FaseJuego.TV) return;
+
+        NarracionManager.Instance?.Narrar(new string[]
+        {
+            "El televisor parpadea con un mensaje extraño...",
+            "Debo revisar la puerta de la cocina."
+        });
+
+        faseActual = FaseJuego.PuertaCocina;
+    }
+
+    public void InteractuarPuertaCocina()
+    {
+        if (faseActual != FaseJuego.PuertaCocina) return;
+
+        NarracionManager.Instance?.Narrar(new string[]
+        {
+            "La puerta de la cocina está cerrada.",
+            "La única salida es el sótano, pero está bloqueado por cajas.",
+            "Debo moverlas para poder abrir la puerta."
+        });
+
+        faseActual = FaseJuego.Cajas;
+    }
+
     public void MoverCaja(GameObject caja)
     {
+        if (faseActual != FaseJuego.Cajas)
+        {
+            NarracionManager.Instance?.Narrar(new string[]
+            {
+                "Aún no puedo mover las cajas...",
+                "Debo revisar primero la puerta de la cocina."
+            });
+            return;
+        }
+
         if (!cajasBloqueando.Contains(caja)) return;
 
         int index = cajasBloqueando.IndexOf(caja);
         cajasBloqueando.Remove(caja);
         caja.SetActive(false);
 
-        // 🔹 Mensaje educativo más inmersivo
         if (index < mensajesCajas.Count)
         {
             NarracionManager.Instance?.Narrar(new string[]
@@ -85,56 +117,41 @@ public class SalaCocinaManager : MonoBehaviour
             });
         }
 
-        // 🔹 Ruido → enemigo investiga
+        // Ruido → enemigo investiga
         EnemyNivel5 enemy = FindObjectOfType<EnemyNivel5>();
         if (enemy != null)
         {
             enemy.Investigar(caja.transform.position);
         }
 
-        // 🔹 Última caja - narración más profunda
         if (cajasBloqueando.Count == 0)
         {
             NarracionManager.Instance?.Narrar(new string[]
             {
-                "El camino está libre...",
-                "Pero él sigue ahí afuera.",
-                "Debo moverme con cuidado."
+                "El camino al sótano está libre...",
+                "Debo abrir la puerta y escapar."
             });
+            faseActual = FaseJuego.PuertaSotano;
         }
     }
 
-    // ───── GAME OVER ─────
-    public void GameOver()
+    public bool PuedeEscapar()
     {
-        if (nivelTerminado) return;
-        StartCoroutine(ReiniciarNivel());
+        return faseActual == FaseJuego.PuertaSotano;
     }
 
-    IEnumerator ReiniciarNivel()
-    {
-        player?.SetBloqueado(true);
-
-        yield return StartCoroutine(Fade(1f, 1f));
-
-        // 🔹 Narración de muerte más impactante
-        NarracionManager.Instance?.Narrar(new string[]
-        {
-            "Sus pasos resonaron detrás de mí...",
-            "No fui lo suficientemente sigiloso.",
-            "El miedo me paraliza.",
-            "Debo intentarlo de nuevo."
-        });
-
-        yield return new WaitForSeconds(6f);
-
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
-
-    // ───── SALIDA ─────
     public void OnJugadorEscapo()
     {
-        if (nivelTerminado) return;
+        if (!PuedeEscapar() || nivelTerminado)
+        {
+            NarracionManager.Instance?.Narrar(new string[]
+            {
+                "La puerta aún está bloqueada...",
+                "Debo mover todas las cajas primero."
+            });
+            return;
+        }
+
         nivelTerminado = true;
         StartCoroutine(TerminarNivel());
     }
@@ -143,17 +160,13 @@ public class SalaCocinaManager : MonoBehaviour
     {
         player?.SetBloqueado(true);
 
-        // 🔹 Narración de victoria más profunda
         NarracionManager.Instance?.Narrar(new string[]
         {
             "Lo logré... el camino al sótano está abierto.",
-            "Puedo sentir su respiración a lo lejos.",
-            "No hay tiempo que perder.",
             "Debo descender antes de que me encuentre."
         });
 
         yield return new WaitForSeconds(7f);
-
         yield return StartCoroutine(Fade(1f, duracionFade));
 
         SceneManager.LoadScene(escenaSiguiente);
@@ -176,4 +189,10 @@ public class SalaCocinaManager : MonoBehaviour
 
         pantallaFade.alpha = objetivo;
     }
+
+    // ───── Helpers para fases ─────
+    public bool EstaEnFaseTV() => faseActual == FaseJuego.TV;
+    public bool EstaEnFasePuertaCocina() => faseActual == FaseJuego.PuertaCocina;
+    public bool EstaEnFaseCajas() => faseActual == FaseJuego.Cajas;
+    public bool EstaEnFasePuertaSotano() => faseActual == FaseJuego.PuertaSotano;
 }
