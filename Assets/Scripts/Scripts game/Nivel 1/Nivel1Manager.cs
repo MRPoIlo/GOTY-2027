@@ -6,12 +6,21 @@ public class NivelManager1 : MonoBehaviour
 {
     private static readonly string[] NarracionInicio = {
         "La habitación de mis padres.",
-        "Aquí todo parece detenido en el tiempo."
+        "Aquí todo parece detenido en el tiempo, como si el aire aún guardara discusiones que nunca se apagaron."
     };
 
-    private static readonly string[] NarracionEnemigo = {
+    private static readonly string[] NarracionSombraMadre = {
+        "Una silueta oscura me observa...",
+        "No es un fantasma, es la memoria que me persigue."
+    };
+
+    private static readonly string[] NarracionPasos = {
         "Escucho pasos...",
-        "No debería estar aquí."
+        "Escóndete."
+    };
+
+    private static readonly string[] NarracionEscape = {
+        "¡Me escucharon... corre!"
     };
 
     private static readonly string[] NarracionPuertaBloqueada = {
@@ -27,14 +36,15 @@ public class NivelManager1 : MonoBehaviour
     [SerializeField] private string escenaSiguiente = "Nivel2Baño";
 
     [Header("Condición de avance")]
-    [SerializeField] private int objetosRequeridosParaEnemigo = 3;
+    [SerializeField] private int objetosRequeridos = 4; // cama, foto, diario, perfume
 
     private int interaccionesCompletadas = 0;
+    private bool sombraActivada = false;
     private bool enemigoActivado = false;
     private bool finalizando = false;
 
     [Header("Referencia al enemigo")]
-    [SerializeField] private EnemyAI enemigo; // 🔥 ahora serializado bien
+    [SerializeField] private EnemyAI enemigo;
 
     [Header("Puerta narrativa")]
     [SerializeField] private GameObject puertaEntrada;
@@ -45,11 +55,8 @@ public class NivelManager1 : MonoBehaviour
     {
         player = FindFirstObjectByType<PlayerController>();
 
-        // 🔥 SOLUCIÓN: si no lo asignas en Inspector, lo busca solo
         if (enemigo == null)
-        {
             enemigo = FindFirstObjectByType<EnemyAI>();
-        }
 
         player?.SetBloqueado(true);
 
@@ -61,11 +68,8 @@ public class NivelManager1 : MonoBehaviour
         yield return StartCoroutine(Fade(0f, duracionFade));
         yield return new WaitForSeconds(0.5f);
 
-        if (NarracionManager.Instance != null)
-        {
-            NarracionManager.Instance.Narrar(NarracionInicio);
-            yield return new WaitUntil(() => NarracionManager.Instance == null || !NarracionManager.Instance.EstaActivo());
-        }
+        NarracionManager.Instance?.Narrar(NarracionInicio);
+        yield return new WaitUntil(() => !NarracionManager.Instance.EstaActivo());
 
         player?.SetBloqueado(false);
     }
@@ -74,39 +78,56 @@ public class NivelManager1 : MonoBehaviour
     public void RegistrarInteraccion()
     {
         interaccionesCompletadas++;
-        Debug.Log($"[Nivel1] Interacciones: {interaccionesCompletadas}/{objetosRequeridosParaEnemigo}");
+        Debug.Log($"[Nivel1] Interacciones: {interaccionesCompletadas}/{objetosRequeridos}");
 
-        if (interaccionesCompletadas >= objetosRequeridosParaEnemigo && !enemigoActivado)
+        if (interaccionesCompletadas >= objetosRequeridos && !sombraActivada)
         {
-            ActivarEnemigo();
+            ActivarSombraMadre();
         }
+    }
+
+    private void ActivarSombraMadre()
+    {
+        sombraActivada = true;
+        player?.SetBloqueado(true);
+
+        NarracionManager.Instance?.Narrar(NarracionSombraMadre);
+        NarracionManager.Instance.OnNarracionTerminada.AddListener(() =>
+        {
+            player?.SetBloqueado(false);
+            IniciarSecuenciaPasos();
+        });
+    }
+
+    private void IniciarSecuenciaPasos()
+    {
+        NarracionManager.Instance?.Narrar(NarracionPasos);
+
+        // 🔴 Delay de 3 segundos antes de activar enemigo
+        StartCoroutine(ActivarEnemigoConDelay(3f));
+    }
+
+    private IEnumerator ActivarEnemigoConDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        ActivarEnemigo();
     }
 
     private void ActivarEnemigo()
     {
         enemigoActivado = true;
 
-        NarracionManager.Instance?.Narrar(NarracionEnemigo);
-
         if (puertaEntrada != null)
         {
             puertaEntrada.SetActive(false);
-
             Collider col = puertaEntrada.GetComponent<Collider>();
             if (col != null) col.enabled = false;
-
-            Debug.Log("[Nivel1] Puerta desactivada, el padre entra.");
         }
 
-        // 🔥 ACTIVAR ENEMIGO (COMPATIBLE)
         if (enemigo != null)
         {
-            enemigo.Activar(); // usa el método que agregamos
+            enemigo.Activar();
             Debug.Log("[Nivel1] Enemigo activado correctamente.");
-        }
-        else
-        {
-            Debug.LogError("[Nivel1] No se encontró el enemigo.");
         }
     }
 
@@ -130,16 +151,8 @@ public class NivelManager1 : MonoBehaviour
         finalizando = true;
         player?.SetBloqueado(true);
 
-        if (NarracionManager.Instance != null)
-        {
-            string[] narracionFinal = {
-                "La puerta del baño se abre.",
-                "El silencio me acompaña hacia lo desconocido."
-            };
-
-            NarracionManager.Instance.Narrar(narracionFinal);
-            yield return new WaitUntil(() => NarracionManager.Instance == null || !NarracionManager.Instance.EstaActivo());
-        }
+        NarracionManager.Instance?.Narrar(NarracionEscape);
+        yield return new WaitUntil(() => !NarracionManager.Instance.EstaActivo());
 
         yield return StartCoroutine(Fade(1f, duracionFade));
         SceneManager.LoadScene(escenaSiguiente);

@@ -78,6 +78,7 @@
     <Compile Include="Assets\Scripts\Scripts game\Nivel 4 Vestibulo\ZonaSalida.cs" />
     <Compile Include="Assets\Scripts\Scripts game\linterna\FlashLightPickUp.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Cambio de escenas\PuertaNivel.cs" />
+    <Compile Include="Assets\Scripts\Scripts game\Nivel 1\CamaInteractivo.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_ExampleScript_01.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMPro_InstructionOverlay.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeB.cs" />
@@ -103,6 +104,7 @@
     <Compile Include="Assets\Scripts\Scripts game\Atico\AticoManager.cs" />
     <Compile Include="Assets\Scripts\Scripts game\linterna\Flashlight.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextInfoDebugTool.cs" />
+    <Compile Include="Assets\Scripts\Scripts game\Nivel 1\DiarioInteractivo.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeA.cs" />
     <Compile Include="Assets\Scripts\Scripts game\ObjetoInteractuable.cs" />
     <Compile Include="Assets\Scripts\Scripts game\InteractionSystem.cs" />
@@ -120,14 +122,17 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_DigitValidator.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_FrameRateCounter.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
+    <Compile Include="Assets\Scripts\Scripts game\Nivel 1\TazaCafeInteractivo.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextMeshSpawner.cs" />
     <Compile Include="Assets\Scripts\Scripts game\PlayerController.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\CameraController.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Nivel 2 Baño\TimerBaño.cs" />
+    <Compile Include="Assets\Scripts\Scripts game\Nivel 1\SombraMadreEvento.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark03.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Atico\PuertaAtico.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Atico\VisualizadorCuadro.cs" />
+    <Compile Include="Assets\Scripts\Scripts game\Nivel 1\FotoInteractivo.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\DropdownSample.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexColorCycler.cs" />
     <Compile Include="Assets\Scripts\Scripts game\IInteractuable.cs" />
