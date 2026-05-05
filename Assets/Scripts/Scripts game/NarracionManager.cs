@@ -1,7 +1,8 @@
-using System.Collections;
+锘縰sing System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.Events;
 
 public class NarracionManager : MonoBehaviour
 {
@@ -17,8 +18,9 @@ public class NarracionManager : MonoBehaviour
     [SerializeField] private float velocidadTypewriter = 0.04f;
     [SerializeField] private float tiempoAutoAvance = 0f;
 
-    // FIX: Expuesto como propiedad p鷅lica para que SalaCocinaManager
-    //      pueda detectar el fin sin reflexi髇.
+    // Evento p煤blico para avisar cuando termina la narraci贸n
+    public UnityEvent OnNarracionTerminada;
+
     public bool EsNarrando => narrando;
 
     private Queue<string> colaTextos = new Queue<string>();
@@ -70,6 +72,7 @@ public class NarracionManager : MonoBehaviour
         esperandoInput = false;
         OcultarPanel();
         playerController?.SetBloqueado(false);
+        OnNarracionTerminada?.Invoke(); // Avisar que termin贸
     }
 
     public bool EstaActivo() => narrando;
@@ -104,6 +107,9 @@ public class NarracionManager : MonoBehaviour
         OcultarPanel();
         iconoInteraccion?.SetActive(true);
         playerController?.SetBloqueado(false);
+
+        // 馃敶 Aqu铆 avisamos que termin贸 la narraci贸n
+        OnNarracionTerminada?.Invoke();
     }
 
     private IEnumerator TypewriterEfecto(string linea)
@@ -132,5 +138,6 @@ public class NarracionManager : MonoBehaviour
         narrando = false;
         esperandoInput = false;
         playerController?.SetBloqueado(false);
+        OnNarracionTerminada?.Invoke(); // Avisar que termin贸
     }
 }

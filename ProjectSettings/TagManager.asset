@@ -13,6 +13,11 @@ TagManager:
   - PanelMenu
   - Undefined
   - MenuPausa
+  - PuertaCocina
+  - TV
+  - Caja
+  - PuertaSotano
+  - ZonaCaja
   layers:
   - Default
   - TransparentFX

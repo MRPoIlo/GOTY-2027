@@ -19,7 +19,7 @@ public class PuertaCocina : MonoBehaviour, IInteractuable
         if (lineasNarracion != null && lineasNarracion.Length > 0)
             NarracionManager.Instance?.Narrar(lineasNarracion);
 
-        // Avisar al manager para cambiar de fase
+        // Avisar al manager para cambiar de fase y activar enemigo
         SalaCocinaManager.Instance.InteractuarPuertaCocina();
 
         yaInteractuada = true;
