@@ -1,5 +1,5 @@
 using UnityEngine;
-using TMPro;   // Importante: para TextMeshPro
+using TMPro;
 
 public class TimerBaño : MonoBehaviour
 {
@@ -17,11 +17,13 @@ public class TimerBaño : MonoBehaviour
         if (!activo) return;
 
         tiempoRestante -= Time.deltaTime;
-        if (tiempoRestante < 0)
+        if (tiempoRestante <= 0)
         {
             tiempoRestante = 0;
             activo = false;
-            // Aquí puedes disparar un evento de "Game Over" o narración
+
+            // 👉 Llamada al Game Over educativo
+            NivelManagerBaño.Instance?.GameOverPorTiempo();
         }
 
         int minutos = Mathf.FloorToInt(tiempoRestante / 60);

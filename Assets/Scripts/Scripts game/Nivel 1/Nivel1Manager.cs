@@ -36,31 +36,41 @@ public class NivelManager1 : MonoBehaviour
     [SerializeField] private string escenaSiguiente = "Nivel2Baño";
 
     [Header("Condición de avance")]
-    [SerializeField] private int objetosRequeridos = 4; // cama, foto, diario, perfume
+    [SerializeField] private int objetosRequeridos = 4;
 
     private int interaccionesCompletadas = 0;
     private bool sombraActivada = false;
+    private bool pasosActivados = false;
     private bool enemigoActivado = false;
     private bool finalizando = false;
 
     [Header("Referencia al enemigo")]
     [SerializeField] private EnemyAI enemigo;
 
+    [Header("Referencia a la madre")]
+    [SerializeField] private SombraMadreEvento sombraMadre;
+
     [Header("Puerta narrativa")]
     [SerializeField] private GameObject puertaEntrada;
 
+    [Header("Paneles externos (arrastrar desde inspector)")]
+    [SerializeField] private GameObject panelMenuPausa;
+    [SerializeField] private GameObject panelOpcionesPausa;
+    [SerializeField] private Canvas canvasNarracion;
+    [SerializeField] private GameObject jumpscareObject;
+
     private PlayerController player;
+
+    public bool enGameOver = false;
 
     void Awake()
     {
         player = FindFirstObjectByType<PlayerController>();
-
-        if (enemigo == null)
-            enemigo = FindFirstObjectByType<EnemyAI>();
+        if (enemigo == null) enemigo = FindFirstObjectByType<EnemyAI>();
 
         player?.SetBloqueado(true);
-
         if (pantallaFade != null) pantallaFade.alpha = 1f;
+        if (jumpscareObject != null) jumpscareObject.SetActive(false);
     }
 
     IEnumerator Start()
@@ -74,48 +84,28 @@ public class NivelManager1 : MonoBehaviour
         player?.SetBloqueado(false);
     }
 
-    // ─── INTERACCIONES ─────────────────────────
     public void RegistrarInteraccion()
     {
         interaccionesCompletadas++;
-        Debug.Log($"[Nivel1] Interacciones: {interaccionesCompletadas}/{objetosRequeridos}");
-
         if (interaccionesCompletadas >= objetosRequeridos && !sombraActivada)
-        {
             ActivarSombraMadre();
-        }
     }
 
     private void ActivarSombraMadre()
     {
+        if (sombraActivada) return;
         sombraActivada = true;
         player?.SetBloqueado(true);
+        StartCoroutine(SecuenciaSombraMadre());
+    }
 
+    private IEnumerator SecuenciaSombraMadre()
+    {
+        if (sombraMadre != null) sombraMadre.ActivarSombra();
+        yield return new WaitForSeconds(3f);
         NarracionManager.Instance?.Narrar(NarracionSombraMadre);
-        NarracionManager.Instance.OnNarracionTerminada.AddListener(() =>
-        {
-            player?.SetBloqueado(false);
-            IniciarSecuenciaPasos();
-        });
-    }
-
-    private void IniciarSecuenciaPasos()
-    {
-        NarracionManager.Instance?.Narrar(NarracionPasos);
-
-        // 🔴 Delay de 3 segundos antes de activar enemigo
-        StartCoroutine(ActivarEnemigoConDelay(3f));
-    }
-
-    private IEnumerator ActivarEnemigoConDelay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        ActivarEnemigo();
-    }
-
-    private void ActivarEnemigo()
-    {
-        enemigoActivado = true;
+        yield return new WaitForSeconds(6f);
+        if (sombraMadre != null) sombraMadre.DesactivarSombra();
 
         if (puertaEntrada != null)
         {
@@ -124,55 +114,76 @@ public class NivelManager1 : MonoBehaviour
             if (col != null) col.enabled = false;
         }
 
-        if (enemigo != null)
+        enemigo?.SetBloqueado(false);
+        enemigoActivado = true;
+        player?.SetBloqueado(false);
+
+        if (!pasosActivados)
         {
-            enemigo.Activar();
-            Debug.Log("[Nivel1] Enemigo activado correctamente.");
+            pasosActivados = true;
+            NarracionManager.Instance?.Narrar(NarracionPasos);
         }
     }
 
-    // ─── SALIDA ─────────────────────────
     public void IntentarSalir()
     {
         if (finalizando) return;
-
-        if (enemigoActivado)
-        {
-            StartCoroutine(TerminarNivel1());
-        }
-        else
-        {
-            NarracionManager.Instance?.Narrar(NarracionPuertaBloqueada);
-        }
+        if (enemigoActivado) StartCoroutine(TerminarNivel1());
+        else NarracionManager.Instance?.Narrar(NarracionPuertaBloqueada);
     }
 
     private IEnumerator TerminarNivel1()
     {
         finalizando = true;
         player?.SetBloqueado(true);
-
         NarracionManager.Instance?.Narrar(NarracionEscape);
         yield return new WaitUntil(() => !NarracionManager.Instance.EstaActivo());
-
         yield return StartCoroutine(Fade(1f, duracionFade));
         SceneManager.LoadScene(escenaSiguiente);
     }
 
-    // ─── FADE ─────────────────────────
+    // ─── GAME OVER ─────────────────────────
+    public void ActivarGameOver()
+    {
+        enGameOver = true;
+
+        if (panelMenuPausa != null) panelMenuPausa.SetActive(false);
+        if (panelOpcionesPausa != null) panelOpcionesPausa.SetActive(false);
+        if (canvasNarracion != null) canvasNarracion.enabled = false;
+
+        player?.SetBloqueado(true);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        // 🔹 Pausar el juego
+        Time.timeScale = 0f;
+
+        if (jumpscareObject != null) jumpscareObject.SetActive(true);
+    }
+
+    public void ReintentarNivel()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void SalirAlMenu()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("MenuPrincipal");
+    }
+
     private IEnumerator Fade(float objetivo, float duracion)
     {
         if (pantallaFade == null) yield break;
-
         float inicio = pantallaFade.alpha;
         float t = 0f;
-
         while (t < duracion)
         {
             t += Time.deltaTime;
             pantallaFade.alpha = Mathf.Lerp(inicio, objetivo, t / duracion);
             yield return null;
         }
-
         pantallaFade.alpha = objetivo;
     }
 }

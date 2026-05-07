@@ -89,6 +89,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexJitter.cs" />
     <Compile Include="Assets\Scripts\Scripts game\PrologoManager1.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Nivel 2 Baño\TornilloSlot.cs" />
+    <Compile Include="Assets\Scripts\Scripts game\Scrip Generales\GameOverManager.cs" />
     <Compile Include="Assets\Scripts\Scripts game\PrologoManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_UiFrameRateCounter.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexZoom.cs" />

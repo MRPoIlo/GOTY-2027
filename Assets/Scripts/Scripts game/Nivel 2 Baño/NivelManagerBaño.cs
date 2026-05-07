@@ -14,20 +14,33 @@ public class NivelManagerBaño : MonoBehaviour
     [SerializeField] private string escenaSiguiente = "Nivel3Atico";
 
     [Header("Mini-juego Rejilla")]
-    [SerializeField] private GameObject canvasMiniJuegoRejilla; // Canvas con los 4 tornillos
-    [SerializeField] private GameObject objetoDestornillador;   // GameObject del destornillador en la escena
+    [SerializeField] private GameObject canvasMiniJuegoRejilla;
+    [SerializeField] private GameObject objetoDestornillador;
 
     [Header("Mensaje entrada rejilla")]
-    [SerializeField] private GameObject mensajePresionaE;       // UI con "Presione E para entrar"
+    [SerializeField] private GameObject mensajePresionaE;
+
+    [Header("Timer")]
+    [SerializeField] private TimerBaño timerBaño;
+
+    [Header("Objeto Jumpscare (Game Over)")]
+    [SerializeField] private GameObject jumpscareObject;
+
+    [Header("Paneles externos (arrastrar desde inspector)")]
+    [SerializeField] private GameObject panelMenuPausa;
+    [SerializeField] private GameObject panelOpcionesPausa;
+    [SerializeField] private Canvas canvasNarracion;
 
     private PausaManager pausaManager;
     private NarracionManager narracionManager;
     private PlayerController playerController;
 
-    // Estados internos
     private bool miniJuegoActivo = false;
     private bool rejillaAbierta = false;
     private bool esperandoEntrada = false;
+
+    // 🔹 Bandera de Game Over
+    public bool enGameOver = false;
 
     private void Awake()
     {
@@ -38,9 +51,9 @@ public class NivelManagerBaño : MonoBehaviour
         }
         Instance = this;
 
-        pausaManager = FindObjectOfType<PausaManager>();
-        narracionManager = FindObjectOfType<NarracionManager>();
-        playerController = FindObjectOfType<PlayerController>();
+        pausaManager = FindFirstObjectByType<PausaManager>();
+        narracionManager = FindFirstObjectByType<NarracionManager>();
+        playerController = FindFirstObjectByType<PlayerController>();
     }
 
     private void Start()
@@ -48,12 +61,13 @@ public class NivelManagerBaño : MonoBehaviour
         if (canvasMiniJuegoRejilla != null) canvasMiniJuegoRejilla.SetActive(false);
         if (mensajePresionaE != null) mensajePresionaE.SetActive(false);
 
-        // 🔹 El destornillador ahora siempre existe en escena, no lo desactivamos
+        if (timerBaño != null) timerBaño.IniciarTimer();
+
+        if (jumpscareObject != null) jumpscareObject.SetActive(false);
     }
 
     private void Update()
     {
-        // Cuando la rejilla está abierta y el jugador presiona E, se carga la siguiente escena
         if (esperandoEntrada && Input.GetKeyDown(KeyCode.E))
         {
             esperandoEntrada = false;
@@ -62,7 +76,6 @@ public class NivelManagerBaño : MonoBehaviour
         }
     }
 
-    // Llamado desde el trigger/interacción con la rejilla
     public void IntentarAbrirRejilla()
     {
         if (miniJuegoActivo || rejillaAbierta) return;
@@ -78,7 +91,6 @@ public class NivelManagerBaño : MonoBehaviour
         }
     }
 
-    // Activa el Canvas del mini-juego y bloquea al jugador
     private void AbrirMiniJuego()
     {
         miniJuegoActivo = true;
@@ -91,7 +103,6 @@ public class NivelManagerBaño : MonoBehaviour
             canvasMiniJuegoRejilla.SetActive(true);
     }
 
-    // Llamado por MiniJuegoRejilla cuando los 4 tornillos han sido retirados
     public void CompletarMiniJuego()
     {
         miniJuegoActivo = false;
@@ -100,7 +111,6 @@ public class NivelManagerBaño : MonoBehaviour
         if (canvasMiniJuegoRejilla != null)
             canvasMiniJuegoRejilla.SetActive(false);
 
-        // 🔹 Mantener al jugador bloqueado hasta que presione E para salir
         playerController?.SetBloqueado(true);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -109,7 +119,6 @@ public class NivelManagerBaño : MonoBehaviour
         StartCoroutine(MostrarMensajeEntradaTrasNarracion());
     }
 
-    // Paso 5: mostrar "Presione E para entrar" cuando la narración termine
     private IEnumerator MostrarMensajeEntradaTrasNarracion()
     {
         yield return new WaitUntil(() => narracionManager == null || !narracionManager.EstaActivo());
@@ -120,7 +129,6 @@ public class NivelManagerBaño : MonoBehaviour
         esperandoEntrada = true;
     }
 
-    // Fade y carga de escena
     private IEnumerator FinalizarNivel()
     {
         playerController?.SetBloqueado(true);
@@ -140,5 +148,47 @@ public class NivelManagerBaño : MonoBehaviour
             yield return null;
         }
         pantallaFade.alpha = objetivo;
+    }
+
+    // 🔹 Llamado por el Timer cuando se acaba el tiempo
+    public void GameOverPorTiempo()
+    {
+        enGameOver = true;
+
+        playerController?.SetBloqueado(true);
+        narracionManager?.Narrar("El tiempo se acabó... no pude escapar.");
+        StartCoroutine(GameOverTrasNarracion());
+    }
+
+    private IEnumerator GameOverTrasNarracion()
+    {
+        yield return new WaitUntil(() => narracionManager == null || !narracionManager.EstaActivo());
+
+        if (panelMenuPausa != null) panelMenuPausa.SetActive(false);
+        if (panelOpcionesPausa != null) panelOpcionesPausa.SetActive(false);
+        if (canvasNarracion != null) canvasNarracion.enabled = false;
+        if (canvasMiniJuegoRejilla != null) canvasMiniJuegoRejilla.SetActive(false);
+        if (mensajePresionaE != null) mensajePresionaE.SetActive(false);
+
+        playerController?.SetBloqueado(true);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        // 🔹 Pausar el juego
+        Time.timeScale = 0f;
+
+        if (jumpscareObject != null) jumpscareObject.SetActive(true);
+    }
+
+    public void ReintentarNivel()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void SalirAlMenu()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("MainMenu");
     }
 }

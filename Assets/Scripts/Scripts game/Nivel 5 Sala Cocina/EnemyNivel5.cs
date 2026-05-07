@@ -208,7 +208,11 @@ public class EnemyNivel5 : MonoBehaviour
 
         ActualizarAnimacion(0f);
         jumpscareUI?.SetActive(true);
-        StartCoroutine(RecargarEscena());
+
+        // 👉 Llamada al GameOverManager
+        GameOverManager go = FindFirstObjectByType<GameOverManager>();
+        if (go != null)
+            go.ActivarGameOver();
     }
 
     IEnumerator RecargarEscena()

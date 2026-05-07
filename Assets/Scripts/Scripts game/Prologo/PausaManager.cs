@@ -10,7 +10,7 @@ public class PausaManager : MonoBehaviour
     [SerializeField] private Canvas canvasNarracion;
 
     [Header("Estado del juego")]
-    public bool juegoPausado = false;       // ← público
+    public bool juegoPausado = false;        // ← público
     public bool tieneDestornillador = false; // ← público
     public bool EnOpciones { get; private set; } = false; // ← propiedad pública
 
@@ -19,6 +19,10 @@ public class PausaManager : MonoBehaviour
 
     private void Update()
     {
+        // 🔹 Si el nivel está en Game Over, no permitir abrir menú pausa
+        if (NivelManagerBaño.Instance != null && NivelManagerBaño.Instance.enGameOver)
+            return;
+
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (juegoPausado) Continuar();

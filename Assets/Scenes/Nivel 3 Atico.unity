@@ -8646,6 +8646,9 @@ MonoBehaviour:
   indicadorContinuar: {fileID: 1623658426}
   velocidadTypewriter: 0.04
   tiempoAutoAvance: 0
+  OnNarracionTerminada:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!4 &756355851
 Transform:
   m_ObjectHideFlags: 0
@@ -8966,6 +8969,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: SalirJuego
       objectReference: {fileID: 0}
+    - target: {fileID: 3138644089188765346, guid: 859877771341ee24087c0b95020ca193, type: 3}
+      propertyPath: m_Color.a
+      value: 0.9764706
+      objectReference: {fileID: 0}
     - target: {fileID: 5067311581746580211, guid: 859877771341ee24087c0b95020ca193, type: 3}
       propertyPath: m_SortingOrder
       value: 100
@@ -8973,6 +8980,10 @@ PrefabInstance:
     - target: {fileID: 6093344135403331013, guid: 859877771341ee24087c0b95020ca193, type: 3}
       propertyPath: m_Name
       value: MenuPausa
+      objectReference: {fileID: 0}
+    - target: {fileID: 6906202381741666504, guid: 859877771341ee24087c0b95020ca193, type: 3}
+      propertyPath: m_Color.a
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7779695109071620432, guid: 859877771341ee24087c0b95020ca193, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -9773,6 +9784,7 @@ MonoBehaviour:
   zAgachado: 0.5
   velocidadTransicion: 8
   anim: {fileID: 1059388203}
+  distanciaInteraccion: 2
 --- !u!143 &1059388202
 CharacterController:
   m_ObjectHideFlags: 0
