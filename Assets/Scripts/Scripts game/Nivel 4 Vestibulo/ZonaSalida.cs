@@ -2,31 +2,38 @@ using UnityEngine;
 
 /// <summary>
 /// GOTY — Nivel 4 (Vestíbulo)
-/// Trigger invisible al final del vestíbulo.
-/// Cuando el jugador llega aquí, el nivel termina aunque el padre esté cerca.
+/// Detecta cuando el jugador llega a la zona de salida por distancia.
+/// Compatible con CharacterController.
 /// </summary>
-[RequireComponent(typeof(Collider))]
 public class ZonaSalida : MonoBehaviour
 {
-    void Awake()
+    [SerializeField] private float distanciaDeteccion = 2f;
+
+    private Transform jugador;
+    private bool activado = false;
+
+    void Start()
     {
-        GetComponent<Collider>().isTrigger = true;
+        var pc = FindObjectOfType<PlayerController>();
+        if (pc != null) jugador = pc.transform;
     }
 
-    void OnTriggerEnter(Collider otro)
+    void Update()
     {
-        if (!otro.CompareTag("Player")) return;
-        VestibuloManager.Instance?.OnJugadorEscapo();
+        if (activado || jugador == null) return;
+
+        float dist = Vector3.Distance(transform.position, jugador.position);
+        if (dist <= distanciaDeteccion)
+        {
+            activado = true;
+            Debug.Log("[ZonaSalida] Jugador llegó a la salida");
+            VestibuloManager.Instance?.OnJugadorEscapo();
+        }
     }
 
     void OnDrawGizmosSelected()
     {
-        Gizmos.color = new Color(0f, 1f, 0f, 0.3f);
-        var col = GetComponent<BoxCollider>();
-        if (col != null)
-        {
-            Gizmos.matrix = transform.localToWorldMatrix;
-            Gizmos.DrawCube(col.center, col.size);
-        }
+        Gizmos.color = new Color(0f, 1f, 0f, 0.4f);
+        Gizmos.DrawWireSphere(transform.position, distanciaDeteccion);
     }
 }

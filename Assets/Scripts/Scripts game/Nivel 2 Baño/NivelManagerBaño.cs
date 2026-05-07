@@ -192,3 +192,4 @@ public class NivelManagerBaño : MonoBehaviour
         SceneManager.LoadScene("MainMenu");
     }
 }
+    

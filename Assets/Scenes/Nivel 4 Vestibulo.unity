@@ -20,7 +20,7 @@ RenderSettings:
   m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 1, g: 1, b: 1, a: 1}
+  m_AmbientSkyColor: {r: 0, g: 0, b: 0, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
@@ -1200,7 +1200,7 @@ MonoBehaviour:
   - {fileID: 751461516}
   spawnJugador: {fileID: 1585717929}
   luzLinterna: {fileID: 75476284}
-  escenaSiguiente: Nivel 5
+  escenaSiguiente: Nivel 5 Sala y Cocina
 --- !u!4 &318062257
 Transform:
   m_ObjectHideFlags: 0
@@ -4736,6 +4736,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46f4e0ef86dc452478f1b8bc4735fbb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ZonaSalida
+  distanciaDeteccion: 1
 --- !u!65 &1168418730
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -7906,43 +7907,43 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 17a6454b64b56a7488b089f80368e00d, type: 2}
     - target: {fileID: -8679921383154817045, guid: 8bc909df20379d246a143ad7dd998403, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4.92
+      value: 4.992
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 8bc909df20379d246a143ad7dd998403, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.069
+      value: 0.101
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 8bc909df20379d246a143ad7dd998403, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -1.13
+      value: -0.614
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 8bc909df20379d246a143ad7dd998403, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.99965125
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 8bc909df20379d246a143ad7dd998403, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: 0.00016425621
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 8bc909df20379d246a143ad7dd998403, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: 0.026409276
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 8bc909df20379d246a143ad7dd998403, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: 0.00002692294
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 8bc909df20379d246a143ad7dd998403, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
+      value: 0.019
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 8bc909df20379d246a143ad7dd998403, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: 3.027
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 8bc909df20379d246a143ad7dd998403, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
+      value: 0.004
       objectReference: {fileID: 0}
     - target: {fileID: -8191740002585371210, guid: 8bc909df20379d246a143ad7dd998403, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
