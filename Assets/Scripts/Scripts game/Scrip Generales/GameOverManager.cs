@@ -1,36 +1,80 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Collections;
 
 public class GameOverManager : MonoBehaviour
 {
-    [Header("Transición tipo TV")]
-    [SerializeField] private CanvasGroup efectoTV;   // Canvas negro con animación de fade
-    [SerializeField] private float duracionTransicion = 1f;
+    public static GameOverManager Instance { get; private set; }
 
-    [Header("Escena de Game Over")]
-    [SerializeField] private string escenaGameOver = "GameOverEducativo";
+    [Header("Panel Game Over")]
+    [SerializeField] private CanvasGroup panelGameOver;
+
+    [Header("Reintentar")]
+    [SerializeField] private string escenaActual = ""; // dejar vacío = recarga automática
+
+    public bool gameOverActivado = false;
+
+    private PlayerController player;
+    private PausaManager pausaManager;
+
+    void Awake()
+    {
+        Instance = this;
+        player = FindFirstObjectByType<PlayerController>();
+        pausaManager = FindFirstObjectByType<PausaManager>();
+    }
+
+    void Start()
+    {
+        if (panelGameOver != null)
+        {
+            panelGameOver.gameObject.SetActive(true);
+            panelGameOver.alpha = 0f;
+            panelGameOver.interactable = false;
+            panelGameOver.blocksRaycasts = false;
+        }
+        else
+        {
+            Debug.LogError("[GameOverManager] panelGameOver no está asignado en el inspector.");
+        }
+    }
 
     public void ActivarGameOver()
     {
-        StartCoroutine(TransicionGameOver());
+        if (gameOverActivado) return;
+        gameOverActivado = true;
+
+        // Asegurar que el tiempo esté activo
+        Time.timeScale = 1f;
+
+        // Bloquear jugador
+        if (player != null) player.SetBloqueado(true);
+
+        // Desactivar pausa
+        if (pausaManager != null) pausaManager.enabled = false;
+
+        // Mostrar cursor
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        // Mostrar panel de inmediato
+        if (panelGameOver != null)
+        {
+            panelGameOver.alpha = 1f;
+            panelGameOver.interactable = true;
+            panelGameOver.blocksRaycasts = true;
+        }
     }
 
-    private IEnumerator TransicionGameOver()
+    // Llamado desde el botón "Reintentar" del panel
+    public void Reintentar()
     {
-        // 1. Fade tipo TV apagándose
-        float t = 0f;
-        while (t < duracionTransicion)
-        {
-            t += Time.deltaTime;
-            efectoTV.alpha = Mathf.Lerp(0f, 1f, t / duracionTransicion);
-            yield return null;
-        }
+        Time.timeScale = 1f;
+        gameOverActivado = false;
 
-        // 2. Espera 2 segundos antes de mostrar la pantalla final
-        yield return new WaitForSeconds(2f);
+        string escena = string.IsNullOrEmpty(escenaActual)
+            ? SceneManager.GetActiveScene().name
+            : escenaActual;
 
-        // 3. Cargar la escena de Game Over educativa
-        SceneManager.LoadScene(escenaGameOver);
+        SceneManager.LoadScene(escena);
     }
 }

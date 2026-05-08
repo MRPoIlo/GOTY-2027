@@ -27,9 +27,16 @@ public class SalaCocinaManager : MonoBehaviour
     [SerializeField] private AudioSource tvAudioSource;
     [SerializeField] private AudioClip sonidoPantallaRota;
 
+    [Header("Puerta Sótano")]
+    [SerializeField] private GameObject puertaSotano;
+    [TextArea][SerializeField] private string[] narracionPuertaSotano;
+
     private PlayerController player;
     private EnemyNivel5 enemy;
     private bool nivelTerminado = false;
+
+    // ✅ Diccionario para guardar índice de mensaje por caja, se llena en Start
+    private Dictionary<GameObject, int> indiceMensajePorCaja = new Dictionary<GameObject, int>();
 
     public enum FaseJuego { TV, PuertaCocina, Cajas, PuertaSotano }
     private FaseJuego faseActual = FaseJuego.TV;
@@ -43,6 +50,13 @@ public class SalaCocinaManager : MonoBehaviour
 
     IEnumerator Start()
     {
+        // ✅ Mapear cada caja con su índice de mensaje al inicio, antes de que se remuevan
+        for (int i = 0; i < cajasBloqueando.Count; i++)
+        {
+            if (cajasBloqueando[i] != null)
+                indiceMensajePorCaja[cajasBloqueando[i]] = i;
+        }
+
         BloquearJuego(true);
 
         if (pantallaFade != null) pantallaFade.alpha = 1f;
@@ -55,6 +69,7 @@ public class SalaCocinaManager : MonoBehaviour
             "Debo acercarme, aunque temo lo que pueda mostrarme."
         });
 
+        NarracionManager.Instance.OnNarracionTerminada.RemoveAllListeners();
         NarracionManager.Instance.OnNarracionTerminada.AddListener(() => BloquearJuego(false));
         CambiarFase(FaseJuego.TV);
     }
@@ -116,6 +131,7 @@ public class SalaCocinaManager : MonoBehaviour
                 "No puedo abrir la puerta todavía...",
                 "Primero debo enfrentar lo que la televisión intenta mostrarme."
             });
+            NarracionManager.Instance.OnNarracionTerminada.RemoveAllListeners();
             NarracionManager.Instance.OnNarracionTerminada.AddListener(() => BloquearJuego(false));
         }
         else if (faseActual == FaseJuego.PuertaCocina)
@@ -129,6 +145,7 @@ public class SalaCocinaManager : MonoBehaviour
                 "Si quiero seguir, debo quitar las cajas que bloquean el sótano."
             });
 
+            NarracionManager.Instance.OnNarracionTerminada.RemoveAllListeners();
             NarracionManager.Instance.OnNarracionTerminada.AddListener(() =>
             {
                 BloquearJuego(false);
@@ -148,76 +165,115 @@ public class SalaCocinaManager : MonoBehaviour
                 "Aún no puedo mover las cajas...",
                 "Primero debo enfrentar la puerta de la cocina."
             });
+            NarracionManager.Instance.OnNarracionTerminada.RemoveAllListeners();
             NarracionManager.Instance.OnNarracionTerminada.AddListener(() => BloquearJuego(false));
             return;
         }
 
         if (!cajasBloqueando.Contains(caja)) return;
 
-        int index = cajasBloqueando.IndexOf(caja);
+        // ✅ Obtener índice de mensaje desde el diccionario (no desde la lista que cambia)
+        int index = indiceMensajePorCaja.ContainsKey(caja) ? indiceMensajePorCaja[caja] : -1;
         cajasBloqueando.Remove(caja);
 
+        bool esUltima = cajasBloqueando.Count == 0;
+
         BloquearJuego(true);
-        StartCoroutine(NarrarMensajeCaja(index));
 
-        // 🔴 Si ya no quedan cajas, cambiar fase ANTES de narrar
-        if (cajasBloqueando.Count == 0)
+        if (esUltima)
         {
-            CambiarFase(FaseJuego.PuertaSotano);
-
-            NarracionManager.Instance?.Narrar(new string[]
-            {
-                "El camino al sótano está libre.",
-                "Descender no es escapar... es enfrentar la oscuridad y lo que me espera en ella.",
-                "Es hora de bajar."
-            });
-
-            NarracionManager.Instance.OnNarracionTerminada.AddListener(() =>
-            {
-                BloquearJuego(false);
-                if (enemy != null) enemy.SetBloqueado(false);
-            });
+            // ✅ NO cambiar fase aquí todavía — esperar a que termine la narración
+            StartCoroutine(NarrarUltimaCaja(index));
+        }
+        else
+        {
+            StartCoroutine(NarrarMensajeCaja(index));
         }
     }
 
     IEnumerator NarrarMensajeCaja(int index)
     {
-        if (index < mensajesCajas.Count && !string.IsNullOrEmpty(mensajesCajas[index]))
+        if (index >= 0 && index < mensajesCajas.Count && !string.IsNullOrEmpty(mensajesCajas[index]))
         {
             string mensaje = mensajesCajas[index];
             mensajesCajas[index] = "";
 
+            NarracionManager.Instance.OnNarracionTerminada.RemoveAllListeners();
             NarracionManager.Instance?.Narrar(new string[] { mensaje });
             yield return new WaitUntil(() => !NarracionManager.Instance.EsNarrando);
         }
 
-        BloquearJuego(false);
-        if (enemy != null) enemy.SetBloqueado(false);
+        if (faseActual == FaseJuego.Cajas)
+        {
+            BloquearJuego(false);
+            if (enemy != null) enemy.SetBloqueado(false);
+        }
+    }
+
+    // ✅ Corrutina separada para la última caja — cambia fase DESPUÉS de que el jugador suelta
+    IEnumerator NarrarUltimaCaja(int index)
+    {
+        // Primero narrar el mensaje de esa caja si tiene
+        if (index >= 0 && index < mensajesCajas.Count && !string.IsNullOrEmpty(mensajesCajas[index]))
+        {
+            string mensaje = mensajesCajas[index];
+            mensajesCajas[index] = "";
+
+            NarracionManager.Instance.OnNarracionTerminada.RemoveAllListeners();
+            NarracionManager.Instance?.Narrar(new string[] { mensaje });
+            yield return new WaitUntil(() => !NarracionManager.Instance.EsNarrando);
+        }
+
+        // ✅ Pequeña pausa para que el jugador pueda soltar físicamente la caja
+        yield return new WaitForSeconds(0.3f);
+
+        // ✅ Ahora sí cambiar fase
+        CambiarFase(FaseJuego.PuertaSotano);
+
+        NarracionManager.Instance.OnNarracionTerminada.RemoveAllListeners();
+        NarracionManager.Instance?.Narrar(new string[]
+        {
+            "El camino al sótano está libre.",
+            "Descender no es escapar... es enfrentar la oscuridad y lo que me espera en ella.",
+            "Es hora de bajar."
+        });
+
+        NarracionManager.Instance.OnNarracionTerminada.AddListener(() =>
+        {
+            NarracionManager.Instance.OnNarracionTerminada.RemoveAllListeners();
+            BloquearJuego(false);
+            if (enemy != null) enemy.SetBloqueado(false);
+        });
+    }
+
+    public void InteractuarPuertaSotano()
+    {
+        if (faseActual != FaseJuego.PuertaSotano || nivelTerminado) return;
+
+        nivelTerminado = true;
+        BloquearJuego(true);
+
+        NarracionManager.Instance.OnNarracionTerminada.RemoveAllListeners();
+        NarracionManager.Instance?.Narrar(new string[]
+        {
+            "La puerta del sótano se abre lentamente...",
+            "Un aire frío sube desde abajo, trayendo consigo la sensación de enfrentar lo inevitable."
+        });
+
+        NarracionManager.Instance.OnNarracionTerminada.AddListener(() =>
+        {
+            NarracionManager.Instance.OnNarracionTerminada.RemoveAllListeners();
+            StartCoroutine(TerminarNivel());
+        });
     }
 
     public bool PuedeEscapar() => faseActual == FaseJuego.PuertaSotano;
-
-    public void OnJugadorEscapo()
-    {
-        if (!PuedeEscapar() || nivelTerminado)
-        {
-            BloquearJuego(true);
-            NarracionManager.Instance?.Narrar(new string[]
-            {
-                "La puerta aún está bloqueada..."
-            });
-            NarracionManager.Instance.OnNarracionTerminada.AddListener(() => BloquearJuego(false));
-            return;
-        }
-
-        nivelTerminado = true;
-        StartCoroutine(TerminarNivel());
-    }
 
     IEnumerator TerminarNivel()
     {
         BloquearJuego(true);
 
+        NarracionManager.Instance.OnNarracionTerminada.RemoveAllListeners();
         NarracionManager.Instance?.Narrar(new string[]
         {
             "Lo logré... el camino al sótano está abierto.",

@@ -63,6 +63,7 @@
     <Compile Include="Assets\Scripts\Scripts game\PrologoDirector.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Nivel 4 Vestibulo\ObjetoSonoro.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextEventHandler.cs" />
+    <Compile Include="Assets\Scripts\Scripts game\Scrip Generales\PlayerController.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\EnvMapAnimator.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Prologo\PausaManager.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Nivel 2 Baño\TriggerRejillaVista.cs" />
@@ -72,7 +73,6 @@
     <Compile Include="Assets\Scripts\Scripts game\GameManager2.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Nivel 5 Sala Cocina\CajaInteractiva.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark02.cs" />
-    <Compile Include="Assets\Scripts\Scripts game\NarracionManager.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Nivel 4 Vestibulo\VestibuloManager.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Nivel 2 Baño\TriggerBaño.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Nivel 4 Vestibulo\ZonaSalida.cs" />
@@ -104,10 +104,10 @@
     <Compile Include="Assets\Scripts\Scripts game\Nivel 2 Baño\CajaPickup.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Atico\AticoManager.cs" />
     <Compile Include="Assets\Scripts\Scripts game\linterna\Flashlight.cs" />
+    <Compile Include="Assets\Scripts\Scripts game\Scrip Generales\ObjetoInteractuable.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextInfoDebugTool.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Nivel 1\DiarioInteractivo.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeA.cs" />
-    <Compile Include="Assets\Scripts\Scripts game\ObjetoInteractuable.cs" />
     <Compile Include="Assets\Scripts\Scripts game\InteractionSystem.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Nivel 5 Sala Cocina\PuertaSotano.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Nivel 2 Baño\NivelManagerBaño.cs" />
@@ -126,12 +126,12 @@
     <Compile Include="Assets\Scripts\Scripts game\Nivel 1\TazaCafeInteractivo.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextMeshSpawner.cs" />
-    <Compile Include="Assets\Scripts\Scripts game\PlayerController.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\CameraController.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Nivel 2 Baño\TimerBaño.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Nivel 1\SombraMadreEvento.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark03.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Atico\PuertaAtico.cs" />
+    <Compile Include="Assets\Scripts\Scripts game\Scrip Generales\NarracionManager.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Atico\VisualizadorCuadro.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Nivel 1\FotoInteractivo.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\DropdownSample.cs" />

@@ -10,16 +10,20 @@ public class PausaManager : MonoBehaviour
     [SerializeField] private Canvas canvasNarracion;
 
     [Header("Estado del juego")]
-    public bool juegoPausado = false;        // ← público
-    public bool tieneDestornillador = false; // ← público
-    public bool EnOpciones { get; private set; } = false; // ← propiedad pública
+    public bool juegoPausado = false;
+    public bool tieneDestornillador = false;
+    public bool EnOpciones { get; private set; } = false;
 
     [Header("Nombre de la escena del menú principal")]
     [SerializeField] private string escenaMenuPrincipal = "MainMenu";
 
     private void Update()
     {
-        // 🔹 Si el nivel está en Game Over, no permitir abrir menú pausa
+        // ✅ Bloquear pausa si hay Game Over activo — compatible con cualquier nivel
+        if (GameOverManager.Instance != null && GameOverManager.Instance.gameOverActivado)
+            return;
+
+        // ✅ Compatibilidad con NivelManagerBaño si existe en la escena
         if (NivelManagerBaño.Instance != null && NivelManagerBaño.Instance.enGameOver)
             return;
 
@@ -39,9 +43,9 @@ public class PausaManager : MonoBehaviour
         juegoPausado = true;
         EnOpciones = false;
 
-        if (player != null) player.enabled = false;
+        // ✅ Usar SetBloqueado en lugar de .enabled = false
+        if (player != null) player.SetBloqueado(true);
 
-        // Liberar cursor para poder usar botones
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
@@ -56,9 +60,9 @@ public class PausaManager : MonoBehaviour
         juegoPausado = false;
         EnOpciones = false;
 
-        if (player != null) player.enabled = true;
+        // ✅ Usar SetBloqueado en lugar de .enabled = true
+        if (player != null) player.SetBloqueado(false);
 
-        // Volver a bloquear cursor al jugar
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -73,13 +77,17 @@ public class PausaManager : MonoBehaviour
     public void CerrarOpciones()
     {
         if (panelOpciones != null) panelOpciones.SetActive(false);
-        if (panelMenu != null) panelMenu.SetActive(true); // 🔹 vuelve al menú
+        if (panelMenu != null) panelMenu.SetActive(true);
         EnOpciones = false;
     }
 
     public void SalirJuego()
     {
+        // ✅ Restaurar estado completo antes de salir
         Time.timeScale = 1f;
+        juegoPausado = false;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         SceneManager.LoadScene(escenaMenuPrincipal);
     }
 }

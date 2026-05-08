@@ -46,15 +46,12 @@ public class PlayerController : MonoBehaviour
     {
         if (!cc.isGrounded) cc.Move(Vector3.down * 2f);
 
-        if (NarracionManager.Instance != null)
-            NarracionManager.Instance.OnNarracionTerminada.AddListener(DesbloquearJugador);
+        // ✅ ELIMINADO: ya no escucha OnNarracionTerminada globalmente
+        // El bloqueo/desbloqueo del jugador lo maneja cada Manager de nivel
+        // directamente con SetBloqueado(true/false)
     }
 
-    void OnDestroy()
-    {
-        if (NarracionManager.Instance != null)
-            NarracionManager.Instance.OnNarracionTerminada.RemoveListener(DesbloquearJugador);
-    }
+    // ✅ ELIMINADO OnDestroy del listener — ya no es necesario
 
     void Update()
     {
@@ -67,7 +64,6 @@ public class PlayerController : MonoBehaviour
         AjustarAlturaCamara();
         AjustarCollider();
 
-        // 🔎 Interacción con objetos
         if (Input.GetKeyDown(KeyCode.E))
             IntentarInteraccion();
     }
@@ -120,7 +116,7 @@ public class PlayerController : MonoBehaviour
     private void ActualizarAnimacion(float move, bool corriendo)
     {
         if (anim == null) return;
-        if (bloqueado) { anim.SetInteger("States", 0); return; } // Idle narrativo
+        if (bloqueado) { anim.SetInteger("States", 0); return; }
         if (agachado) { anim.SetInteger("States", move == 0f ? 3 : 4); return; }
         anim.SetInteger("States", move == 0f ? 0 : corriendo ? 2 : 1);
     }
@@ -143,26 +139,25 @@ public class PlayerController : MonoBehaviour
         Cursor.visible = !bloquear;
     }
 
-    private void DesbloquearJugador()
-    {
-        SetBloqueado(false);
-        Debug.Log("[PC] Desbloqueado tras narración");
-    }
-
-    // ───── Interacción con objetos ─────
     private void IntentarInteraccion()
     {
         Ray ray = new Ray(camaraTransform.position, camaraTransform.forward);
         if (Physics.Raycast(ray, out RaycastHit hit, distanciaInteraccion))
         {
             if (hit.collider.CompareTag("TV"))
-                SalaCocinaManager.Instance.InteractuarTV();
+                SalaCocinaManager.Instance?.InteractuarTV();
             else if (hit.collider.CompareTag("PuertaCocina"))
-                SalaCocinaManager.Instance.InteractuarPuertaCocina();
+                SalaCocinaManager.Instance?.InteractuarPuertaCocina();
             else if (hit.collider.CompareTag("Caja"))
-                SalaCocinaManager.Instance.MoverCaja(hit.collider.gameObject);
-            else if (hit.collider.CompareTag("PuertaSotano") && SalaCocinaManager.Instance.PuedeEscapar())
-                SalaCocinaManager.Instance.OnJugadorEscapo();
+            {
+                var caja = hit.collider.GetComponent<CajaInteractuable>();
+                if (caja != null && caja.EstaActivo())
+                    caja.Interactuar();
+            }
+            else if (hit.collider.CompareTag("PuertaSotano")
+                     && SalaCocinaManager.Instance != null
+                     && SalaCocinaManager.Instance.PuedeEscapar())
+                SalaCocinaManager.Instance.InteractuarPuertaSotano();
         }
     }
 }
