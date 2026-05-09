@@ -63,7 +63,7 @@ public class NivelManagerBaño : MonoBehaviour
 
         if (timerBaño != null) timerBaño.IniciarTimer();
 
-        if (jumpscareObject != null) jumpscareObject.SetActive(false);
+        //if (jumpscareObject != null) jumpscareObject.SetActive(false);
     }
 
     private void Update()
@@ -177,7 +177,14 @@ public class NivelManagerBaño : MonoBehaviour
         // 🔹 Pausar el juego
         Time.timeScale = 0f;
 
-        if (jumpscareObject != null) jumpscareObject.SetActive(true);
+        if (GameOverManager.Instance != null)
+{
+    GameOverManager.Instance.ActivarGameOver();
+}
+else
+{
+    Debug.LogError("GameOverManager.Instance es NULL");
+}
     }
 
     public void ReintentarNivel()

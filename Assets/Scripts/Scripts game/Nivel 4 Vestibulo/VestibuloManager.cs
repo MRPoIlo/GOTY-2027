@@ -12,7 +12,6 @@ public class VestibuloManager : MonoBehaviour
     [SerializeField] private float duracionFade = 1.5f;
 
     [Header("Jumpscare")]
-    [SerializeField] private GameObject panelJumpscare;
     [SerializeField] private AudioClip sonidoJumpscare;
     [SerializeField] private AudioClip sonidoPasos;
     [SerializeField] private float duracionJumpscare = 1f;
@@ -51,7 +50,7 @@ public class VestibuloManager : MonoBehaviour
         player?.SetBloqueado(true);
 
         if (pantallaFade != null) pantallaFade.alpha = 1f;
-        if (panelJumpscare != null) panelJumpscare.SetActive(false);
+        //if (panelJumpscare != null) panelJumpscare.SetActive(false);
 
         // Linterna tensión baja
         if (luzLinterna != null)
@@ -135,23 +134,27 @@ public class VestibuloManager : MonoBehaviour
 {
     Debug.Log("[Vestíbulo] JUMPSCARE ACTIVADO");
 
-    // Parar el fade primero para que no tape el jumpscare
-    if (pantallaFade != null) pantallaFade.alpha = 0f;
+    // Quitar cualquier fade que pueda tapar el panel
+    if (pantallaFade != null)
+        pantallaFade.alpha = 0f;
 
+    // Reproducir sonido
     if (sonidoJumpscare != null)
         audioSource.PlayOneShot(sonidoJumpscare);
 
-    panelJumpscare?.SetActive(true);
-    Debug.Log("[Vestíbulo] Panel activo: " + panelJumpscare?.activeSelf);
-
-    // Esperar sin hacer nada mas
+    // Esperar el tiempo del jumpscare
     yield return new WaitForSeconds(duracionJumpscare);
 
-    panelJumpscare?.SetActive(false);
-
-    yield return new WaitForSeconds(0.5f);
-
-    yield return StartCoroutine(ReiniciarNivel());
+    // Mostrar Game Over centralizado
+    if (GameOverManager.Instance != null)
+    {
+        Debug.Log("[Vestíbulo] Llamando a GameOverManager");
+        GameOverManager.Instance.ActivarGameOver();
+    }
+    else
+    {
+        Debug.LogError("[Vestíbulo] GameOverManager.Instance es NULL");
+    }
 }
 
     // ─── Reinicio ─────────────────────────────────────────────────────────────

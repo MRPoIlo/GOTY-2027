@@ -70,7 +70,7 @@ public class NivelManager1 : MonoBehaviour
 
         player?.SetBloqueado(true);
         if (pantallaFade != null) pantallaFade.alpha = 1f;
-        if (jumpscareObject != null) jumpscareObject.SetActive(false);
+        // if (jumpscareObject != null) jumpscareObject.SetActive(false);
     }
 
     IEnumerator Start()

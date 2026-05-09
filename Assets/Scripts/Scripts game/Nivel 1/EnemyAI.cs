@@ -163,19 +163,30 @@ public class EnemyAI : MonoBehaviour
     }
 
     void TriggerJumpscare()
+{
+    if (jumpscareActivo) return;
+
+    jumpscareActivo = true;
+    activo = false;
+
+    agent.isStopped = true;
+    agent.velocity = Vector3.zero;
+    agent.ResetPath();
+
+    ActualizarAnimacion(0f);
+
+    Debug.Log("Enemy atrapó al jugador");
+
+    if (GameOverManager.Instance != null)
     {
-        if (jumpscareActivo) return;
-        jumpscareActivo = true;
-        activo = false;
-
-        agent.isStopped = true;
-        agent.velocity = Vector3.zero;
-        agent.ResetPath();
-
-        ActualizarAnimacion(0f);
-        jumpscareUI?.SetActive(true);
-        StartCoroutine(RecargarEscena());
+        Debug.Log("Llamando ActivarGameOver()");
+        GameOverManager.Instance.ActivarGameOver();
     }
+    else
+    {
+        Debug.LogError("GameOverManager.Instance es NULL");
+    }
+}
 
     IEnumerator RecargarEscena()
     {

@@ -20,7 +20,7 @@ RenderSettings:
   m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 1, g: 1, b: 1, a: 1}
+  m_AmbientSkyColor: {r: 0, g: 0, b: 0, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
@@ -1537,10 +1537,12 @@ MonoBehaviour:
   limiteVertical: 80
   camaraTransform: {fileID: 1214521093}
   alturaNormal: 1.6
-  alturaAgachado: 1
+  alturaAgachado: 0
   zNormal: 0.1
   zAgachado: 0.5
   velocidadTransicion: 8
+  radioNormal: 0.5
+  radioAgachado: 0.9
   anim: {fileID: 232575814}
   distanciaInteraccion: 2
 --- !u!143 &232575813
@@ -3076,7 +3078,7 @@ GameObject:
   - component: {fileID: 589287430}
   - component: {fileID: 589287429}
   - component: {fileID: 589287431}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8924,7 +8926,7 @@ GameObject:
   - component: {fileID: 1508789271}
   - component: {fileID: 1508789270}
   - component: {fileID: 1508789269}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Reintentar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9886,7 +9888,7 @@ GameObject:
   - component: {fileID: 1615860647}
   - component: {fileID: 1615860646}
   - component: {fileID: 1615860645}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Salir
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11604,7 +11606,7 @@ GameObject:
   - component: {fileID: 1828378160}
   - component: {fileID: 1828378159}
   - component: {fileID: 1828378157}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: GameOver
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11624,7 +11626,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameOverManager
   panelGameOver: {fileID: 589287431}
-  escenaActual: 
+  escenaActual: Nivel 5 Sala y Cocina
+  escenaMenuPrincipal: MenuPrincipal
   gameOverActivado: 0
 --- !u!114 &1828378159
 MonoBehaviour:
@@ -11687,7 +11690,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 200
   m_TargetDisplay: 0
 --- !u!224 &1828378162
 RectTransform:

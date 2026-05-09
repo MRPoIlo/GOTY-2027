@@ -9779,10 +9779,12 @@ MonoBehaviour:
   limiteVertical: 80
   camaraTransform: {fileID: 1667032695}
   alturaNormal: 1.6
-  alturaAgachado: 1
+  alturaAgachado: 0
   zNormal: 0.1
   zAgachado: 0.5
   velocidadTransicion: 8
+  radioNormal: 0.5
+  radioAgachado: 0.9
   anim: {fileID: 1059388203}
   distanciaInteraccion: 2
 --- !u!143 &1059388202
@@ -11141,7 +11143,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: fdb550bfdebcf954cbeb35ecf33f7f04, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -11222,8 +11224,8 @@ MonoBehaviour:
   lineasNarracion:
   - "Ella me abraz\xF3 sin decir nada"
   - "Yo tampoco pregunt\xE9"
-  materialRoto: {fileID: 2100000, guid: 54b5193e13ec9d346b68c534d84a7ca4, type: 2}
-  materialCompleto: {fileID: 2100000, guid: 1bb15636f5a4156448453423d37b9b05, type: 2}
+  materialRoto: {fileID: 2100000, guid: 9e46e4fe0868bd04dade5ec52c13b2ff, type: 2}
+  materialCompleto: {fileID: 2100000, guid: 9e46e4fe0868bd04dade5ec52c13b2ff, type: 2}
   OnExaminado:
     m_PersistentCalls:
       m_Calls: []
@@ -11286,7 +11288,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4d55f8df79fd5e049886082b1dd85249, type: 2}
+  - {fileID: 2100000, guid: 1e9675e16de9c6341993091a96845618, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -12438,7 +12440,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 8bd1441eb3b60a541b39f40a4a57503e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -12507,8 +12509,8 @@ MonoBehaviour:
   lineasNarracion:
   - "A la ma\xF1ana siguiente todo estaba normal\t"
   - Eso era lo mas raro
-  materialRoto: {fileID: 2100000, guid: 54b5193e13ec9d346b68c534d84a7ca4, type: 2}
-  materialCompleto: {fileID: 2100000, guid: 1bb15636f5a4156448453423d37b9b05, type: 2}
+  materialRoto: {fileID: 2100000, guid: f6877d872304e224b87add8c7a655d4a, type: 2}
+  materialCompleto: {fileID: 2100000, guid: f6877d872304e224b87add8c7a655d4a, type: 2}
   OnExaminado:
     m_PersistentCalls:
       m_Calls: []
@@ -13949,13 +13951,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1743589740}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
+  m_LocalRotation: {x: 0.7071068, y: 0.7071068, z: 0, w: 0}
   m_LocalPosition: {x: -0.226, y: -1.252, z: 3.864}
   m_LocalScale: {x: 0.1, y: 0.3, z: 0.3}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2141418341}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 90}
 --- !u!65 &1743589742
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -14002,7 +14004,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 035b08b2b1d025d4092a32e6afbcb0be, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -14052,8 +14054,8 @@ MonoBehaviour:
   lineasNarracion:
   - "Escuch\xE9 el portazo desde mi cuarto"
   - Me quede quieto debajo de la cama
-  materialRoto: {fileID: 2100000, guid: 54b5193e13ec9d346b68c534d84a7ca4, type: 2}
-  materialCompleto: {fileID: 2100000, guid: 1bb15636f5a4156448453423d37b9b05, type: 2}
+  materialRoto: {fileID: 2100000, guid: 3f71ddb3977b4234694ddbd9cff63fe3, type: 2}
+  materialCompleto: {fileID: 2100000, guid: 3f71ddb3977b4234694ddbd9cff63fe3, type: 2}
   OnExaminado:
     m_PersistentCalls:
       m_Calls: []
@@ -14173,8 +14175,8 @@ MonoBehaviour:
   lineasNarracion:
   - "Ese dia ella prepar\xF3 sopa. Siempre cocinaba cuando el llegaba tarde\t"
   - Yo miraba desde la puerta sin entrar
-  materialRoto: {fileID: 2100000, guid: 54b5193e13ec9d346b68c534d84a7ca4, type: 2}
-  materialCompleto: {fileID: 2100000, guid: 1bb15636f5a4156448453423d37b9b05, type: 2}
+  materialRoto: {fileID: 2100000, guid: b455bf9ba4e801945964780d66e13041, type: 2}
+  materialCompleto: {fileID: 2100000, guid: b455bf9ba4e801945964780d66e13041, type: 2}
   OnExaminado:
     m_PersistentCalls:
       m_Calls: []
@@ -14224,7 +14226,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 549736c1652e66746aaaf8c147790a38, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

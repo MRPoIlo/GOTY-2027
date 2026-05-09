@@ -20,6 +20,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float zNormal = 0f;
     [SerializeField] private float zAgachado = 0.4f;
     [SerializeField] private float velocidadTransicion = 8f;
+    [SerializeField] private float radioNormal = 0.35f;
+    [SerializeField] private float radioAgachado = 0.55f;
 
     [Header("Animaciones")]
     [SerializeField] private Animator anim;
@@ -108,10 +110,20 @@ public class PlayerController : MonoBehaviour
     }
 
     private void AjustarCollider()
-    {
-        cc.height = agachado ? alturaAgachado : alturaNormal;
-        cc.center = new Vector3(cc.center.x, cc.height * 0.5f, cc.center.z);
-    }
+{
+    // Altura
+    cc.height = agachado ? alturaAgachado : alturaNormal;
+
+    // Centro vertical
+    cc.center = new Vector3(
+        0f,
+        cc.height * 0.5f,
+        0f
+    );
+
+    // Radio más grande al agacharse
+    cc.radius = agachado ? radioAgachado : radioNormal;
+}
 
     private void ActualizarAnimacion(float move, bool corriendo)
     {
