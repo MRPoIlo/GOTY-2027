@@ -64,6 +64,7 @@
     <Compile Include="Assets\Scripts\Scripts game\Nivel 4 Vestibulo\VestibuloManager.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Nivel 2 Baño\TriggerBaño.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Nivel 4 Vestibulo\ZonaSalida.cs" />
+    <Compile Include="Assets\Scripts\Scripts game\Nivel 6 Sotano\PadrePatrullador.cs" />
     <Compile Include="Assets\Scripts\Scripts game\linterna\FlashLightPickUp.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Cambio de escenas\PuertaNivel.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Nivel 1\CamaInteractivo.cs" />
@@ -81,6 +82,7 @@
     <Compile Include="Assets\Scripts\Scripts game\PrologoManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_UiFrameRateCounter.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexZoom.cs" />
+    <Compile Include="Assets\Scripts\Scripts game\Nivel 6 Sotano\SotanoManager.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Cambio de escenas\MainMenu.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextSelector_B.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\SkewTextExample.cs" />
@@ -114,6 +116,7 @@
     <Compile Include="Assets\Scripts\Scripts game\Nivel 1\TazaCafeInteractivo.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextMeshSpawner.cs" />
+    <Compile Include="Assets\Scripts\Scripts game\Nivel 6 Sotano\FragmentoLlave.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\CameraController.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Nivel 2 Baño\TimerBaño.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Nivel 1\SombraMadreEvento.cs" />
@@ -132,6 +135,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextConsoleSimulator.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TeleType.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextEventCheck.cs" />
+    <Compile Include="Assets\Scripts\Scripts game\Nivel 6 Sotano\PuertaMetalica.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextMeshProFloatingText.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Nivel 1\Nivel1Manager.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Nivel 2 Baño\RejillaInteraccion.cs" />
