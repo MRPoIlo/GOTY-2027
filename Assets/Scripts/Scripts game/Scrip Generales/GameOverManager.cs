@@ -14,6 +14,9 @@ public class GameOverManager : MonoBehaviour
     [Header("Salir al menú")]
     [SerializeField] private string escenaMenuPrincipal = "MenuPrincipal";
 
+    [Header("Música Game Over")]
+    [SerializeField] private AudioSource musicaGameOver; // 🎵 arrastra aquí tu AudioSource
+
     public bool gameOverActivado = false;
 
     private PlayerController player;
@@ -21,7 +24,6 @@ public class GameOverManager : MonoBehaviour
 
     void Awake()
     {
-        // Evita que existan dos GameOverManager
         if (Instance != null && Instance != this)
         {
             Debug.LogWarning("GameOverManager duplicado destruido: " + gameObject.name);
@@ -31,8 +33,6 @@ public class GameOverManager : MonoBehaviour
 
         Instance = this;
 
-        Debug.Log("GameOverManager inicializado en: " + gameObject.name);
-
         player = FindFirstObjectByType<PlayerController>();
         pausaManager = FindFirstObjectByType<PausaManager>();
     }
@@ -41,7 +41,6 @@ public class GameOverManager : MonoBehaviour
     {
         if (panelGameOver != null)
         {
-            // Mantener el objeto activo, pero invisible
             panelGameOver.gameObject.SetActive(true);
             panelGameOver.alpha = 0f;
             panelGameOver.interactable = false;
@@ -51,77 +50,53 @@ public class GameOverManager : MonoBehaviour
         {
             Debug.LogError("[GameOverManager] panelGameOver no está asignado en el inspector.");
         }
+
+        if (musicaGameOver != null)
+        {
+            musicaGameOver.playOnAwake = false; // evitar que suene antes de tiempo
+        }
     }
 
     public void ActivarGameOver()
     {
-        Debug.Log("GAME OVER ACTIVADO");
-        Debug.Log("Objeto actual (GameOverManager): " + gameObject.name);
-
-        // Evitar activarlo más de una vez
-        if (gameOverActivado)
-        {
-            Debug.Log("Game Over ya estaba activado.");
-            return;
-        }
-
+        if (gameOverActivado) return;
         gameOverActivado = true;
 
-        // Validar referencia al CanvasGroup
         if (panelGameOver == null)
         {
             Debug.LogError("panelGameOver es NULL. Asigna el CanvasGroup en el Inspector.");
             return;
         }
 
-        Debug.Log("Panel asignado: " + panelGameOver.gameObject.name);
-
-        // Forzar activación del objeto que contiene el CanvasGroup
         panelGameOver.gameObject.SetActive(true);
-
-        // Mostrar panel
         panelGameOver.alpha = 1f;
         panelGameOver.interactable = true;
         panelGameOver.blocksRaycasts = true;
 
-        Debug.Log("Alpha actual: " + panelGameOver.alpha);
-        Debug.Log("Interactable: " + panelGameOver.interactable);
-        Debug.Log("BlocksRaycasts: " + panelGameOver.blocksRaycasts);
-        Debug.Log("Objeto activo: " + panelGameOver.gameObject.activeSelf);
+        if (player != null) player.SetBloqueado(true);
+        if (pausaManager != null) pausaManager.enabled = false;
 
-        // Bloquear jugador
-        if (player != null)
-        {
-            player.SetBloqueado(true);
-            Debug.Log("Jugador bloqueado.");
-        }
-        else
-        {
-            Debug.LogWarning("PlayerController no encontrado.");
-        }
-
-        // Desactivar pausa
-        if (pausaManager != null)
-        {
-            pausaManager.enabled = false;
-            Debug.Log("PausaManager desactivado.");
-        }
-
-        // Mostrar cursor
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        // Pausar el juego
         Time.timeScale = 0f;
 
-        Debug.Log("Game Over mostrado correctamente.");
+        // 🎵 Reproducir música de Game Over
+        if (musicaGameOver != null)
+        {
+            musicaGameOver.Play();
+        }
     }
 
-    // Llamado desde el botón "Reintentar"
     public void Reintentar()
     {
         Time.timeScale = 1f;
         gameOverActivado = false;
+
+        if (musicaGameOver != null)
+        {
+            musicaGameOver.Stop();
+        }
 
         string escena = string.IsNullOrEmpty(escenaActual)
             ? SceneManager.GetActiveScene().name
@@ -130,7 +105,6 @@ public class GameOverManager : MonoBehaviour
         SceneManager.LoadScene(escena);
     }
 
-    // Llamado desde el botón "Salir"
     public void SalirAlMenu()
     {
         Time.timeScale = 1f;
@@ -138,6 +112,11 @@ public class GameOverManager : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+
+        if (musicaGameOver != null)
+        {
+            musicaGameOver.Stop();
+        }
 
         SceneManager.LoadScene(escenaMenuPrincipal);
     }

@@ -4,7 +4,7 @@ using System.Collections;
 public class SombraMadreEvento : MonoBehaviour
 {
     [Header("Configuración de fade")]
-    [SerializeField] private float duracionFade = 2f;
+    [SerializeField] private float duracionFade = 3f;
 
     private SpriteRenderer sprite;
     private Animator animator;

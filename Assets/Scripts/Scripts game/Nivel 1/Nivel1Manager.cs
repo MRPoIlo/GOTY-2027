@@ -10,7 +10,7 @@ public class NivelManager1 : MonoBehaviour
     };
 
     private static readonly string[] NarracionSombraMadre = {
-        "Una silueta oscura me observa...",
+        "Una silueta...",
         "No es un fantasma, es la memoria que me persigue."
     };
 
@@ -102,9 +102,9 @@ public class NivelManager1 : MonoBehaviour
     private IEnumerator SecuenciaSombraMadre()
     {
         if (sombraMadre != null) sombraMadre.ActivarSombra();
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(4f);
         NarracionManager.Instance?.Narrar(NarracionSombraMadre);
-        yield return new WaitForSeconds(6f);
+        yield return new WaitForSeconds(5f);
         if (sombraMadre != null) sombraMadre.DesactivarSombra();
 
         if (puertaEntrada != null)
@@ -170,7 +170,7 @@ public class NivelManager1 : MonoBehaviour
     public void SalirAlMenu()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene("MenuPrincipal");
+        SceneManager.LoadScene("MainMenu");
     }
 
     private IEnumerator Fade(float objetivo, float duracion)
