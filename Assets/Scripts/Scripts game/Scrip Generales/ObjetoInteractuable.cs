@@ -32,30 +32,53 @@ public class ObjetoInteractuable : MonoBehaviour, IInteractuable
     // Estado
     private bool activo = true;
     private bool yaInteractuado = false;
+    private bool recuerdoRegistrado = false;
 
     // ─── IInteractuable ───────────────────────────────────────────────────────
 
     public void Interactuar()
+{
+    if (!activo || (usoUnico && yaInteractuado))
+        return;
+
+    // Bloquear de inmediato para evitar doble ejecución
+    activo = false;
+    yaInteractuado = true;
+    
+    // Si es un recuerdo, sumar al contador global y mostrar mensaje automático
+    if (CompareTag("Recuerdo") && !recuerdoRegistrado)
+{
+    recuerdoRegistrado = true;
+
+    if (GameManager2.Instance != null)
     {
-        if (!activo || (usoUnico && yaInteractuado)) return;
+        GameManager2.Instance.RegistrarObjetoBueno();
 
-        yaInteractuado = true;
+        int actual = GameManager2.Instance.objetosBuenosRecogidos;
+        int meta = GameManager2.Instance.minimoFinalBueno;
 
-        // Mostrar narración si hay líneas definidas
-        if (lineasNarracion != null && lineasNarracion.Length > 0)
-            NarracionManager.Instance?.Narrar(lineasNarracion);
-
-        // Disparar evento Unity (conectar en Inspector)
-        OnInteractuado?.Invoke();
-
-        // Ocultar objeto si se configuró
-        if (ocultarAlInteractuar)
-            gameObject.SetActive(false);
-
-        // Desactivar interacción si es de uso único
-        if (usoUnico)
-            activo = false;
+        NarracionManager.Instance?.Narrar(
+            $"Ya tengo {actual} recuerdo{(actual == 1 ? "" : "s")} de {meta}."
+        );
     }
+}
+else
+{
+    if (lineasNarracion != null && lineasNarracion.Length > 0)
+        NarracionManager.Instance?.Narrar(lineasNarracion);
+}
+
+    // Evento opcional
+    OnInteractuado?.Invoke();
+
+    // Ocultar objeto si se configuró
+    if (ocultarAlInteractuar)
+        gameObject.SetActive(false);
+
+    // Desactivar interacción si es de uso único
+    if (usoUnico)
+        activo = false;
+}
 
     public string ObtenerTextoAccion() => textoAccion;
 

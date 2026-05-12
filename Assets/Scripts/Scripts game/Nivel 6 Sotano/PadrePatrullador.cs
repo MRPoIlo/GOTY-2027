@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.AI;
 using UnityEngine.SceneManagement;
 using System.Collections;
@@ -21,6 +22,12 @@ public class PadrePatrullador : MonoBehaviour
     [SerializeField] private float radioExtraLinterna = 5f;
     [SerializeField] private Light luzLinterna;
 
+    [Header("UI Estado")]
+    public Image  stateIcon;
+    public Sprite noVisualizaSprite;
+    public Sprite visualizaSprite;
+    public Sprite persigueSprite;
+
     [Header("Jumpscare / Game Over")]
     public GameObject jumpscareUI;
 
@@ -34,7 +41,6 @@ public class PadrePatrullador : MonoBehaviour
     [Header("NavMesh")]
     public float navmeshWaitTimeout = 5f;
 
-    // ── Privados ──────────────────────────────────────────────────────────────
     private NavMeshAgent agent;
     private Animator     animator;
     private int   indicePatrulla;
@@ -46,7 +52,6 @@ public class PadrePatrullador : MonoBehaviour
     private bool  jumpscareActivo;
     private bool  inicializado;
 
-    // ══════════════════════════════════════════════════════════════════════════
     void Awake()
     {
         agent    = GetComponent<NavMeshAgent>();
@@ -54,15 +59,18 @@ public class PadrePatrullador : MonoBehaviour
 
         if (agent != null)
         {
-            agent.updateRotation          = true;
-            agent.autoRepath              = true;
-            agent.autoBraking             = true;
-            agent.obstacleAvoidanceType   = ObstacleAvoidanceType.HighQualityObstacleAvoidance;
-            agent.avoidancePriority       = 50;
-            agent.isStopped               = true;
-            agent.velocity                = Vector3.zero;
+            agent.updateRotation        = true;
+            agent.autoRepath            = true;
+            agent.autoBraking           = true;
+            agent.obstacleAvoidanceType = ObstacleAvoidanceType.HighQualityObstacleAvoidance;
+            agent.avoidancePriority     = 50;
+            agent.isStopped             = true;
+            agent.velocity              = Vector3.zero;
             agent.ResetPath();
         }
+
+        if (stateIcon != null && noVisualizaSprite != null)
+            stateIcon.sprite = noVisualizaSprite;
 
         ResetearEstado();
         SetBloqueado(true);
@@ -75,8 +83,6 @@ public class PadrePatrullador : MonoBehaviour
             var pc = FindFirstObjectByType<PlayerController>();
             if (pc != null) player = pc.transform;
         }
-
-        // Inicializar después de un frame para que el NavMesh esté listo
         StartCoroutine(InicializarCoroutine());
     }
 
@@ -93,9 +99,7 @@ public class PadrePatrullador : MonoBehaviour
         }
 
         if (!agent.isOnNavMesh)
-        {
             Debug.LogWarning("[PadrePatrullador] No está en NavMesh — continuando");
-        }
 
         agent.speed = velocidadPatrulla;
 
@@ -106,7 +110,6 @@ public class PadrePatrullador : MonoBehaviour
         Debug.Log("[PadrePatrullador] Inicializado");
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
     void Update()
     {
         if (!inicializado || jumpscareActivo) return;
@@ -132,7 +135,6 @@ public class PadrePatrullador : MonoBehaviour
         float   distancia   = dirToPlayer.magnitude;
         float   angle       = Vector3.Angle(transform.forward, dirToPlayer);
 
-        // Radio aumenta si la linterna está encendida
         float radio = visionRange;
         if (luzLinterna != null && luzLinterna.enabled)
             radio += radioExtraLinterna;
@@ -168,7 +170,7 @@ public class PadrePatrullador : MonoBehaviour
                 investigando    = false;
                 agent.speed     = velocidadPersecucion;
                 agent.isStopped = false;
-                NarracionManager.Instance?.Narrar("Me vio.");
+                // NarracionManager.Instance?.Narrar("Me vio.");
                 Debug.Log("[PadrePatrullador] PERSECUCIÓN");
             }
         }
@@ -187,7 +189,8 @@ public class PadrePatrullador : MonoBehaviour
             }
         }
 
-        // ── Movimiento ────────────────────────────────────────────────────────
+        ActualizarIcono(veJugador);
+
         if (persiguiendo)
         {
             agent.isStopped = false;
@@ -198,14 +201,9 @@ public class PadrePatrullador : MonoBehaviour
 
         ActualizarAnimacion(agent.velocity.magnitude);
 
-        // ── Captura ───────────────────────────────────────────────────────────
         if (distancia <= catchDistance)
             TriggerJumpscare();
     }
-
-    // ══════════════════════════════════════════════════════════════════════════
-    // PATRULLA
-    // ══════════════════════════════════════════════════════════════════════════
 
     void Patrulla()
     {
@@ -241,10 +239,6 @@ public class PadrePatrullador : MonoBehaviour
         if (!persiguiendo && investigando) { investigando = false; IrAPatrulla(); }
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
-    // JUMPSCARE / GAME OVER
-    // ══════════════════════════════════════════════════════════════════════════
-
     void TriggerJumpscare()
     {
         if (jumpscareActivo) return;
@@ -259,35 +253,25 @@ public class PadrePatrullador : MonoBehaviour
         }
 
         ActualizarAnimacion(0f);
-
-        // Mostrar pantalla de Game Over igual que Nivel 5
         jumpscareUI?.SetActive(true);
 
         GameOverManager go = FindFirstObjectByType<GameOverManager>();
-        if (go != null)
-            go.ActivarGameOver();
-        else
-            StartCoroutine(RecargarEscena());
+        if (go != null) go.ActivarGameOver();
+        else            StartCoroutine(RecargarEscena());
     }
 
     IEnumerator RecargarEscena()
     {
         yield return new WaitForSecondsRealtime(2f);
-        AsyncOperation op = SceneManager.LoadSceneAsync(
-            SceneManager.GetActiveScene().name);
+        AsyncOperation op = SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);
         op.allowSceneActivation = false;
         while (op.progress < 0.9f) yield return null;
         op.allowSceneActivation = true;
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
-    // API PÚBLICA
-    // ══════════════════════════════════════════════════════════════════════════
-
     public void SetBloqueado(bool bloqueado)
     {
         if (agent == null) return;
-
         if (bloqueado)
         {
             inicializado    = false;
@@ -321,10 +305,6 @@ public class PadrePatrullador : MonoBehaviour
             agent.SetDestination(puntosPatrulla[0].position);
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
-    // HELPERS
-    // ══════════════════════════════════════════════════════════════════════════
-
     void ResetearEstado()
     {
         persiguiendo = investigando = jumpscareActivo = inicializado = false;
@@ -335,6 +315,14 @@ public class PadrePatrullador : MonoBehaviour
     {
         if (animator == null) return;
         animator.SetFloat("Speed", velocidad);
+    }
+
+    void ActualizarIcono(bool veJugador)
+    {
+        if (stateIcon == null) return;
+        if (persiguiendo && persigueSprite    != null) stateIcon.sprite = persigueSprite;
+        else if (veJugador && visualizaSprite != null) stateIcon.sprite = visualizaSprite;
+        else if (noVisualizaSprite            != null) stateIcon.sprite = noVisualizaSprite;
     }
 
     void OnDrawGizmosSelected()

@@ -60,18 +60,21 @@ public class FragmentoLlave : MonoBehaviour, IInteractuable
     // ─── IInteractuable ───────────────────────────────────────────────────────
 
     public void Interactuar()
-    {
-        if (recogido) return;
-        recogido = true;
+{
+    if (recogido) return;
+    recogido = true;
 
-        NarracionManager.Instance?.Narrar(
-            $"Un fragmento. Ya tengo {numeroFragmento} de 3.");
+    // Primero registrar — así el contador ya está actualizado
+    SotanoManager.Instance?.RegistrarFragmento(this);
 
-        OnRecogido?.Invoke();
-        SotanoManager.Instance?.RegistrarFragmento(this);
+    // Luego narrar con el contador actualizado
+    int total = SotanoManager.Instance?.FragmentosRecogidos ?? 0;
+    NarracionManager.Instance?.Narrar(
+        $"Un fragmento. Ya tengo {total} de 3.");
 
-        gameObject.SetActive(false);
-    }
+    OnRecogido?.Invoke();
+    gameObject.SetActive(false);
+}
 
     public string ObtenerTextoAccion() => "Recoger";
     public bool   EstaActivo()         => !recogido;

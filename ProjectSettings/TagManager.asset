@@ -18,6 +18,7 @@ TagManager:
   - Caja
   - PuertaSotano
   - ZonaCaja
+  - Recuerdo
   layers:
   - Default
   - TransparentFX
