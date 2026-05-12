@@ -12,8 +12,8 @@ public class EnemyAI : MonoBehaviour
     [Header("Detección")]
     public float visionRange = 8f;
     public float visionAngle = 120f;
-    public float detectionTime = 2f;
-    public float catchDistance = 1.5f;
+    public float detectionTime = 1f;
+    public float catchDistance = 2f;
 
     [Header("UI Estado")]
     public Image stateIcon;
@@ -28,8 +28,8 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private Transform[] puntosPatrulla;
 
     [Header("Movimiento")]
-    public float velocidadPatrulla = 2f;
-    public float velocidadPersecucion = 3.5f;
+    public float velocidadPatrulla = 1f;
+    public float velocidadPersecucion = 2f;
 
     private NavMeshAgent agent;
     private Animator animator;
@@ -87,7 +87,7 @@ public class EnemyAI : MonoBehaviour
         if (!agent.pathPending && agent.velocity.sqrMagnitude < 0.01f)
         {
             tiempoAtascado += Time.deltaTime;
-            if (tiempoAtascado > 2f)
+            if (tiempoAtascado > 1f)
             {
                 agent.ResetPath();
                 if (persiguiendo)
@@ -115,6 +115,10 @@ public class EnemyAI : MonoBehaviour
                 investigando = false;
                 agent.speed = velocidadPersecucion;
                 agent.isStopped = false;
+
+                // 🔹 Avisar al MusicManager
+                if (MusicManager.Instance != null)
+                    MusicManager.Instance.CambiarAMusicaPersecucion();
             }
         }
         else
@@ -128,6 +132,10 @@ public class EnemyAI : MonoBehaviour
                     persiguiendo = false;
                     agent.speed = velocidadPatrulla;
                     IrAPatrulla();
+
+                    // 🔹 Avisar al MusicManager
+                    if (MusicManager.Instance != null)
+                        MusicManager.Instance.CambiarAMusicaNormal();
                 }
             }
         }
@@ -163,35 +171,29 @@ public class EnemyAI : MonoBehaviour
     }
 
     void TriggerJumpscare()
-{
-    if (jumpscareActivo) return;
-
-    jumpscareActivo = true;
-    activo = false;
-
-    agent.isStopped = true;
-    agent.velocity = Vector3.zero;
-    agent.ResetPath();
-
-    ActualizarAnimacion(0f);
-
-    Debug.Log("Enemy atrapó al jugador");
-
-    if (GameOverManager.Instance != null)
     {
-        Debug.Log("Llamando ActivarGameOver()");
-        GameOverManager.Instance.ActivarGameOver();
-    }
-    else
-    {
-        Debug.LogError("GameOverManager.Instance es NULL");
-    }
-}
+        if (jumpscareActivo) return;
 
-    IEnumerator RecargarEscena()
-    {
-        yield return new WaitForSecondsRealtime(2f);
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        jumpscareActivo = true;
+        activo = false;
+
+        agent.isStopped = true;
+        agent.velocity = Vector3.zero;
+        agent.ResetPath();
+
+        ActualizarAnimacion(0f);
+
+        Debug.Log("Enemy atrapó al jugador");
+
+        if (GameOverManager.Instance != null)
+        {
+            Debug.Log("Llamando ActivarGameOver()");
+            GameOverManager.Instance.ActivarGameOver();
+        }
+        else
+        {
+            Debug.LogError("GameOverManager.Instance es NULL");
+        }
     }
 
     void ResetearEstado()
@@ -236,5 +238,19 @@ public class EnemyAI : MonoBehaviour
             agent.ResetPath();
             agent.speed = velocidadPatrulla;
         }
+    }
+
+    // ───── Forzar persecución desde trigger ─────
+    public void ForzarPersecucion()
+    {
+        visionRange = 50f;   // rango grande temporal
+        visionAngle = 360f;  // ángulo completo
+        SetBloqueado(false); // aseguramos que esté activo
+        persiguiendo = true;
+        agent.speed = velocidadPersecucion;
+        agent.isStopped = false;
+
+        if (MusicManager.Instance != null)
+            MusicManager.Instance.CambiarAMusicaPersecucion();
     }
 }

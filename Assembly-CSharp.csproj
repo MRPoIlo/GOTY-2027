@@ -67,9 +67,11 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\EnvMapAnimator.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Prologo\PausaManager.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Nivel 2 Baño\TriggerRejillaVista.cs" />
+    <Compile Include="Assets\Scripts\Scripts game\Nivel 2 Baño\CameraShake.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextSelector_A.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Nivel 2 Baño\VentRejilla.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Nivel 2 Baño\ScrewdriverPickup.cs" />
+    <Compile Include="Assets\Scripts\Scripts game\Cinematicas\CinematicaInicio.cs" />
     <Compile Include="Assets\Scripts\Scripts game\GameManager2.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Nivel 5 Sala Cocina\CajaInteractiva.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark02.cs" />
@@ -114,6 +116,8 @@
     <Compile Include="Assets\Scripts\Scripts game\InteractionSystem.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Nivel 5 Sala Cocina\PuertaSotano.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Nivel 2 Baño\NivelManagerBaño.cs" />
+    <Compile Include="Assets\Scripts\Scripts game\Nivel 1\TriggerZona.cs" />
+    <Compile Include="Assets\Scripts\Scripts game\Nivel 1\TriggerSalida.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Atico\CuadroRecuerdo.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Nivel 5 Sala Cocina\EnemyNivel5.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Cinematicas\CinematicaFinalMalo.cs" />
@@ -123,7 +127,6 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark04.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ChatController.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Nivel 2 Baño\DragDestornillador.cs" />
-    <Compile Include="Assets\Scripts\Scripts game\TriggerZona.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_DigitValidator.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_FrameRateCounter.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
@@ -144,6 +147,7 @@
     <Compile Include="Assets\Scripts\Scripts game\IInteractuable.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Nivel 1\EnemyAI.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Nivel 5 Sala Cocina\SalaCocinaManager.cs" />
+    <Compile Include="Assets\Scripts\Scripts game\Scrip Generales\MusicManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ObjectSpin.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_PhoneNumberValidator.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextConsoleSimulator.cs" />

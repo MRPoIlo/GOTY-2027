@@ -15,7 +15,7 @@ public class GameOverManager : MonoBehaviour
     [SerializeField] private string escenaMenuPrincipal = "MenuPrincipal";
 
     [Header("Música Game Over")]
-    [SerializeField] private AudioSource musicaGameOver; // 🎵 arrastra aquí tu AudioSource
+    [SerializeField] private AudioSource musicaGameOver; // 🎵 arrastra aquí tu pista triste
 
     public bool gameOverActivado = false;
 
@@ -26,7 +26,6 @@ public class GameOverManager : MonoBehaviour
     {
         if (Instance != null && Instance != this)
         {
-            Debug.LogWarning("GameOverManager duplicado destruido: " + gameObject.name);
             Destroy(gameObject);
             return;
         }
@@ -46,14 +45,10 @@ public class GameOverManager : MonoBehaviour
             panelGameOver.interactable = false;
             panelGameOver.blocksRaycasts = false;
         }
-        else
-        {
-            Debug.LogError("[GameOverManager] panelGameOver no está asignado en el inspector.");
-        }
 
         if (musicaGameOver != null)
         {
-            musicaGameOver.playOnAwake = false; // evitar que suene antes de tiempo
+            musicaGameOver.playOnAwake = false;
         }
     }
 
@@ -61,12 +56,6 @@ public class GameOverManager : MonoBehaviour
     {
         if (gameOverActivado) return;
         gameOverActivado = true;
-
-        if (panelGameOver == null)
-        {
-            Debug.LogError("panelGameOver es NULL. Asigna el CanvasGroup en el Inspector.");
-            return;
-        }
 
         panelGameOver.gameObject.SetActive(true);
         panelGameOver.alpha = 1f;
@@ -81,11 +70,13 @@ public class GameOverManager : MonoBehaviour
 
         Time.timeScale = 0f;
 
-        // 🎵 Reproducir música de Game Over
+        // 🔹 Detener música normal/persecución
+        if (MusicManager.Instance != null)
+            MusicManager.Instance.DetenerTodaMusica();
+
+        // 🎵 Reproducir música triste de Game Over
         if (musicaGameOver != null)
-        {
             musicaGameOver.Play();
-        }
     }
 
     public void Reintentar()
@@ -94,9 +85,7 @@ public class GameOverManager : MonoBehaviour
         gameOverActivado = false;
 
         if (musicaGameOver != null)
-        {
             musicaGameOver.Stop();
-        }
 
         string escena = string.IsNullOrEmpty(escenaActual)
             ? SceneManager.GetActiveScene().name
@@ -114,9 +103,7 @@ public class GameOverManager : MonoBehaviour
         Cursor.visible = true;
 
         if (musicaGameOver != null)
-        {
             musicaGameOver.Stop();
-        }
 
         SceneManager.LoadScene(escenaMenuPrincipal);
     }

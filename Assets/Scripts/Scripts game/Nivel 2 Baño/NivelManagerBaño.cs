@@ -22,14 +22,22 @@ public class NivelManagerBaño : MonoBehaviour
 
     [Header("Timer")]
     [SerializeField] private TimerBaño timerBaño;
+    [SerializeField] private float tiempoTotal = 90f; // 🔥 1:30 min
 
     [Header("Objeto Jumpscare (Game Over)")]
     [SerializeField] private GameObject jumpscareObject;
 
-    [Header("Paneles externos (arrastrar desde inspector)")]
+    [Header("Paneles externos")]
     [SerializeField] private GameObject panelMenuPausa;
     [SerializeField] private GameObject panelOpcionesPausa;
     [SerializeField] private Canvas canvasNarracion;
+
+    [Header("Audio Golpes")]
+    [SerializeField] private AudioSource audioGolpes;
+
+    [Header("Audio Reloj")]
+    [SerializeField] private AudioSource audioReloj;
+    [SerializeField] private float duracionLoopReloj = 2f;
 
     private PausaManager pausaManager;
     private NarracionManager narracionManager;
@@ -39,8 +47,9 @@ public class NivelManagerBaño : MonoBehaviour
     private bool rejillaAbierta = false;
     private bool esperandoEntrada = false;
 
-    // 🔹 Bandera de Game Over
     public bool enGameOver = false;
+
+    private float tiempoRestante;
 
     private void Awake()
     {
@@ -58,21 +67,92 @@ public class NivelManagerBaño : MonoBehaviour
 
     private void Start()
     {
+        tiempoRestante = tiempoTotal;
+
         if (canvasMiniJuegoRejilla != null) canvasMiniJuegoRejilla.SetActive(false);
         if (mensajePresionaE != null) mensajePresionaE.SetActive(false);
 
-        if (timerBaño != null) timerBaño.IniciarTimer();
+        timerBaño?.IniciarTimer();
 
-        //if (jumpscareObject != null) jumpscareObject.SetActive(false);
+        narracionManager?.Narrar("Rápido... debo buscar una salida.");
+
+        if (audioReloj != null)
+            StartCoroutine(ReproducirRelojLoop());
+
+        if (audioGolpes != null)
+            StartCoroutine(ReproducirGolpes());
     }
 
     private void Update()
     {
+        if (enGameOver) return;
+
+        tiempoRestante -= Time.deltaTime;
+
+        // 🎥 FOV dinámico (ansiedad)
+        float progreso = 1f - (tiempoRestante / tiempoTotal);
+        Camera.main.fieldOfView = Mathf.Lerp(60f, 75f, progreso);
+
         if (esperandoEntrada && Input.GetKeyDown(KeyCode.E))
         {
             esperandoEntrada = false;
             if (mensajePresionaE != null) mensajePresionaE.SetActive(false);
             StartCoroutine(FinalizarNivel());
+        }
+    }
+
+    private IEnumerator ReproducirGolpes()
+    {
+        float intervalo = 15f;
+
+        while (!enGameOver && tiempoRestante > 0f)
+        {
+            yield return new WaitForSeconds(intervalo);
+
+            if (audioGolpes != null)
+            {
+                // 🔊 Intensidad progresiva
+                float intensidad = 0.2f;
+                float duracion = 0.15f;
+
+                if (tiempoRestante <= 60f)
+                {
+                    intensidad = 0.35f;
+                    duracion = 0.25f;
+                    intervalo = 7f;
+                }
+
+                if (tiempoRestante <= 30f)
+                {
+                    intensidad = 0.6f;
+                    duracion = 0.4f;
+                }
+
+                if (tiempoRestante <= 15f)
+                {
+                    intensidad = 0.8f;
+                    duracion = 0.6f;
+                    audioGolpes.pitch = 1.3f;
+                }
+
+                audioGolpes.Play();
+                CameraShake.Instance?.StartShake(intensidad, duracion);
+
+                // 🎲 Evento aleatorio
+                if (Random.value < 0.3f)
+                {
+                    narracionManager?.Narrar("¿Qué fue eso...?");
+                }
+            }
+        }
+    }
+
+    private IEnumerator ReproducirRelojLoop()
+    {
+        while (!enGameOver)
+        {
+            audioReloj.Play();
+            yield return new WaitForSeconds(duracionLoopReloj);
         }
     }
 
@@ -99,8 +179,7 @@ public class NivelManagerBaño : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        if (canvasMiniJuegoRejilla != null)
-            canvasMiniJuegoRejilla.SetActive(true);
+        canvasMiniJuegoRejilla?.SetActive(true);
     }
 
     public void CompletarMiniJuego()
@@ -108,10 +187,10 @@ public class NivelManagerBaño : MonoBehaviour
         miniJuegoActivo = false;
         rejillaAbierta = true;
 
-        if (canvasMiniJuegoRejilla != null)
-            canvasMiniJuegoRejilla.SetActive(false);
+        canvasMiniJuegoRejilla?.SetActive(false);
 
-        playerController?.SetBloqueado(true);
+        playerController?.SetBloqueado(false); // 🔥 corregido
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
@@ -123,9 +202,7 @@ public class NivelManagerBaño : MonoBehaviour
     {
         yield return new WaitUntil(() => narracionManager == null || !narracionManager.EstaActivo());
 
-        if (mensajePresionaE != null)
-            mensajePresionaE.SetActive(true);
-
+        mensajePresionaE?.SetActive(true);
         esperandoEntrada = true;
     }
 
@@ -139,21 +216,25 @@ public class NivelManagerBaño : MonoBehaviour
     private IEnumerator Fade(float objetivo, float duracion)
     {
         if (pantallaFade == null) yield break;
+
         float inicio = pantallaFade.alpha;
         float t = 0f;
+
         while (t < duracion)
         {
             t += Time.deltaTime;
             pantallaFade.alpha = Mathf.Lerp(inicio, objetivo, t / duracion);
             yield return null;
         }
+
         pantallaFade.alpha = objetivo;
     }
 
-    // 🔹 Llamado por el Timer cuando se acaba el tiempo
     public void GameOverPorTiempo()
     {
         enGameOver = true;
+
+        audioReloj?.Stop();
 
         playerController?.SetBloqueado(true);
         narracionManager?.Narrar("El tiempo se acabó... no pude escapar.");
@@ -164,27 +245,19 @@ public class NivelManagerBaño : MonoBehaviour
     {
         yield return new WaitUntil(() => narracionManager == null || !narracionManager.EstaActivo());
 
-        if (panelMenuPausa != null) panelMenuPausa.SetActive(false);
-        if (panelOpcionesPausa != null) panelOpcionesPausa.SetActive(false);
+        panelMenuPausa?.SetActive(false);
+        panelOpcionesPausa?.SetActive(false);
         if (canvasNarracion != null) canvasNarracion.enabled = false;
-        if (canvasMiniJuegoRejilla != null) canvasMiniJuegoRejilla.SetActive(false);
-        if (mensajePresionaE != null) mensajePresionaE.SetActive(false);
 
-        playerController?.SetBloqueado(true);
+        canvasMiniJuegoRejilla?.SetActive(false);
+        mensajePresionaE?.SetActive(false);
+
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        // 🔹 Pausar el juego
         Time.timeScale = 0f;
 
-        if (GameOverManager.Instance != null)
-{
-    GameOverManager.Instance.ActivarGameOver();
-}
-else
-{
-    Debug.LogError("GameOverManager.Instance es NULL");
-}
+        GameOverManager.Instance?.ActivarGameOver();
     }
 
     public void ReintentarNivel()
@@ -196,7 +269,7 @@ else
     public void SalirAlMenu()
     {
         Time.timeScale = 1f;
+        audioReloj?.Stop();
         SceneManager.LoadScene("MainMenu");
     }
 }
-    
