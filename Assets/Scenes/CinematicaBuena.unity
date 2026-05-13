@@ -151,10 +151,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1899166875}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 5.7585, y: -16.531}
-  m_SizeDelta: {x: 1947.2, y: 970.58}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 5.758484, y: -0.005493164}
+  m_SizeDelta: {x: 27.2, y: -0.010986}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &134091078
 MonoBehaviour:
@@ -508,7 +508,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 81146a3eefd10be4b9f8a98b071e74eb, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 755ba4bb592cecc438e6d1e574599b86, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -615,10 +615,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1899166875}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 5.7479, y: -16.5295}
-  m_SizeDelta: {x: 1947.2217, y: 970.5764}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 5.747925, y: 0}
+  m_SizeDelta: {x: 27.2217, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1829249238
 GameObject:
@@ -784,15 +784,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CinematicaFinalBueno
   panelImage: {fileID: 1385093542}
   panelsFinalBueno:
-  - {fileID: 21300000, guid: 61118cc40586489458fa0aed3d4bf960, type: 3}
-  - {fileID: 21300000, guid: 79481513bcae3db4ab9d1258da492c8d, type: 3}
-  - {fileID: 21300000, guid: 83b74af5dcec7244ca320fbcc9702aa2, type: 3}
-  - {fileID: 21300000, guid: 4469c78e6f2dc28488c072b8be7dd43a, type: 3}
-  - {fileID: 21300000, guid: e12595991d74dc84fa91baef39ada40e, type: 3}
-  - {fileID: 21300000, guid: 345cbb2e0c8e61d459b042f88f041694, type: 3}
-  - {fileID: 21300000, guid: d3d9f91292567f845ab0fa443acb8024, type: 3}
-  - {fileID: 21300000, guid: c3f53170be647fc45a8049a36739107c, type: 3}
-  panelDuration: 5
+  - {fileID: 21300000, guid: 5b21e928b34c2474382b544ac9ce3190, type: 3}
+  - {fileID: 21300000, guid: 29e3b4b849137fb48bf5ebd8aa61d47a, type: 3}
+  - {fileID: 21300000, guid: 344461932e161824e86d1ae9f640defc, type: 3}
+  - {fileID: 21300000, guid: bfdeeb7a02d15074386a393d1498b1c2, type: 3}
+  - {fileID: 21300000, guid: effaebd18bb48644d9a91571fab1e116, type: 3}
+  - {fileID: 21300000, guid: 080d451f57f97d340bba005f657c3c10, type: 3}
+  - {fileID: 21300000, guid: 1e2db85f75095c0499e2b6b1a2d9772b, type: 3}
+  - {fileID: 21300000, guid: aafab7b36fb507f49a23bb81195d06fd, type: 3}
+  - {fileID: 21300000, guid: 21014c153fe795b4b8eaede8192c6afd, type: 3}
+  panelDuration: 6
   fadeDuration: 1
   botonSalir: {fileID: 960173788}
   musicaFinalBueno: {fileID: 1989580434}

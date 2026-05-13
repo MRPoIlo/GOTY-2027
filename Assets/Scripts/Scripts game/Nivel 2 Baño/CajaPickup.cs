@@ -2,30 +2,61 @@
 
 public class CajaPickup : MonoBehaviour, IInteractuable
 {
-    // Flag global: se activa cuando el jugador ve la rejilla
     public static bool rejillaVista = false;
 
     private bool siendoLlevada = false;
+
     private Rigidbody rb;
 
-    [Header("Posición al llevarla")]
-    public Transform puntoCarga; // Empty en el Player
+    [Header("Punto de carga")]
+    public Transform puntoCarga;
 
-    void Start()
+    [Header("Distancia suavizado")]
+    [SerializeField] private float velocidadMovimiento = 15f;
+
+    private void Start()
     {
         rb = GetComponent<Rigidbody>();
     }
 
-    void Update()
+    private void Update()
     {
-        // Permitir soltar siempre con E, aunque no estés mirando la caja
-        if (siendoLlevada && Input.GetKeyDown(KeyCode.E))
+        if (siendoLlevada &&
+            Input.GetKeyDown(KeyCode.E))
         {
             Soltar();
         }
     }
 
-    // ─── IInteractuable ───────────────────────────────
+    private void FixedUpdate()
+    {
+        // 🔥 MUY IMPORTANTE
+        // Mantiene estable la caja en Build
+
+        if (siendoLlevada && puntoCarga != null)
+        {
+            rb.MovePosition(
+                Vector3.Lerp(
+                    transform.position,
+                    puntoCarga.position,
+                    velocidadMovimiento * Time.fixedDeltaTime
+                )
+            );
+
+            rb.MoveRotation(
+                Quaternion.Lerp(
+                    transform.rotation,
+                    puntoCarga.rotation,
+                    velocidadMovimiento * Time.fixedDeltaTime
+                )
+            );
+        }
+    }
+
+    // ─────────────────────────────────────
+    // INTERACTUAR
+    // ─────────────────────────────────────
+
     public void Interactuar()
     {
         if (!siendoLlevada)
@@ -36,28 +67,47 @@ public class CajaPickup : MonoBehaviour, IInteractuable
 
     public bool EstaActivo()
     {
-        // Solo se puede interactuar si ya se vio la rejilla
         return rejillaVista;
     }
 
     public string ObtenerTextoAccion()
     {
-        return siendoLlevada ? "Soltar [E]" : "Coger [E]";
+        return siendoLlevada
+            ? "Soltar [E]"
+            : "Coger [E]";
     }
 
-    // ─── Lógica propia ───────────────────────────────
-    void Recoger()
+    // ─────────────────────────────────────
+    // RECOGER
+    // ─────────────────────────────────────
+
+    private void Recoger()
     {
         siendoLlevada = true;
-        rb.isKinematic = true;
-        transform.SetParent(puntoCarga);
-        transform.localPosition = Vector3.zero;
+
+        rb.useGravity = false;
+
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+
+        rb.constraints =
+            RigidbodyConstraints.FreezeRotation;
     }
 
-    void Soltar()
+    // ─────────────────────────────────────
+    // SOLTAR
+    // ─────────────────────────────────────
+
+    private void Soltar()
     {
         siendoLlevada = false;
-        transform.SetParent(null);
-        rb.isKinematic = false;
+
+        rb.useGravity = true;
+
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+
+        rb.constraints =
+            RigidbodyConstraints.None;
     }
 }

@@ -22,7 +22,7 @@ public class NivelManagerBaño : MonoBehaviour
 
     [Header("Timer")]
     [SerializeField] private TimerBaño timerBaño;
-    [SerializeField] private float tiempoTotal = 90f; // 🔥 1:30 min
+    [SerializeField] private float tiempoTotal = 90f;
 
     [Header("Objeto Jumpscare (Game Over)")]
     [SerializeField] private GameObject jumpscareObject;
@@ -58,6 +58,7 @@ public class NivelManagerBaño : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+
         Instance = this;
 
         pausaManager = FindFirstObjectByType<PausaManager>();
@@ -69,12 +70,13 @@ public class NivelManagerBaño : MonoBehaviour
     {
         tiempoRestante = tiempoTotal;
 
-        if (canvasMiniJuegoRejilla != null) canvasMiniJuegoRejilla.SetActive(false);
-        if (mensajePresionaE != null) mensajePresionaE.SetActive(false);
+        if (canvasMiniJuegoRejilla != null)
+            canvasMiniJuegoRejilla.SetActive(false);
+
+        if (mensajePresionaE != null)
+            mensajePresionaE.SetActive(false);
 
         timerBaño?.IniciarTimer();
-
-        narracionManager?.Narrar("Rápido... debo buscar una salida.");
 
         if (audioReloj != null)
             StartCoroutine(ReproducirRelojLoop());
@@ -85,33 +87,48 @@ public class NivelManagerBaño : MonoBehaviour
 
     private void Update()
     {
-        if (enGameOver) return;
+        if (enGameOver)
+            return;
 
         tiempoRestante -= Time.deltaTime;
 
-        // 🎥 FOV dinámico (ansiedad)
+        // 🎥 FOV dinámico
         float progreso = 1f - (tiempoRestante / tiempoTotal);
-        Camera.main.fieldOfView = Mathf.Lerp(60f, 75f, progreso);
 
-        if (esperandoEntrada && Input.GetKeyDown(KeyCode.E))
+        if (Camera.main != null)
+        {
+            Camera.main.fieldOfView =
+                Mathf.Lerp(60f, 75f, progreso);
+        }
+
+        // Entrar a rejilla
+        if (esperandoEntrada &&
+            Input.GetKeyDown(KeyCode.E))
         {
             esperandoEntrada = false;
-            if (mensajePresionaE != null) mensajePresionaE.SetActive(false);
+
+            if (mensajePresionaE != null)
+                mensajePresionaE.SetActive(false);
+
             StartCoroutine(FinalizarNivel());
         }
     }
+
+    // ─────────────────────────────────────
+    // GOLPES
+    // ─────────────────────────────────────
 
     private IEnumerator ReproducirGolpes()
     {
         float intervalo = 15f;
 
-        while (!enGameOver && tiempoRestante > 0f)
+        while (!enGameOver &&
+               tiempoRestante > 0f)
         {
             yield return new WaitForSeconds(intervalo);
 
             if (audioGolpes != null)
             {
-                // 🔊 Intensidad progresiva
                 float intensidad = 0.2f;
                 float duracion = 0.15f;
 
@@ -132,38 +149,70 @@ public class NivelManagerBaño : MonoBehaviour
                 {
                     intensidad = 0.8f;
                     duracion = 0.6f;
+
                     audioGolpes.pitch = 1.3f;
                 }
 
                 audioGolpes.Play();
-                CameraShake.Instance?.StartShake(intensidad, duracion);
 
-                // 🎲 Evento aleatorio
-                if (Random.value < 0.3f)
+                // ✅ FIX CÁMARA
+                CameraShake.Instance?.StartShake(
+                    duracion,
+                    intensidad
+                );
+
+                // ✅ FIX SPAM MENSAJES
+                if (Random.value < 0.2f &&
+                    CameraShake.Instance != null &&
+                    CameraShake.Instance.PuedeNarrar())
                 {
-                    narracionManager?.Narrar("¿Qué fue eso...?");
+                    narracionManager?.Narrar(
+                        "¿Qué fue eso...?"
+                    );
+
+                    CameraShake.Instance
+                        .ActivarCooldownNarracion();
                 }
             }
         }
     }
 
+    // ─────────────────────────────────────
+    // RELOJ
+    // ─────────────────────────────────────
+
     private IEnumerator ReproducirRelojLoop()
     {
         while (!enGameOver)
         {
-            audioReloj.Play();
-            yield return new WaitForSeconds(duracionLoopReloj);
+            if (audioReloj != null)
+                audioReloj.Play();
+
+            yield return new WaitForSeconds(
+                duracionLoopReloj
+            );
         }
     }
 
+    // ─────────────────────────────────────
+    // REJILLA
+    // ─────────────────────────────────────
+
     public void IntentarAbrirRejilla()
     {
-        if (miniJuegoActivo || rejillaAbierta) return;
+        if (miniJuegoActivo || rejillaAbierta)
+            return;
 
-        if (pausaManager != null && !pausaManager.tieneDestornillador)
+        if (pausaManager != null &&
+            !pausaManager.tieneDestornillador)
         {
-            narracionManager?.Narrar("Está cerrada... necesito algo para abrirla.");
-            objetoDestornillador.GetComponent<DestornilladorItem>()?.HabilitarRecogida();
+            narracionManager?.Narrar(
+                "Está cerrada... necesito algo para abrirla."
+            );
+
+            objetoDestornillador
+                ?.GetComponent<DestornilladorItem>()
+                ?.HabilitarRecogida();
         }
         else
         {
@@ -174,6 +223,7 @@ public class NivelManagerBaño : MonoBehaviour
     private void AbrirMiniJuego()
     {
         miniJuegoActivo = true;
+
         playerController?.SetBloqueado(true);
 
         Cursor.lockState = CursorLockMode.None;
@@ -189,65 +239,107 @@ public class NivelManagerBaño : MonoBehaviour
 
         canvasMiniJuegoRejilla?.SetActive(false);
 
-        playerController?.SetBloqueado(false); // 🔥 corregido
+        playerController?.SetBloqueado(false);
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        narracionManager?.Narrar("Ya está abierta, puedo entrar.");
-        StartCoroutine(MostrarMensajeEntradaTrasNarracion());
+        narracionManager?.Narrar(
+            "Ya está abierta, puedo entrar."
+        );
+
+        StartCoroutine(
+            MostrarMensajeEntradaTrasNarracion()
+        );
     }
 
     private IEnumerator MostrarMensajeEntradaTrasNarracion()
     {
-        yield return new WaitUntil(() => narracionManager == null || !narracionManager.EstaActivo());
+        yield return new WaitUntil(() =>
+            narracionManager == null ||
+            !narracionManager.EstaActivo()
+        );
 
         mensajePresionaE?.SetActive(true);
+
         esperandoEntrada = true;
     }
+
+    // ─────────────────────────────────────
+    // FINALIZAR NIVEL
+    // ─────────────────────────────────────
 
     private IEnumerator FinalizarNivel()
     {
         playerController?.SetBloqueado(true);
-        yield return StartCoroutine(Fade(1f, duracionFade));
+
+        yield return StartCoroutine(
+            Fade(1f, duracionFade)
+        );
+
         SceneManager.LoadScene(escenaSiguiente);
     }
 
-    private IEnumerator Fade(float objetivo, float duracion)
+    private IEnumerator Fade(
+        float objetivo,
+        float duracion)
     {
-        if (pantallaFade == null) yield break;
+        if (pantallaFade == null)
+            yield break;
 
         float inicio = pantallaFade.alpha;
+
         float t = 0f;
 
         while (t < duracion)
         {
             t += Time.deltaTime;
-            pantallaFade.alpha = Mathf.Lerp(inicio, objetivo, t / duracion);
+
+            pantallaFade.alpha =
+                Mathf.Lerp(
+                    inicio,
+                    objetivo,
+                    t / duracion
+                );
+
             yield return null;
         }
 
         pantallaFade.alpha = objetivo;
     }
 
+    // ─────────────────────────────────────
+    // GAME OVER
+    // ─────────────────────────────────────
+
     public void GameOverPorTiempo()
     {
         enGameOver = true;
 
         audioReloj?.Stop();
+        audioGolpes?.Stop();
 
         playerController?.SetBloqueado(true);
-        narracionManager?.Narrar("El tiempo se acabó... no pude escapar.");
+
+        narracionManager?.Narrar(
+            "El tiempo se acabó... no pude escapar."
+        );
+
         StartCoroutine(GameOverTrasNarracion());
     }
 
     private IEnumerator GameOverTrasNarracion()
     {
-        yield return new WaitUntil(() => narracionManager == null || !narracionManager.EstaActivo());
+        yield return new WaitUntil(() =>
+            narracionManager == null ||
+            !narracionManager.EstaActivo()
+        );
 
         panelMenuPausa?.SetActive(false);
         panelOpcionesPausa?.SetActive(false);
-        if (canvasNarracion != null) canvasNarracion.enabled = false;
+
+        if (canvasNarracion != null)
+            canvasNarracion.enabled = false;
 
         canvasMiniJuegoRejilla?.SetActive(false);
         mensajePresionaE?.SetActive(false);
@@ -260,16 +352,26 @@ public class NivelManagerBaño : MonoBehaviour
         GameOverManager.Instance?.ActivarGameOver();
     }
 
+    // ─────────────────────────────────────
+    // BOTONES
+    // ─────────────────────────────────────
+
     public void ReintentarNivel()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+
+        SceneManager.LoadScene(
+            SceneManager.GetActiveScene().name
+        );
     }
 
     public void SalirAlMenu()
     {
         Time.timeScale = 1f;
+
         audioReloj?.Stop();
+        audioGolpes?.Stop();
+
         SceneManager.LoadScene("MainMenu");
     }
 }

@@ -2301,8 +2301,8 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: a36c4fbd9907e6743a7bc137d10eade1, type: 3}
-  m_PlayOnAwake: 1
+  m_Resource: {fileID: 8300000, guid: 66f7f8d5033bce3438af0d87a3748fab, type: 3}
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 1
@@ -3922,7 +3922,7 @@ MonoBehaviour:
   canvasNarracion: {fileID: 1073298555}
   audioGolpes: {fileID: 803370571}
   audioReloj: {fileID: 486310869}
-  duracionLoopReloj: 2
+  duracionLoopReloj: 0.5
   enGameOver: 0
 --- !u!4 &949141825
 Transform:

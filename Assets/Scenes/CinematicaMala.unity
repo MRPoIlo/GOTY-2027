@@ -502,7 +502,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 81146a3eefd10be4b9f8a98b071e74eb, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 755ba4bb592cecc438e6d1e574599b86, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -721,8 +721,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 5.7479, y: -16.5295}
-  m_SizeDelta: {x: 1947.2217, y: 970.5764}
+  m_AnchoredPosition: {x: 17.9336, y: 11.388}
+  m_SizeDelta: {x: 1971.5933, y: 1102.8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1321023806
 GameObject:
@@ -759,13 +759,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CinematicaFinalMalo
   panelImage: {fileID: 1029428321}
   panelsFinalMalo:
-  - {fileID: 21300000, guid: fffe4f5bc7089ff4ebb425221ba3df82, type: 3}
-  - {fileID: 21300000, guid: 23e09437870ff6a42b03104ae7e909ac, type: 3}
-  - {fileID: 21300000, guid: 75266b338b9dbaf40884ef85c79a8dc9, type: 3}
-  - {fileID: 21300000, guid: d8befbadbb2508e4b95901dea0493504, type: 3}
-  - {fileID: 21300000, guid: f3d2da19def60834fbbe8ef3ffa99736, type: 3}
-  - {fileID: 21300000, guid: b542e749c6735334b9948a92b10c9ad9, type: 3}
-  panelDuration: 4
+  - {fileID: 21300000, guid: 25c410e4070b4f94aae3e74e416313ce, type: 3}
+  - {fileID: 21300000, guid: fc8029f711d1b4543ab36839b4fdc553, type: 3}
+  - {fileID: 21300000, guid: 5e6f532b37b65bb4e9fff5d3e36a5c66, type: 3}
+  - {fileID: 21300000, guid: c06fba91fc402f64eac7b22dfea48d62, type: 3}
+  - {fileID: 21300000, guid: 83de35f92c7bbce4c97aa9dcfbdbb3b3, type: 3}
+  - {fileID: 21300000, guid: d2efee1fd0eb3eb4da8ee461b79714e9, type: 3}
+  panelDuration: 6
   fadeDuration: 1
   botonSalir: {fileID: 707426416}
   musicaFinalMalo: {fileID: 953560946}
@@ -900,8 +900,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 31.6381, y: -45.2894}
-  m_SizeDelta: {x: 1998.9973, y: 1028.0985}
+  m_AnchoredPosition: {x: 31.6381, y: 1.7124}
+  m_SizeDelta: {x: 1998.9973, y: 1122.1022}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1469833426
 MonoBehaviour:
