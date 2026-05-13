@@ -71,20 +71,36 @@ public class SombraMama : MonoBehaviour
 
         while (Vector3.Distance(transform.position, puertoObjetivo.position) > 0.2f)
         {
+            // 🔹 Guardar posición anterior
+            Vector3 posAnterior = transform.position;
+
+            // 🔹 Mover hacia el objetivo
             transform.position = Vector3.MoveTowards(
                 transform.position,
                 puertoObjetivo.position,
                 velocidadCaminar * Time.deltaTime);
 
+            // 🔹 Calcular dirección y rotación
             Vector3 direccion = puertoObjetivo.position - transform.position;
             direccion.y = 0f;
             if (direccion != Vector3.zero)
                 transform.rotation = Quaternion.LookRotation(direccion);
 
+            // 🔹 Calcular velocidad real del frame
+            float velocidadFrame = (transform.position - posAnterior).magnitude / Time.deltaTime;
+
+            // 🔹 Actualizar parámetro "speed" en el Animator
+            if (anim != null)
+                anim.SetFloat("Speed", velocidadFrame);
+
             yield return null;
         }
 
-        if (anim != null) anim.SetBool("Caminando", false);
+        if (anim != null)
+        {
+            anim.SetBool("Caminando", false);
+            anim.SetFloat("Speed", 0f);
+        }
 
         NarracionManager.Instance?.Narrar(new string[]
         {
@@ -137,17 +153,40 @@ public class SombraMama : MonoBehaviour
     private IEnumerator AlejarSombra()
     {
         if (sombraPadre == null) yield break;
+
+        Animator anim = sombraPadre.GetComponent<Animator>();
         Vector3 posInicial = sombraPadre.transform.position;
         Vector3 posFinal = posInicial + Vector3.back * 5f;
+        float duracion = 3f;
         float t = 0f;
-        float duracion = 1.5f;
+
         while (t < duracion)
         {
             t += Time.deltaTime;
-            sombraPadre.transform.position =
-                Vector3.Lerp(posInicial, posFinal, t / duracion);
+
+            // 🔹 Guardar posición anterior
+            Vector3 posAnterior = sombraPadre.transform.position;
+
+            // 🔹 Calcular nueva posición
+            Vector3 nuevaPos = Vector3.Lerp(posInicial, posFinal, t / duracion);
+
+            // 🔹 Calcular velocidad real del frame
+            float velocidadFrame = (nuevaPos - posAnterior).magnitude / Time.deltaTime;
+
+            // 🔹 Actualizar posición
+            sombraPadre.transform.position = nuevaPos;
+
+            // 🔹 Actualizar parámetro "speed" en el Animator
+            if (anim != null)
+                anim.SetFloat("Speed", velocidadFrame);
+
             yield return null;
         }
+
+        // 🔹 Al terminar, poner speed en 0 para volver a Idle
+        if (anim != null)
+            anim.SetFloat("Speed", 0f);
+
         sombraPadre.SetActive(false);
     }
 

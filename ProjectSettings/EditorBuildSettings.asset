@@ -24,8 +24,8 @@ EditorBuildSettings:
     path: Assets/Scenes/Nivel 3 Atico.unity
     guid: bc0a74edde1cddd45b128d0745e14eff
   - enabled: 1
-    path: Assets/Scenes/Imagen/Nivel 4 Vestibulo.unity
-    guid: e2e3751abee7fa04581103c1c902074b
+    path: Assets/Scenes/Nivel 4 Vestibulo.unity
+    guid: 4b70407e60cdf474789520d1fd7bad7d
   - enabled: 1
     path: Assets/Scenes/Nivel 5 Sala y Cocina.unity
     guid: 84b2b504fe7fd3d4d8ab43e7e7670695

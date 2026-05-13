@@ -67,6 +67,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\EnvMapAnimator.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Prologo\PausaManager.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Nivel 2 Baño\TriggerRejillaVista.cs" />
+    <Compile Include="Assets\Scripts\Scripts game\Atico\EnemyRoute.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Nivel 2 Baño\CameraShake.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextSelector_A.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Nivel 2 Baño\VentRejilla.cs" />
@@ -157,6 +158,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextMeshProFloatingText.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Nivel 1\Nivel1Manager.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Nivel 2 Baño\RejillaInteraccion.cs" />
+    <Compile Include="Assets\Scripts\Scripts game\Atico\JumpscareTrigger.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Cinematicas\CinematicaFinalBueno.cs" />
   </ItemGroup>
   <ItemGroup>

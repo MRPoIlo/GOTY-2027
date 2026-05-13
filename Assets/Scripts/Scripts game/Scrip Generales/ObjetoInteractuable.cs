@@ -41,12 +41,16 @@ public class ObjetoInteractuable : MonoBehaviour, IInteractuable
     if (!activo || (usoUnico && yaInteractuado))
         return;
 
-    // Bloquear de inmediato para evitar doble ejecución
-    activo = false;
-    yaInteractuado = true;
-    
-    // Si es un recuerdo, sumar al contador global y mostrar mensaje automático
-    if (CompareTag("Recuerdo") && !recuerdoRegistrado)
+        // Bloquear de inmediato para evitar doble ejecución (excepto puerta)
+        if (usoUnico)
+        {
+            activo = false;
+            yaInteractuado = true;
+        }
+
+
+        // Si es un recuerdo, sumar al contador global y mostrar mensaje automático
+        if (CompareTag("Recuerdo") && !recuerdoRegistrado)
 {
     recuerdoRegistrado = true;
 
