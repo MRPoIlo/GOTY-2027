@@ -289,8 +289,8 @@ Light:
   m_Enabled: 1
   serializedVersion: 12
   m_Type: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 2
+  m_Color: {r: 0.9764706, g: 0.92156863, b: 0.4392157, a: 1}
+  m_Intensity: 3
   m_Range: 10
   m_SpotAngle: 60
   m_InnerSpotAngle: 17
@@ -3131,6 +3131,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d3145e662ec98247b31f0f8a7f75c78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraShake
+  cooldownNarracion: 8
 --- !u!4 &733940539 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9018196631762674993, guid: b1b56453c9c4ca4429a7920fd96feee6, type: 3}
@@ -3922,7 +3923,7 @@ MonoBehaviour:
   canvasNarracion: {fileID: 1073298555}
   audioGolpes: {fileID: 803370571}
   audioReloj: {fileID: 486310869}
-  duracionLoopReloj: 0.5
+  duracionLoopReloj: 0.7
   enGameOver: 0
 --- !u!4 &949141825
 Transform:
@@ -6447,6 +6448,7 @@ MonoBehaviour:
   panelOpciones: {fileID: 1170057399}
   player: {fileID: 1336900595}
   canvasNarracion: {fileID: 1073298555}
+  miniJuegoRejillaUI: {fileID: 0}
   juegoPausado: 0
   tieneDestornillador: 0
   escenaMenuPrincipal: MainMenu

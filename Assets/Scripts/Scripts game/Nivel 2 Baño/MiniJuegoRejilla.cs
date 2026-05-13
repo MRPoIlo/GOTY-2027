@@ -15,7 +15,7 @@ public class MiniJuegoRejilla : MonoBehaviour
 
     private void OnEnable()
     {
-        // ✅ Forzar cursor visible
+        // ✅ Cursor libre al abrir minijuego
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 

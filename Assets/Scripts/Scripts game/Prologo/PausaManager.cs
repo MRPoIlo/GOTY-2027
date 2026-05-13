@@ -19,19 +19,18 @@ public class PausaManager : MonoBehaviour
 
     public bool EnOpciones { get; private set; } = false;
 
-    [Header("Nombre de la escena del menú principal")]
+    [Header("Nombre escena menú principal")]
     [SerializeField]
     private string escenaMenuPrincipal =
         "MainMenu";
 
     private void Update()
     {
-        // Bloquear pausa si Game Over
+        // ✅ Bloquear pausa en Game Over
         if (GameOverManager.Instance != null &&
             GameOverManager.Instance.gameOverActivado)
             return;
 
-        // Compatibilidad con NivelManagerBaño
         if (NivelManagerBaño.Instance != null &&
             NivelManagerBaño.Instance.enGameOver)
             return;
@@ -46,7 +45,7 @@ public class PausaManager : MonoBehaviour
     }
 
     // ─────────────────────────────────────
-    // PAUSA
+    // PAUSAR
     // ─────────────────────────────────────
 
     public void PausarJuego()
@@ -65,7 +64,9 @@ public class PausaManager : MonoBehaviour
         if (player != null)
             player.SetBloqueado(true);
 
-        Cursor.lockState = CursorLockMode.None;
+        Cursor.lockState =
+            CursorLockMode.None;
+
         Cursor.visible = true;
     }
 
@@ -96,12 +97,14 @@ public class PausaManager : MonoBehaviour
         // ✅ SI EL MINIJUEGO SIGUE ABIERTO
         if (miniJuegoActivo)
         {
+            // 🔥 IMPORTANTE:
+            // mantener jugador bloqueado
+
             if (player != null)
                 player.SetBloqueado(true);
 
-            // 🔥 FIX CURSOR
             StartCoroutine(
-                RestaurarCursorMiniJuego()
+                ForzarCursorMiniJuego()
             );
         }
         else
@@ -120,13 +123,20 @@ public class PausaManager : MonoBehaviour
     // FIX CURSOR MINIJUEGO
     // ─────────────────────────────────────
 
-    private IEnumerator RestaurarCursorMiniJuego()
+    private IEnumerator ForzarCursorMiniJuego()
     {
-        // Esperar 1 frame
-        yield return null;
+        // 🔥 Forzar varios frames
+        // porque otro script roba el mouse
 
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        for (int i = 0; i < 5; i++)
+        {
+            Cursor.lockState =
+                CursorLockMode.None;
+
+            Cursor.visible = true;
+
+            yield return null;
+        }
     }
 
     // ─────────────────────────────────────
@@ -165,7 +175,9 @@ public class PausaManager : MonoBehaviour
 
         juegoPausado = false;
 
-        Cursor.lockState = CursorLockMode.None;
+        Cursor.lockState =
+            CursorLockMode.None;
+
         Cursor.visible = true;
 
         SceneManager.LoadScene(

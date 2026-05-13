@@ -562,8 +562,8 @@ Light:
   m_Enabled: 1
   serializedVersion: 12
   m_Type: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 2
+  m_Color: {r: 0.99215686, g: 0.46666667, b: 0.1764706, a: 1}
+  m_Intensity: 10
   m_Range: 10
   m_SpotAngle: 60
   m_InnerSpotAngle: 17
@@ -3746,6 +3746,7 @@ MonoBehaviour:
   panelOpciones: {fileID: 530532475}
   player: {fileID: 1991399868}
   canvasNarracion: {fileID: 819326873}
+  miniJuegoRejillaUI: {fileID: 0}
   juegoPausado: 0
   tieneDestornillador: 0
   escenaMenuPrincipal: MainMenu
@@ -7441,6 +7442,7 @@ MonoBehaviour:
   panelGameOver: {fileID: 2106392306}
   escenaActual: Nivel 4 Vestibulo
   escenaMenuPrincipal: MainMenu
+  musicaGameOver: {fileID: 0}
   gameOverActivado: 0
 --- !u!114 &1700093934
 MonoBehaviour:

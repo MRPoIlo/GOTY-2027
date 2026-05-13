@@ -6547,8 +6547,8 @@ Light:
   m_Enabled: 1
   serializedVersion: 12
   m_Type: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 2
+  m_Color: {r: 0.97735846, g: 0.92156863, b: 0.4392157, a: 1}
+  m_Intensity: 3
   m_Range: 10
   m_SpotAngle: 60
   m_InnerSpotAngle: 17
@@ -13767,7 +13767,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 048d6e86d512bd84a86d2db989393628, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Flashlight
-  LuzLinterna: {fileID: 0}
 --- !u!114 &1896074167
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14598,6 +14597,7 @@ MonoBehaviour:
   panelOpciones: {fileID: 1541861177}
   player: {fileID: 1896074168}
   canvasNarracion: {fileID: 1251288545}
+  miniJuegoRejillaUI: {fileID: 0}
   juegoPausado: 0
   tieneDestornillador: 0
   escenaMenuPrincipal: MainMenu

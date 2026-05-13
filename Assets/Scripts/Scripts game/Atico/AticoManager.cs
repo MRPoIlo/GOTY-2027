@@ -26,11 +26,15 @@ public class AticoManager : MonoBehaviour
     [Header("Siguiente escena")]
     [SerializeField] private string escenaSiguiente = "Nivel4";
 
+    [Header("Música general")]
+    [SerializeField] private AudioSource musicaGeneral;
+
     // Estado interno
     private List<CuadroRecuerdo> cuadrosExaminados = new List<CuadroRecuerdo>();
     private bool menuAbierto = false;
     private bool puertaDesbloqueada = false;
     private bool finalizando = false;
+    private bool enGameOver = false;
 
     private PlayerController player;
 
@@ -59,6 +63,12 @@ public class AticoManager : MonoBehaviour
             NarracionManager.Instance == null || !NarracionManager.Instance.EstaActivo());
 
         player?.SetBloqueado(false);
+
+        // 🔊 Iniciar música general si está asignada
+        if (musicaGeneral != null)
+        {
+            musicaGeneral.Play();
+        }
     }
 
     // ─── Registro de cuadros examinados ──────────────────────────────────────
@@ -146,7 +156,7 @@ public class AticoManager : MonoBehaviour
     // ─── Llamado desde la puerta ─────────────────────────────────────────────
     public void IntentarSalir()
     {
-        if (finalizando) return;
+        if (finalizando || enGameOver) return;
 
         if (puertaDesbloqueada)
         {
@@ -193,5 +203,28 @@ public class AticoManager : MonoBehaviour
             yield return null;
         }
         pantallaFade.alpha = objetivo;
+    }
+
+    // ─── Game Over ───────────────────────────────────────────────────────────
+    public void ActivarGameOver()
+    {
+        if (enGameOver) return;
+        enGameOver = true;
+
+        // 🔊 Detener música general
+        if (musicaGeneral != null && musicaGeneral.isPlaying)
+        {
+            musicaGeneral.Stop();
+        }
+
+        player?.SetBloqueado(true);
+        NarracionManager.Instance?.Narrar(new string[]
+        {
+            "El tiempo se acabó...",
+            "No pude escapar del ático."
+        });
+
+        // Aquí puedes añadir lógica para mostrar pantalla de Game Over
+        Debug.Log("[Ático] Game Over activado, música detenida.");
     }
 }
