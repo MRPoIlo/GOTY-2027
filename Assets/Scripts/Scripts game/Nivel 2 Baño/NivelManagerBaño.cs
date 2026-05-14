@@ -68,6 +68,9 @@ public class NivelManagerBaño : MonoBehaviour
 
     private void Start()
     {
+        // ✅ RESET cajas al iniciar nivel
+        CajaPickup.rejillaVista = false;
+
         tiempoRestante = tiempoTotal;
 
         if (canvasMiniJuegoRejilla != null)
@@ -155,13 +158,11 @@ public class NivelManagerBaño : MonoBehaviour
 
                 audioGolpes.Play();
 
-                // ✅ FIX CÁMARA
                 CameraShake.Instance?.StartShake(
                     duracion,
                     intensidad
                 );
 
-                // ✅ FIX SPAM MENSAJES
                 if (Random.value < 0.2f &&
                     CameraShake.Instance != null &&
                     CameraShake.Instance.PuedeNarrar())
@@ -236,6 +237,9 @@ public class NivelManagerBaño : MonoBehaviour
     {
         miniJuegoActivo = false;
         rejillaAbierta = true;
+
+        // ✅ ACTIVAR cajas
+        CajaPickup.rejillaVista = true;
 
         canvasMiniJuegoRejilla?.SetActive(false);
 
