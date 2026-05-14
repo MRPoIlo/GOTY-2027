@@ -80,6 +80,7 @@
     <Compile Include="Assets\Scripts\Scripts game\Nivel 2 Baño\TriggerBaño.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Nivel 4 Vestibulo\ZonaSalida.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Nivel 6 Sotano\PadrePatrullador.cs" />
+    <Compile Include="Assets\Scripts\Scripts game\Cambio de escenas\ControlEscenas.cs" />
     <Compile Include="Assets\Scripts\Scripts game\linterna\FlashLightPickUp.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Cambio de escenas\PuertaNivel.cs" />
     <Compile Include="Assets\Scripts\Scripts game\Nivel 1\CamaInteractivo.cs" />

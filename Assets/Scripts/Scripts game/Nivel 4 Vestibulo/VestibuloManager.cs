@@ -11,8 +11,7 @@ public class VestibuloManager : MonoBehaviour
     [SerializeField] private CanvasGroup pantallaFade;
     [SerializeField] private float duracionFade = 1.5f;
 
-    [Header("Jumpscare")]
-    [SerializeField] private AudioClip sonidoJumpscare;
+    [Header("Padre")]
     [SerializeField] private AudioClip sonidoPasos;
     [SerializeField] private float duracionJumpscare = 1f;
     [SerializeField] private float tiempoLlegarPadre = 3f;
@@ -27,20 +26,31 @@ public class VestibuloManager : MonoBehaviour
     [Header("Siguiente escena")]
     [SerializeField] private string escenaSiguiente = "Nivel5";
 
+    [Header("Música general")]
+    [SerializeField] private AudioSource musicaGeneral;
+
     // Estado
     private bool nivelTerminado = false;
-    private bool padreActivo    = false;
-    private bool reiniciando    = false;
+    private bool padreActivo = false;
+    private bool reiniciando = false;
+
     private AudioSource audioSource;
     private PlayerController player;
 
     void Awake()
     {
-        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         Instance = this;
+
         player = FindObjectOfType<PlayerController>();
 
         audioSource = GetComponent<AudioSource>();
+
         if (audioSource == null)
             audioSource = gameObject.AddComponent<AudioSource>();
     }
@@ -49,19 +59,19 @@ public class VestibuloManager : MonoBehaviour
     {
         player?.SetBloqueado(true);
 
-        if (pantallaFade != null) pantallaFade.alpha = 1f;
-        //if (panelJumpscare != null) panelJumpscare.SetActive(false);
+        if (pantallaFade != null)
+            pantallaFade.alpha = 1f;
 
         // Linterna tensión baja
         if (luzLinterna != null)
         {
-            luzLinterna.color     = new Color(1f, 0.95f, 0.7f);
+            luzLinterna.color = new Color(1f, 0.95f, 0.7f);
             luzLinterna.intensity = 0.85f;
         }
 
         yield return StartCoroutine(Fade(0f, duracionFade));
 
-        // Narración de apertura
+        // Narración inicio
         if (NarracionManager.Instance != null)
         {
             NarracionManager.Instance.Narrar(new string[]
@@ -70,191 +80,290 @@ public class VestibuloManager : MonoBehaviour
                 "Aprendí a cruzarlo sin respirar.",
                 "Sin existir."
             });
-            yield return StartCoroutine(EsperarNarracion(10f));
+
+            yield return StartCoroutine(
+                EsperarNarracion(10f));
+        }
+
+        // Música general
+        if (musicaGeneral != null)
+        {
+            musicaGeneral.loop = true;
+            musicaGeneral.Play();
         }
 
         player?.SetBloqueado(false);
     }
 
-    // ─── Recibir ruido ────────────────────────────────────────────────────────
+    // ─────────────────────────────────────
+    // RECIBIR RUIDO
+    // ─────────────────────────────────────
 
     public void RecibirRuido(int nivel)
     {
-        if (nivelTerminado || reiniciando) return;
+        if (nivelTerminado || reiniciando)
+            return;
 
-        Debug.Log($"[Vestíbulo] Ruido nivel {nivel} recibido");
+        Debug.Log($"[Vestíbulo] Ruido nivel {nivel}");
 
         // Narración contextual
         if (NarracionManager.Instance != null)
         {
-            if (nivel == 1)      NarracionManager.Instance.Narrar("Cuidado.");
-            else if (nivel == 2) NarracionManager.Instance.Narrar("Demasiado ruido.");
-            else                 NarracionManager.Instance.Narrar("Lo escuché.");
+            if (nivel == 1)
+                NarracionManager.Instance.Narrar(
+                    "Cuidado.");
+            else if (nivel == 2)
+                NarracionManager.Instance.Narrar(
+                    "Demasiado ruido.");
+            else
+                NarracionManager.Instance.Narrar(
+                    "Lo escuché.");
         }
 
-        // Activar secuencia del padre si no está activo
+        // Activar padre
         if (!padreActivo)
         {
             padreActivo = true;
-            float velocidad = nivel == 1 ? tiempoLlegarPadre :
-                              nivel == 2 ? tiempoLlegarPadre * 0.6f :
-                                          tiempoLlegarPadre * 0.3f;
-            StartCoroutine(SecuenciaPadre(velocidad));
+
+            float velocidad =
+                nivel == 1 ? tiempoLlegarPadre :
+                nivel == 2 ? tiempoLlegarPadre * 0.6f :
+                             tiempoLlegarPadre * 0.3f;
+
+            StartCoroutine(
+                SecuenciaPadre(velocidad));
         }
     }
 
-    // ─── Secuencia del padre ──────────────────────────────────────────────────
+    // ─────────────────────────────────────
+    // SECUENCIA PADRE
+    // ─────────────────────────────────────
 
     private IEnumerator SecuenciaPadre(float tiempoLlegar)
     {
-        Debug.Log($"[Vestíbulo] Padre activado, llega en {tiempoLlegar}s");
+        Debug.Log(
+            $"[Vestíbulo] Padre llega en {tiempoLlegar}s");
 
-        // Pasos acercándose
+        // Pasos
         if (sonidoPasos != null)
         {
-            audioSource.clip   = sonidoPasos;
-            audioSource.loop   = true;
+            audioSource.clip = sonidoPasos;
+            audioSource.loop = true;
             audioSource.volume = 0.8f;
+
             audioSource.Play();
         }
 
-        // Esperar el tiempo según nivel de ruido
-        yield return new WaitForSeconds(tiempoLlegar);
+        // Esperar llegada
+        yield return new WaitForSeconds(
+            tiempoLlegar);
 
-        if (nivelTerminado || reiniciando) yield break;
+        if (nivelTerminado || reiniciando)
+            yield break;
 
         // Detener pasos
         audioSource.Stop();
 
-        // Jumpscare
-        yield return StartCoroutine(TriggerJumpscare());
+        // Activar Game Over
+        yield return StartCoroutine(
+            TriggerJumpscare());
     }
+
+    // ─────────────────────────────────────
+    // GAME OVER
+    // ─────────────────────────────────────
 
     private IEnumerator TriggerJumpscare()
-{
-    Debug.Log("[Vestíbulo] JUMPSCARE ACTIVADO");
-
-    // Quitar cualquier fade que pueda tapar el panel
-    if (pantallaFade != null)
-        pantallaFade.alpha = 0f;
-
-    // Reproducir sonido
-    if (sonidoJumpscare != null)
-        audioSource.PlayOneShot(sonidoJumpscare);
-
-    // Esperar el tiempo del jumpscare
-    yield return new WaitForSeconds(duracionJumpscare);
-
-    // Mostrar Game Over centralizado
-    if (GameOverManager.Instance != null)
     {
-        Debug.Log("[Vestíbulo] Llamando a GameOverManager");
-        GameOverManager.Instance.ActivarGameOver();
-    }
-    else
-    {
-        Debug.LogError("[Vestíbulo] GameOverManager.Instance es NULL");
-    }
-}
+        Debug.Log(
+            "[Vestíbulo] GAME OVER");
 
-    // ─── Reinicio ─────────────────────────────────────────────────────────────
+        if (pantallaFade != null)
+            pantallaFade.alpha = 0f;
+
+        yield return new WaitForSeconds(
+            duracionJumpscare);
+
+        // Detener música
+        if (musicaGeneral != null &&
+            musicaGeneral.isPlaying)
+        {
+            musicaGeneral.Stop();
+        }
+
+        // Activar Game Over
+        if (GameOverManager.Instance != null)
+        {
+            Debug.Log(
+                "[Vestíbulo] Activando GameOver");
+
+            GameOverManager.Instance
+                .ActivarGameOver();
+        }
+        else
+        {
+            Debug.LogError(
+                "[Vestíbulo] GameOverManager NULL");
+        }
+    }
+
+    // ─────────────────────────────────────
+    // REINICIO
+    // ─────────────────────────────────────
 
     private IEnumerator ReiniciarNivel()
     {
         reiniciando = true;
         padreActivo = false;
+
         player?.SetBloqueado(true);
+
         audioSource.Stop();
 
-        yield return StartCoroutine(Fade(1f, duracionFade * 0.5f));
+        yield return StartCoroutine(
+            Fade(1f, duracionFade * 0.5f));
 
-        // Narración breve
         if (NarracionManager.Instance != null)
         {
-            NarracionManager.Instance.Narrar(new string[] { "Sus pasos.", "Otra vez." });
-            yield return StartCoroutine(EsperarNarracion(5f));
+            NarracionManager.Instance.Narrar(
+                new string[]
+                {
+                    "Sus pasos.",
+                    "Otra vez."
+                });
+
+            yield return StartCoroutine(
+                EsperarNarracion(5f));
         }
 
-        // Mover jugador al spawn
-        if (spawnJugador != null && player != null)
+        if (spawnJugador != null &&
+            player != null)
         {
-            CharacterController cc = player.GetComponent<CharacterController>();
-            if (cc != null) cc.enabled = false;
-            player.transform.position = spawnJugador.position;
-            if (cc != null) cc.enabled = true;
+            CharacterController cc =
+                player.GetComponent<CharacterController>();
+
+            if (cc != null)
+                cc.enabled = false;
+
+            player.transform.position =
+                spawnJugador.position;
+
+            if (cc != null)
+                cc.enabled = true;
         }
 
-        // Reiniciar objetos sonoros
         foreach (var obj in objetosSonoros)
-            if (obj != null) { obj.gameObject.SetActive(false); obj.gameObject.SetActive(true); }
+        {
+            if (obj != null)
+            {
+                obj.gameObject.SetActive(false);
+                obj.gameObject.SetActive(true);
+            }
+        }
 
-        yield return StartCoroutine(Fade(0f, duracionFade));
+        yield return StartCoroutine(
+            Fade(0f, duracionFade));
 
         reiniciando = false;
+
         player?.SetBloqueado(false);
     }
 
-    // ─── Zona de salida ───────────────────────────────────────────────────────
+    // ─────────────────────────────────────
+    // ESCAPAR
+    // ─────────────────────────────────────
 
     public void OnJugadorEscapo()
     {
-        if (nivelTerminado) return;
+        if (nivelTerminado)
+            return;
+
         nivelTerminado = true;
+
         StartCoroutine(TerminarNivel());
     }
 
     private IEnumerator TerminarNivel()
     {
         player?.SetBloqueado(true);
+
         audioSource.Stop();
 
-        // Linterna resolución
         if (luzLinterna != null)
         {
-            luzLinterna.color     = Color.white;
+            luzLinterna.color = Color.white;
             luzLinterna.intensity = 1f;
         }
 
         if (NarracionManager.Instance != null)
         {
-            NarracionManager.Instance.Narrar(new string[]
-            {
-                "Llegué al otro lado.",
-                "Hoy fue uno de los días buenos."
-            });
-            yield return StartCoroutine(EsperarNarracion(10f));
+            NarracionManager.Instance.Narrar(
+                new string[]
+                {
+                    "Llegué al otro lado.",
+                    "Hoy fue uno de los días buenos."
+                });
+
+            yield return StartCoroutine(
+                EsperarNarracion(10f));
         }
 
-        yield return StartCoroutine(Fade(1f, duracionFade));
-        SceneManager.LoadScene(escenaSiguiente);
+        yield return StartCoroutine(
+            Fade(1f, duracionFade));
+
+        SceneManager.LoadScene(
+            escenaSiguiente);
     }
 
-    // ─── Helpers ─────────────────────────────────────────────────────────────
+    // ─────────────────────────────────────
+    // HELPERS
+    // ─────────────────────────────────────
 
-    private IEnumerator EsperarNarracion(float timeout)
+    private IEnumerator EsperarNarracion(
+        float timeout)
     {
         yield return new WaitForSeconds(0.2f);
+
         float t = 0f;
+
         while (t < timeout)
         {
-            if (NarracionManager.Instance == null || !NarracionManager.Instance.EstaActivo())
+            if (NarracionManager.Instance == null ||
+                !NarracionManager.Instance.EstaActivo())
+            {
                 yield break;
+            }
+
             t += Time.deltaTime;
+
             yield return null;
         }
     }
 
-    private IEnumerator Fade(float objetivo, float duracion)
+    private IEnumerator Fade(
+        float objetivo,
+        float duracion)
     {
-        if (pantallaFade == null) yield break;
+        if (pantallaFade == null)
+            yield break;
+
         float inicio = pantallaFade.alpha;
+
         float t = 0f;
+
         while (t < duracion)
         {
             t += Time.deltaTime;
-            pantallaFade.alpha = Mathf.Lerp(inicio, objetivo, t / duracion);
+
+            pantallaFade.alpha =
+                Mathf.Lerp(
+                    inicio,
+                    objetivo,
+                    t / duracion);
+
             yield return null;
         }
+
         pantallaFade.alpha = objetivo;
     }
 }

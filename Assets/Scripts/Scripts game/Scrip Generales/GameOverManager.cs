@@ -9,13 +9,13 @@ public class GameOverManager : MonoBehaviour
     [SerializeField] private CanvasGroup panelGameOver;
 
     [Header("Reintentar")]
-    [SerializeField] private string escenaActual = ""; // dejar vacío = recarga automática
+    [SerializeField] private string escenaActual = "";
 
     [Header("Salir al menú")]
     [SerializeField] private string escenaMenuPrincipal = "MenuPrincipal";
 
     [Header("Música Game Over")]
-    [SerializeField] private AudioSource musicaGameOver; // 🎵 arrastra aquí tu pista triste
+    [SerializeField] private AudioSource musicaGameOver;
 
     public bool gameOverActivado = false;
 
@@ -41,6 +41,7 @@ public class GameOverManager : MonoBehaviour
         if (panelGameOver != null)
         {
             panelGameOver.gameObject.SetActive(true);
+
             panelGameOver.alpha = 0f;
             panelGameOver.interactable = false;
             panelGameOver.blocksRaycasts = false;
@@ -49,45 +50,98 @@ public class GameOverManager : MonoBehaviour
         if (musicaGameOver != null)
         {
             musicaGameOver.playOnAwake = false;
+            musicaGameOver.loop = true;
+
+            // 🔥 IMPORTANTE
+            musicaGameOver.ignoreListenerPause = true;
         }
     }
 
     public void ActivarGameOver()
     {
-        if (gameOverActivado) return;
+        if (gameOverActivado)
+            return;
+
         gameOverActivado = true;
 
-        panelGameOver.gameObject.SetActive(true);
-        panelGameOver.alpha = 1f;
-        panelGameOver.interactable = true;
-        panelGameOver.blocksRaycasts = true;
+        // ─────────────────────────────
+        // UI
+        // ─────────────────────────────
 
-        if (player != null) player.SetBloqueado(true);
-        if (pausaManager != null) pausaManager.enabled = false;
+        if (panelGameOver != null)
+        {
+            panelGameOver.gameObject.SetActive(true);
+
+            panelGameOver.alpha = 1f;
+            panelGameOver.interactable = true;
+            panelGameOver.blocksRaycasts = true;
+        }
+
+        // ─────────────────────────────
+        // Player
+        // ─────────────────────────────
+
+        if (player != null)
+            player.SetBloqueado(true);
+
+        if (pausaManager != null)
+            pausaManager.enabled = false;
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        Time.timeScale = 0f;
+        // ─────────────────────────────
+        // Detener música normal
+        // ─────────────────────────────
 
-        // 🔹 Detener música normal/persecución
         if (MusicManager.Instance != null)
+        {
             MusicManager.Instance.DetenerTodaMusica();
+        }
 
-        // 🎵 Reproducir música triste de Game Over
+        // ─────────────────────────────
+        // Música Game Over
+        // ─────────────────────────────
+
         if (musicaGameOver != null)
+        {
+            Debug.Log("REPRODUCIENDO MUSICA GAME OVER");
+
+            musicaGameOver.gameObject.SetActive(true);
+
+            musicaGameOver.ignoreListenerPause = true;
+
+            musicaGameOver.volume = 1f;
+
+            musicaGameOver.Stop();
+
             musicaGameOver.Play();
+        }
+        else
+        {
+            Debug.LogError("NO HAY AUDIO SOURCE DE GAME OVER");
+        }
+
+        // ─────────────────────────────
+        // Pausar juego
+        // ─────────────────────────────
+
+        Time.timeScale = 0f;
     }
 
     public void Reintentar()
     {
         Time.timeScale = 1f;
+
         gameOverActivado = false;
 
         if (musicaGameOver != null)
+        {
             musicaGameOver.Stop();
+        }
 
-        string escena = string.IsNullOrEmpty(escenaActual)
+        string escena =
+            string.IsNullOrEmpty(escenaActual)
             ? SceneManager.GetActiveScene().name
             : escenaActual;
 
@@ -97,13 +151,16 @@ public class GameOverManager : MonoBehaviour
     public void SalirAlMenu()
     {
         Time.timeScale = 1f;
+
         gameOverActivado = false;
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
         if (musicaGameOver != null)
+        {
             musicaGameOver.Stop();
+        }
 
         SceneManager.LoadScene(escenaMenuPrincipal);
     }
