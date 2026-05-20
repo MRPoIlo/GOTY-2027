@@ -3,43 +3,86 @@ using UnityEngine.Networking;
 using System.Collections;
 using System.Text;
 
+[System.Serializable]
+public class LogroData
+{
+    public string nombreLogro;
+    public int idTema;
+}
+
 public class ConexionAPI : MonoBehaviour
 {
     private string url = "http://goty.somee.com/api/Logros";
 
     void Start()
     {
-        StartCoroutine(Subir());
+        StartCoroutine(EnviarLogro());
     }
 
-    IEnumerator Subir()
+    IEnumerator EnviarLogro()
     {
-        // JSON con la estructura exacta que pide tu validador 400.
-        // Incluimos el objeto "tema" con sus datos para que deje de decir que es requerido.
-        string json = "{\"nombreLogro\":\"Logro Final\",\"idTema\":1,\"tema\":{\"id\":1,\"nombreTema\":\"General\"}}";
+        Debug.Log(">>> Intentando conexión con la API...");
 
-        using (UnityWebRequest www = new UnityWebRequest(url, "POST"))
+        // CREAR OBJETO
+        LogroData data = new LogroData();
+
+        data.nombreLogro = "Logro GOTY-2027";
+        data.idTema = 1;
+
+        // CONVERTIR A JSON
+        string json = JsonUtility.ToJson(data);
+
+        Debug.Log("JSON ENVIADO:");
+        Debug.Log(json);
+
+        using (UnityWebRequest www =
+            new UnityWebRequest(url, "POST"))
         {
-            byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
-            www.uploadHandler = new UploadHandlerRaw(bodyRaw);
-            www.downloadHandler = new DownloadHandlerBuffer();
+            byte[] bodyRaw =
+                Encoding.UTF8.GetBytes(json);
 
-            // Forzamos los headers para que el servidor no tenga dudas
-            www.SetRequestHeader("Content-Type", "application/json");
-            www.SetRequestHeader("Accept", "application/json");
+            www.uploadHandler =
+                new UploadHandlerRaw(bodyRaw);
+
+            www.downloadHandler =
+                new DownloadHandlerBuffer();
+
+            www.SetRequestHeader(
+                "Content-Type",
+                "application/json"
+            );
+
+            www.timeout = 60;
 
             yield return www.SendWebRequest();
 
-            if (www.result != UnityWebRequest.Result.Success)
+            // RESPUESTA EXITOSA
+            if (www.result ==
+                UnityWebRequest.Result.Success)
             {
-                Debug.LogError("=== FALLÓ EL ENVÍO ===");
-                Debug.LogError("Código: " + www.responseCode);
-                Debug.LogError("Causa: " + www.downloadHandler.text);
+                Debug.Log("¡ÉXITO!");
+
+                Debug.Log(www.downloadHandler.text);
             }
             else
             {
-                Debug.Log("¡POR FIN! Conexión exitosa.");
-                Debug.Log("Respuesta: " + www.downloadHandler.text);
+                Debug.LogError(
+                    "Error HTTP: " +
+                    www.responseCode
+                );
+
+                Debug.LogError(
+                    "Error Unity: " +
+                    www.error
+                );
+
+                Debug.LogError(
+                    "Respuesta servidor:"
+                );
+
+                Debug.LogError(
+                    www.downloadHandler.text
+                );
             }
         }
     }
