@@ -1,6 +1,8 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Networking;
+using System.Text;
 
 public class PrologoManager : MonoBehaviour
 {
@@ -42,13 +44,16 @@ public class PrologoManager : MonoBehaviour
     [SerializeField] private int objetosRequeridosParaSalir = 3;
 
     [Header("Puerta de salida")]
-    [SerializeField] private GameObject puertaSalida; // 🔥 ahora sí puedes arrastrar cualquier objeto
+    [SerializeField] private GameObject puertaSalida;
 
     private int objetosExaminados = 0;
     private bool puertaDesbloqueada = false;
     private bool finalizando = false;
 
     private PlayerController player;
+
+    // URL API
+    private string url = "http://goty.somee.com/api/Logroes";
 
     void Awake()
     {
@@ -73,12 +78,14 @@ public class PrologoManager : MonoBehaviour
     IEnumerator Start()
     {
         yield return StartCoroutine(Fade(0f, duracionFade));
+
         yield return new WaitForSeconds(0.5f);
 
         NarracionManager.Instance?.Narrar(NarracionDespiertar);
 
         yield return new WaitUntil(() =>
-            NarracionManager.Instance == null || !NarracionManager.Instance.EstaActivo());
+            NarracionManager.Instance == null ||
+            !NarracionManager.Instance.EstaActivo());
 
         player?.SetBloqueado(false);
     }
@@ -99,7 +106,8 @@ public class PrologoManager : MonoBehaviour
 
         Debug.Log($"[Prólogo] Objetos examinados: {objetosExaminados}/{objetosRequeridosParaSalir}");
 
-        if (objetosExaminados >= objetosRequeridosParaSalir && !puertaDesbloqueada)
+        if (objetosExaminados >= objetosRequeridosParaSalir &&
+            !puertaDesbloqueada)
         {
             DesbloquearSalida();
         }
@@ -111,19 +119,18 @@ public class PrologoManager : MonoBehaviour
 
         if (puertaSalida != null)
         {
-            // 🔥 Aquí decides qué hace la puerta:
-            puertaSalida.SetActive(true); // ejemplo: aparece
-            // o puedes hacer:
-            // puertaSalida.GetComponent<Animator>().SetTrigger("Open");
+            puertaSalida.SetActive(true);
         }
 
         NarracionManager.Instance?.Narrar("Algo se ha movido.");
+
         Debug.Log("[Prólogo] Salida desbloqueada.");
     }
 
     public void IntentarSalir()
     {
-        if (finalizando) return;
+        if (finalizando)
+            return;
 
         if (puertaDesbloqueada)
         {
@@ -138,6 +145,7 @@ public class PrologoManager : MonoBehaviour
     private IEnumerator TerminarPrologo()
     {
         finalizando = true;
+
         player?.SetBloqueado(true);
 
         NarracionManager.Instance?.Narrar(new string[]
@@ -147,15 +155,63 @@ public class PrologoManager : MonoBehaviour
         });
 
         yield return new WaitUntil(() =>
-            NarracionManager.Instance == null || !NarracionManager.Instance.EstaActivo());
+            NarracionManager.Instance == null ||
+            !NarracionManager.Instance.EstaActivo());
 
+        // 🔥 LOGRO API (ya lo tenías)
+        yield return StartCoroutine(RegistrarLogroPrologo());
+
+        // Fade
         yield return StartCoroutine(Fade(1f, duracionFade));
+
+        // 💾 GUARDAR PARTIDA (AQUÍ LO AGREGAMOS)
+        SaveManager.Instance.GuardarPartida();
+
+        // Cambiar escena
         SceneManager.LoadScene(escenaSiguiente);
+    }
+
+    private IEnumerator RegistrarLogroPrologo()
+    {
+        LogroData data = new LogroData();
+
+        data.NombreJugador = "Lena";
+        data.Descripcion = "Completó el Prólogo";
+        data.idTema = 1;
+
+        string json = JsonUtility.ToJson(data);
+
+        Debug.Log("========== ENVIANDO LOGRO ==========");
+        Debug.Log("JSON: " + json);
+
+        using (UnityWebRequest www = new UnityWebRequest(url, "POST"))
+        {
+            byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+
+            www.uploadHandler = new UploadHandlerRaw(bodyRaw);
+            www.downloadHandler = new DownloadHandlerBuffer();
+            www.SetRequestHeader("Content-Type", "application/json");
+
+            yield return www.SendWebRequest();
+
+            if (www.result == UnityWebRequest.Result.Success)
+            {
+                Debug.Log("<color=green>¡LOGRO REGISTRADO CORRECTAMENTE!</color>");
+                Debug.Log("Respuesta servidor: " + www.downloadHandler.text);
+            }
+            else
+            {
+                Debug.LogError("ERROR AL REGISTRAR LOGRO");
+                Debug.LogError("Error: " + www.error);
+                Debug.LogError("Servidor: " + www.downloadHandler.text);
+            }
+        }
     }
 
     private IEnumerator Fade(float objetivo, float duracion)
     {
-        if (pantallaFade == null) yield break;
+        if (pantallaFade == null)
+            yield break;
 
         float inicio = pantallaFade.alpha;
         float t = 0f;
@@ -163,7 +219,10 @@ public class PrologoManager : MonoBehaviour
         while (t < duracion)
         {
             t += Time.deltaTime;
-            pantallaFade.alpha = Mathf.Lerp(inicio, objetivo, t / duracion);
+
+            pantallaFade.alpha =
+                Mathf.Lerp(inicio, objetivo, t / duracion);
+
             yield return null;
         }
 

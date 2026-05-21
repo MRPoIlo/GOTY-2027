@@ -25,7 +25,7 @@ public class ConexionAPI : MonoBehaviour
     IEnumerator EnviarLogro()
     {
         LogroData data = new LogroData();
-        data.NombreJugador = "Luis German";
+        data.NombreJugador = "Lena";
         data.Descripcion = "Logro GOTY-2027";
         data.idTema = 1;
 

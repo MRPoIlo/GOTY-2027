@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Networking;
+using System.Text;
 
 public class NivelManagerBaño : MonoBehaviour
 {
@@ -51,6 +53,9 @@ public class NivelManagerBaño : MonoBehaviour
 
     private float tiempoRestante;
 
+    // 🔥 URL API
+    private string url = "http://goty.somee.com/api/Logroes";
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -68,7 +73,6 @@ public class NivelManagerBaño : MonoBehaviour
 
     private void Start()
     {
-        // ✅ RESET cajas al iniciar nivel
         CajaPickup.rejillaVista = false;
 
         tiempoRestante = tiempoTotal;
@@ -95,7 +99,6 @@ public class NivelManagerBaño : MonoBehaviour
 
         tiempoRestante -= Time.deltaTime;
 
-        // 🎥 FOV dinámico
         float progreso = 1f - (tiempoRestante / tiempoTotal);
 
         if (Camera.main != null)
@@ -104,7 +107,7 @@ public class NivelManagerBaño : MonoBehaviour
                 Mathf.Lerp(60f, 75f, progreso);
         }
 
-        // Entrar a rejilla
+        // 🔥 Entrar a la rejilla y finalizar nivel
         if (esperandoEntrada &&
             Input.GetKeyDown(KeyCode.E))
         {
@@ -238,7 +241,6 @@ public class NivelManagerBaño : MonoBehaviour
         miniJuegoActivo = false;
         rejillaAbierta = true;
 
-        // ✅ ACTIVAR cajas
         CajaPickup.rejillaVista = true;
 
         canvasMiniJuegoRejilla?.SetActive(false);
@@ -275,13 +277,76 @@ public class NivelManagerBaño : MonoBehaviour
 
     private IEnumerator FinalizarNivel()
     {
+        Debug.Log("🔥 FINALIZANDO NIVEL BAÑO");
+
         playerController?.SetBloqueado(true);
 
+        // 🔥 REGISTRAR LOGRO
+        yield return StartCoroutine(RegistrarLogroBaño());
+
+        // 🔥 Esperar un poco
+        yield return new WaitForSeconds(1f);
+
+        // Fade
         yield return StartCoroutine(
             Fade(1f, duracionFade)
         );
 
+        // Cambiar escena
         SceneManager.LoadScene(escenaSiguiente);
+    }
+
+    // 🔥 API
+    private IEnumerator RegistrarLogroBaño()
+    {
+        LogroData data = new LogroData();
+
+        data.NombreJugador = "Lena";
+        data.Descripcion = "Completó Nivel Baño";
+        data.idTema = 3;
+
+        string json = JsonUtility.ToJson(data);
+
+        Debug.Log("========== ENVIANDO LOGRO ==========");
+        Debug.Log(json);
+
+        using (UnityWebRequest www =
+            new UnityWebRequest(url, "POST"))
+        {
+            byte[] bodyRaw =
+                Encoding.UTF8.GetBytes(json);
+
+            www.uploadHandler =
+                new UploadHandlerRaw(bodyRaw);
+
+            www.downloadHandler =
+                new DownloadHandlerBuffer();
+
+            www.SetRequestHeader(
+                "Content-Type",
+                "application/json");
+
+            yield return www.SendWebRequest();
+
+            if (www.result ==
+                UnityWebRequest.Result.Success)
+            {
+                Debug.Log("================================");
+                Debug.Log("🏆 NIVEL BAÑO COMPLETADO");
+                Debug.Log("💾 REGISTRADO EN SOMEE");
+                Debug.Log("================================");
+
+                Debug.Log(www.downloadHandler.text);
+            }
+            else
+            {
+                Debug.LogError("❌ ERROR API");
+
+                Debug.LogError(www.error);
+
+                Debug.LogError(www.downloadHandler.text);
+            }
+        }
     }
 
     private IEnumerator Fade(
