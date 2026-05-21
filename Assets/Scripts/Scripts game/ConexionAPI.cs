@@ -6,13 +6,16 @@ using System.Text;
 [System.Serializable]
 public class LogroData
 {
-    public string nombreLogro;
+    // Estos nombres deben ser idénticos a lo que el error en la consola te pidió
+    public string NombreJugador;
+    public string Descripcion;
     public int idTema;
 }
 
 public class ConexionAPI : MonoBehaviour
 {
-    private string url = "http://goty.somee.com/api/Logros";
+    // Asegúrate de que esta URL sea la que te respondió en el navegador
+    private string url = "http://goty.somee.com/api/Logroes";
 
     void Start()
     {
@@ -21,68 +24,32 @@ public class ConexionAPI : MonoBehaviour
 
     IEnumerator EnviarLogro()
     {
-        Debug.Log(">>> Intentando conexión con la API...");
-
-        // CREAR OBJETO
         LogroData data = new LogroData();
-
-        data.nombreLogro = "Logro GOTY-2027";
+        data.NombreJugador = "Luis German";
+        data.Descripcion = "Logro GOTY-2027";
         data.idTema = 1;
 
-        // CONVERTIR A JSON
         string json = JsonUtility.ToJson(data);
+        Debug.Log("Enviando JSON: " + json);
 
-        Debug.Log("JSON ENVIADO:");
-        Debug.Log(json);
-
-        using (UnityWebRequest www =
-            new UnityWebRequest(url, "POST"))
+        using (UnityWebRequest www = new UnityWebRequest(url, "POST"))
         {
-            byte[] bodyRaw =
-                Encoding.UTF8.GetBytes(json);
+            byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+            www.uploadHandler = new UploadHandlerRaw(bodyRaw);
+            www.downloadHandler = new DownloadHandlerBuffer();
 
-            www.uploadHandler =
-                new UploadHandlerRaw(bodyRaw);
-
-            www.downloadHandler =
-                new DownloadHandlerBuffer();
-
-            www.SetRequestHeader(
-                "Content-Type",
-                "application/json"
-            );
-
-            www.timeout = 60;
+            www.SetRequestHeader("Content-Type", "application/json");
 
             yield return www.SendWebRequest();
 
-            // RESPUESTA EXITOSA
-            if (www.result ==
-                UnityWebRequest.Result.Success)
+            if (www.result == UnityWebRequest.Result.Success)
             {
-                Debug.Log("¡ÉXITO!");
-
-                Debug.Log(www.downloadHandler.text);
+                Debug.Log("<color=green>¡ÉXITO!</color> Respuesta: " + www.downloadHandler.text);
             }
             else
             {
-                Debug.LogError(
-                    "Error HTTP: " +
-                    www.responseCode
-                );
-
-                Debug.LogError(
-                    "Error Unity: " +
-                    www.error
-                );
-
-                Debug.LogError(
-                    "Respuesta servidor:"
-                );
-
-                Debug.LogError(
-                    www.downloadHandler.text
-                );
+                Debug.LogError("ERROR: " + www.error);
+                Debug.LogError("Detalle del servidor: " + www.downloadHandler.text);
             }
         }
     }
