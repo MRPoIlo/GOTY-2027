@@ -12474,8 +12474,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyNivel5
   player: {fileID: 232575815}
-  visionRange: 10
-  visionAngle: 160
+  visionRange: 6
+  visionAngle: 100
   detectionTime: 2
   catchDistance: 1.5
   stateIcon: {fileID: 663416034}
@@ -12497,7 +12497,7 @@ MonoBehaviour:
   - {fileID: 382843213}
   - {fileID: 56516828}
   velocidadPatrulla: 2
-  velocidadPersecucion: 3
+  velocidadPersecucion: 2.5
   navmeshWaitTimeout: 5
 --- !u!195 &1835682726
 NavMeshAgent:

@@ -32,6 +32,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Nivel 6 Sotano.unity
     guid: 5b1fa252f43dcc1449f80cf16db28df2
+  - enabled: 1
+    path: Assets/Scenes/CinematicaMala.unity
+    guid: 6fbf2cf6b851d4049a1188673ff8045a
+  - enabled: 1
+    path: Assets/Scenes/CinematicaBuena.unity
+    guid: 63514a741e1816c48bfdd9ad32252fa0
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
