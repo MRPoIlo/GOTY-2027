@@ -158,14 +158,21 @@ public class PrologoManager : MonoBehaviour
             NarracionManager.Instance == null ||
             !NarracionManager.Instance.EstaActivo());
 
-        // 🔥 LOGRO API (ya lo tenías)
+        // Registrar Logro
         yield return StartCoroutine(RegistrarLogroPrologo());
 
         // Fade
         yield return StartCoroutine(Fade(1f, duracionFade));
 
-        // 💾 GUARDAR PARTIDA (AQUÍ LO AGREGAMOS)
-        SaveManager.Instance.GuardarPartida();
+        // 💾 GUARDAR PARTIDA (CORREGIDO)
+        if (SaveManager.Instance != null)
+        {
+            SaveManager.Instance.GuardarPartida();
+        }
+        else
+        {
+            Debug.LogWarning("[Prólogo] SaveManager no encontrado. No se guardó la partida.");
+        }
 
         // Cambiar escena
         SceneManager.LoadScene(escenaSiguiente);
@@ -182,7 +189,6 @@ public class PrologoManager : MonoBehaviour
         string json = JsonUtility.ToJson(data);
 
         Debug.Log("========== ENVIANDO LOGRO ==========");
-        Debug.Log("JSON: " + json);
 
         using (UnityWebRequest www = new UnityWebRequest(url, "POST"))
         {
@@ -197,13 +203,10 @@ public class PrologoManager : MonoBehaviour
             if (www.result == UnityWebRequest.Result.Success)
             {
                 Debug.Log("<color=green>¡LOGRO REGISTRADO CORRECTAMENTE!</color>");
-                Debug.Log("Respuesta servidor: " + www.downloadHandler.text);
             }
             else
             {
-                Debug.LogError("ERROR AL REGISTRAR LOGRO");
-                Debug.LogError("Error: " + www.error);
-                Debug.LogError("Servidor: " + www.downloadHandler.text);
+                Debug.LogError("ERROR AL REGISTRAR LOGRO: " + www.error);
             }
         }
     }
@@ -220,8 +223,7 @@ public class PrologoManager : MonoBehaviour
         {
             t += Time.deltaTime;
 
-            pantallaFade.alpha =
-                Mathf.Lerp(inicio, objetivo, t / duracion);
+            pantallaFade.alpha = Mathf.Lerp(inicio, objetivo, t / duracion);
 
             yield return null;
         }
