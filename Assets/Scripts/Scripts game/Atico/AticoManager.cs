@@ -42,7 +42,7 @@ public class AticoManager : MonoBehaviour
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
-        player = FindObjectOfType<PlayerController>();
+        player = FindAnyObjectByType<PlayerController>();
         player?.SetBloqueado(true);
 
         if (pantallaFade != null) pantallaFade.alpha = 1f;

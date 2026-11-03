@@ -48,7 +48,7 @@ public class PrologoManager1 : MonoBehaviour
 
     void Awake()
     {
-        player = FindObjectOfType<PlayerController>();
+        player = FindAnyObjectByType<PlayerController>();
         player?.SetBloqueado(true);
 
         if (pantallaFade != null) pantallaFade.alpha = 1f;

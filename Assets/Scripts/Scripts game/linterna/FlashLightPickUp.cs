@@ -4,9 +4,7 @@ public class FlashlightPickup : MonoBehaviour
 {
     public void Recoger()
     {
-        Flashlight playerFlashlight = FindFirstObjectByType<Flashlight>();
-        if (playerFlashlight != null)
-            playerFlashlight.DesbloquearLinterna();
+        Flashlight.DesbloquearTodas();
 
         Destroy(gameObject);
     }

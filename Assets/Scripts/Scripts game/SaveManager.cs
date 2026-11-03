@@ -11,6 +11,11 @@ public class SaveManager : MonoBehaviour
     private string apiURL =
         "http://goty.somee.com/api/Guardado";
 
+    // ── Servidor (desactivado: el guardado es solo local) ──
+    [Header("Servidor de guardado (desactivado)")]
+    [SerializeField] private bool usarServidor = false;
+    private const int TimeoutServidor = 10;
+
     void Awake()
     {
         if (Instance == null)
@@ -45,9 +50,10 @@ public class SaveManager : MonoBehaviour
             "💾 Partida guardada: " +
             escenaActual);
 
-        // API
-        StartCoroutine(
-            EnviarGuardadoAPI(escenaActual));
+        // API (solo si se activa usarServidor)
+        if (usarServidor)
+            StartCoroutine(
+                EnviarGuardadoAPI(escenaActual));
     }
 
     // ─────────────────────────────────────
@@ -84,6 +90,8 @@ public class SaveManager : MonoBehaviour
         PlayerPrefs.DeleteKey(
             "EscenaGuardada");
 
+        PlayerPrefs.Save();
+
         Debug.Log(
             "🗑 Partida eliminada");
     }
@@ -114,6 +122,8 @@ public class SaveManager : MonoBehaviour
             "Content-Type",
             "application/json");
 
+        request.timeout = TimeoutServidor;
+
         Debug.Log(
             "🌐 Enviando guardado a API...");
 
@@ -130,10 +140,8 @@ public class SaveManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError(
-                "❌ Error API");
-
-            Debug.LogError(
+            Debug.LogWarning(
+                "[SaveManager] No se pudo enviar el guardado al servidor: " +
                 request.error);
         }
     }

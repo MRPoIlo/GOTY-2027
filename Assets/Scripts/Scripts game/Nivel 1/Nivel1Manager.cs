@@ -67,6 +67,10 @@ public class NivelManager1 : MonoBehaviour
 
     // API
     private string url = "http://goty.somee.com/api/Logroes";
+    // ── Servidor (desactivado: los logros ahora son locales con LogrosManager) ──
+    [Header("Servidor de logros (desactivado)")]
+    [SerializeField] private bool usarServidor = false;
+    private const int TimeoutServidor = 10;
 
     void Awake()
     {
@@ -207,6 +211,10 @@ public class NivelManager1 : MonoBehaviour
 
     private IEnumerator RegistrarLogro()
     {
+        LogrosManager.Instance?.Desbloquear("nivel1", "Completó Nivel 1");
+
+        if (!usarServidor) yield break;
+
         LogroData data = new LogroData();
 
         data.NombreJugador = "Lena";
@@ -233,6 +241,7 @@ public class NivelManager1 : MonoBehaviour
             www.SetRequestHeader(
                 "Content-Type",
                 "application/json");
+            www.timeout = TimeoutServidor;
 
             yield return www.SendWebRequest();
 
@@ -244,11 +253,7 @@ public class NivelManager1 : MonoBehaviour
             }
             else
             {
-                Debug.LogError("❌ ERROR API");
-
-                Debug.LogError(www.error);
-
-                Debug.LogError(www.downloadHandler.text);
+                Debug.LogWarning("[Nivel 1] No se pudo registrar el logro en el servidor: " + www.error);
             }
         }
     }

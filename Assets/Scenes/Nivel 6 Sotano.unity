@@ -10889,9 +10889,6 @@ PrefabInstance:
       addedObject: {fileID: 2119708278}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8bc909df20379d246a143ad7dd998403, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2119708277}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8bc909df20379d246a143ad7dd998403, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 2119708276}
   m_SourcePrefab: {fileID: 100100000, guid: 8bc909df20379d246a143ad7dd998403, type: 3}
 --- !u!1 &2119708273 stripped
@@ -10922,18 +10919,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Flashlight
   LuzLinterna: {fileID: 1388319163}
---- !u!114 &2119708277
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2119708273}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 048d6e86d512bd84a86d2db989393628, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Flashlight
 --- !u!114 &2119708278
 MonoBehaviour:
   m_ObjectHideFlags: 0

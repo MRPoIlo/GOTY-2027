@@ -25,6 +25,9 @@ public class CinematicaFinalBueno : MonoBehaviour
 
     void Start()
     {
+        // Modo exposición: logro del final y borrado inmediato del progreso
+        LogrosManager.Instance?.IniciarFinal("final_bueno", "Encontró el final bueno");
+
         // Reproducir música al iniciar la cinemática
         if (musicaFinalBueno != null)
             musicaFinalBueno.Play();
@@ -44,6 +47,15 @@ public class CinematicaFinalBueno : MonoBehaviour
 
         panelImage.sprite = panelsFinalBueno[panelsFinalBueno.Length - 1];
         yield return StartCoroutine(FadeIn());
+
+        // Modo exposición: lista de logros conseguidos (el progreso ya se borró al entrar).
+        // Antes se deja leer el último panel, que lleva el mensaje final del juego.
+        if (LogrosManager.Instance != null)
+        {
+            yield return new WaitForSeconds(panelDuration + 1f);
+            LogrosManager.Instance.MostrarResumenFinal();
+            yield return new WaitForSeconds(2f);
+        }
 
         if (botonSalir != null)
             botonSalir.SetActive(true);

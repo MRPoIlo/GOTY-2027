@@ -4,9 +4,6 @@ using UnityEngine.UI;
 
 public class TornilloSlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler
 {
-    [Header("Radio de detección (en píxeles UI)")]
-    [SerializeField] private float radioDeteccion = 60f;
-
     [Header("Efecto visual al pasar encima (opcional)")]
     [SerializeField] private Color colorHover = new Color(1f, 1f, 0.5f, 1f);
 

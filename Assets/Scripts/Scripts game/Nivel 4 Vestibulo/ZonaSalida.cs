@@ -14,7 +14,7 @@ public class ZonaSalida : MonoBehaviour
 
     void Start()
     {
-        var pc = FindObjectOfType<PlayerController>();
+        var pc = FindAnyObjectByType<PlayerController>();
         if (pc != null) jugador = pc.transform;
     }
 

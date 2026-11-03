@@ -44,7 +44,7 @@ public class PrologoDirector : MonoBehaviour
 
     void Awake()
     {
-        player = FindObjectOfType<PlayerController>();
+        player = FindAnyObjectByType<PlayerController>();
         player?.SetBloqueado(true);
 
         // Empezar en negro

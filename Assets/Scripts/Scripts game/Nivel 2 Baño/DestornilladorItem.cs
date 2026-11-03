@@ -14,7 +14,7 @@ public class DestornilladorItem : MonoBehaviour
         GameObject go = GameObject.FindGameObjectWithTag("Player");
         if (go != null) jugador = go.transform;
 
-        pausaManager = FindObjectOfType<PausaManager>();
+        pausaManager = FindAnyObjectByType<PausaManager>();
 
         if (mensajeRecoger != null) mensajeRecoger.SetActive(false);
     }

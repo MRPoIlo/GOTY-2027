@@ -60,7 +60,7 @@
 
             Instance = this;
 
-            player = FindObjectOfType<PlayerController>();
+            player = FindAnyObjectByType<PlayerController>();
 
             audioSource = GetComponent<AudioSource>();
             if (audioSource == null)

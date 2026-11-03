@@ -54,6 +54,10 @@ public class PrologoManager : MonoBehaviour
 
     // URL API
     private string url = "http://goty.somee.com/api/Logroes";
+    // ── Servidor (desactivado: los logros ahora son locales con LogrosManager) ──
+    [Header("Servidor de logros (desactivado)")]
+    [SerializeField] private bool usarServidor = false;
+    private const int TimeoutServidor = 10;
 
     void Awake()
     {
@@ -65,7 +69,7 @@ public class PrologoManager : MonoBehaviour
 
         Instance = this;
 
-        player = FindObjectOfType<PlayerController>();
+        player = FindAnyObjectByType<PlayerController>();
         player?.SetBloqueado(true);
 
         if (pantallaFade != null)
@@ -180,6 +184,10 @@ public class PrologoManager : MonoBehaviour
 
     private IEnumerator RegistrarLogroPrologo()
     {
+        LogrosManager.Instance?.Desbloquear("prologo", "Completó el Prólogo");
+
+        if (!usarServidor) yield break;
+
         LogroData data = new LogroData();
 
         data.NombreJugador = "Lena";
@@ -197,6 +205,7 @@ public class PrologoManager : MonoBehaviour
             www.uploadHandler = new UploadHandlerRaw(bodyRaw);
             www.downloadHandler = new DownloadHandlerBuffer();
             www.SetRequestHeader("Content-Type", "application/json");
+            www.timeout = TimeoutServidor;
 
             yield return www.SendWebRequest();
 
@@ -206,7 +215,7 @@ public class PrologoManager : MonoBehaviour
             }
             else
             {
-                Debug.LogError("ERROR AL REGISTRAR LOGRO: " + www.error);
+                Debug.LogWarning("[Prólogo] No se pudo registrar el logro en el servidor: " + www.error);
             }
         }
     }

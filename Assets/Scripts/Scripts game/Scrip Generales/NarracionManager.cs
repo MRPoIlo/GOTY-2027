@@ -35,7 +35,7 @@ public class NarracionManager : MonoBehaviour
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
         playerController = FindFirstObjectByType<PlayerController>();
-        pausaManager = FindObjectOfType<PausaManager>();
+        pausaManager = FindAnyObjectByType<PausaManager>();
         OcultarPanel();
     }
 

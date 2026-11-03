@@ -55,6 +55,10 @@ public class NivelManagerBaño : MonoBehaviour
 
     // 🔥 URL API
     private string url = "http://goty.somee.com/api/Logroes";
+    // ── Servidor (desactivado: los logros ahora son locales con LogrosManager) ──
+    [Header("Servidor de logros (desactivado)")]
+    [SerializeField] private bool usarServidor = false;
+    private const int TimeoutServidor = 10;
 
     private void Awake()
     {
@@ -299,6 +303,10 @@ public class NivelManagerBaño : MonoBehaviour
     // 🔥 API
     private IEnumerator RegistrarLogroBaño()
     {
+        LogrosManager.Instance?.Desbloquear("bano", "Completó Nivel Baño");
+
+        if (!usarServidor) yield break;
+
         LogroData data = new LogroData();
 
         data.NombreJugador = "Lena";
@@ -325,6 +333,7 @@ public class NivelManagerBaño : MonoBehaviour
             www.SetRequestHeader(
                 "Content-Type",
                 "application/json");
+            www.timeout = TimeoutServidor;
 
             yield return www.SendWebRequest();
 
@@ -340,11 +349,7 @@ public class NivelManagerBaño : MonoBehaviour
             }
             else
             {
-                Debug.LogError("❌ ERROR API");
-
-                Debug.LogError(www.error);
-
-                Debug.LogError(www.downloadHandler.text);
+                Debug.LogWarning("[Baño] No se pudo registrar el logro en el servidor: " + www.error);
             }
         }
     }

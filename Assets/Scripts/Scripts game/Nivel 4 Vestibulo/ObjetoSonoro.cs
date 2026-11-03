@@ -21,7 +21,7 @@ public class ObjetoSonoro : MonoBehaviour
 
     void Start()
     {
-        jugador = FindObjectOfType<PlayerController>()?.transform;
+        jugador = FindAnyObjectByType<PlayerController>()?.transform;
 
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)

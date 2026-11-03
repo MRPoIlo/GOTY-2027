@@ -41,7 +41,7 @@ public class PlayerController : MonoBehaviour
     {
         cc = GetComponent<CharacterController>();
         BloqueoCursor(true);
-        pausaManager = FindObjectOfType<PausaManager>();
+        pausaManager = FindAnyObjectByType<PausaManager>();
     }
 
     void Start()

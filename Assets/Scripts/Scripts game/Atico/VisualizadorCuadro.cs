@@ -36,7 +36,7 @@ public class VisualizadorCuadro : MonoBehaviour
             canvasGroup = canvasVisualizacion.AddComponent<CanvasGroup>();
 
         canvasVisualizacion.SetActive(false);
-        player = FindObjectOfType<PlayerController>();
+        player = FindAnyObjectByType<PlayerController>();
     }
 
     void Update()

@@ -40,7 +40,7 @@ public class MenuOrdenamiento : MonoBehaviour
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
-        player = FindObjectOfType<PlayerController>();
+        player = FindAnyObjectByType<PlayerController>();
         panelOrdenamiento?.SetActive(false);
     }
 

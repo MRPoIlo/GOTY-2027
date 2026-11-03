@@ -47,7 +47,7 @@ public class VestibuloManager : MonoBehaviour
 
         Instance = this;
 
-        player = FindObjectOfType<PlayerController>();
+        player = FindAnyObjectByType<PlayerController>();
 
         audioSource = GetComponent<AudioSource>();
 

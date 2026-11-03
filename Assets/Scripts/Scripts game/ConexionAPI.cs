@@ -17,18 +17,31 @@ public class ConexionAPI : MonoBehaviour
     // Asegúrate de que esta URL sea la que te respondió en el navegador
     private string url = "http://goty.somee.com/api/Logroes";
 
-    void Start()
+    // Segundos máximos de espera antes de abandonar la petición
+    private const int TimeoutSegundos = 10;
+
+    // Los logros ahora son locales (LogrosManager). El servidor queda desactivado.
+    [Header("Servidor de logros (desactivado)")]
+    [SerializeField] private bool usarServidor = false;
+
+    // Llama a este método cuando el jugador consiga un logro real.
+    public void EnviarLogro(string nombreJugador, string descripcion, int idTema)
     {
-        StartCoroutine(EnviarLogro());
+        LogrosManager.Instance?.Desbloquear("tema_" + idTema, descripcion);
+
+        if (!usarServidor) return;
+
+        LogroData data = new LogroData
+        {
+            NombreJugador = nombreJugador,
+            Descripcion = descripcion,
+            idTema = idTema
+        };
+        StartCoroutine(EnviarLogroCoroutine(data));
     }
 
-    IEnumerator EnviarLogro()
+    IEnumerator EnviarLogroCoroutine(LogroData data)
     {
-        LogroData data = new LogroData();
-        data.NombreJugador = "Lena";
-        data.Descripcion = "Logro GOTY-2027";
-        data.idTema = 1;
-
         string json = JsonUtility.ToJson(data);
         Debug.Log("Enviando JSON: " + json);
 
@@ -37,6 +50,7 @@ public class ConexionAPI : MonoBehaviour
             byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
             www.uploadHandler = new UploadHandlerRaw(bodyRaw);
             www.downloadHandler = new DownloadHandlerBuffer();
+            www.timeout = TimeoutSegundos;
 
             www.SetRequestHeader("Content-Type", "application/json");
 
@@ -48,8 +62,9 @@ public class ConexionAPI : MonoBehaviour
             }
             else
             {
-                Debug.LogError("ERROR: " + www.error);
-                Debug.LogError("Detalle del servidor: " + www.downloadHandler.text);
+                // El servidor no respondió o devolvió un fallo: avisamos sin romper el juego.
+                string detalle = string.IsNullOrEmpty(www.downloadHandler.text) ? "(sin respuesta)" : www.downloadHandler.text;
+                Debug.LogWarning($"No se pudo enviar el logro ({www.error}). Detalle del servidor: {detalle}");
             }
         }
     }
