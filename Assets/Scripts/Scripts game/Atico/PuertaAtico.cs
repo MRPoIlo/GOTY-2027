@@ -23,6 +23,7 @@ public class PuertaAtico : MonoBehaviour, IInteractuable
     {
         if (!habilitada || cargando) return;
         cargando = true;
+        AticoManager.Instance?.RegistrarLogroAtico();
         StartCoroutine(TransicionConFade());
     }
 

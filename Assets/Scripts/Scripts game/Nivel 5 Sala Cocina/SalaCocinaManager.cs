@@ -273,6 +273,8 @@ public class SalaCocinaManager : MonoBehaviour
     {
         BloquearJuego(true);
 
+        LogrosManager.Instance?.Desbloquear("sala_cocina", "Completó la Sala y la Cocina");
+
         NarracionManager.Instance.OnNarracionTerminada.RemoveAllListeners();
         NarracionManager.Instance?.Narrar(new string[]
         {

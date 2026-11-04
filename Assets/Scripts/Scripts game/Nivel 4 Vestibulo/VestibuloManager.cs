@@ -287,6 +287,8 @@ public class VestibuloManager : MonoBehaviour
     {
         player?.SetBloqueado(true);
 
+        LogrosManager.Instance?.Desbloquear("vestibulo", "Completó el Vestíbulo");
+
         audioSource.Stop();
 
         if (luzLinterna != null)

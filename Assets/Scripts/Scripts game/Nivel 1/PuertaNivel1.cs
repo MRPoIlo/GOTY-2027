@@ -52,6 +52,9 @@ public class PuertaNivel1 : MonoBehaviour
 
     private void AbrirPuerta()
     {
+        // Esta puerta es la salida real del Nivel 1 (NivelManager1.IntentarSalir no está conectado)
+        LogrosManager.Instance?.Desbloquear("nivel1", "Completó Nivel 1");
+
         SceneManager.LoadScene(escenaSiguiente);
     }
 }

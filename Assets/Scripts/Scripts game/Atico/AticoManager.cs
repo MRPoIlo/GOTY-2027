@@ -153,6 +153,12 @@ public class AticoManager : MonoBehaviour
         }
     }
 
+    /// <summary>La salida real es PuertaAtico, que llama esto antes de cambiar de escena.</summary>
+    public void RegistrarLogroAtico()
+    {
+        LogrosManager.Instance?.Desbloquear("atico", "Completó el Ático");
+    }
+
     // ─── Llamado desde la puerta ─────────────────────────────────────────────
     public void IntentarSalir()
     {

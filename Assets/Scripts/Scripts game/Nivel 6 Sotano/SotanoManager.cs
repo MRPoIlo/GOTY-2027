@@ -194,16 +194,11 @@
         // ─────────────────────────────────────────────
         public void OnPuertaActivada()
         {
-            if (padre != null && puertaMetalica != null)
-            {
-                var agent = padre.GetComponent<UnityEngine.AI.NavMeshAgent>();
-
-                if (agent != null)
-                {
-                    agent.speed = 5f;
-                    agent.SetDestination(puertaMetalica.transform.position);
-                }
-            }
+            // El padre corre hacia el jugador, pero ya no puede atraparlo:
+            // si lo atrapaba aquí, el Game Over pausaba el juego (timeScale 0),
+            // la cuenta regresiva se congelaba y nunca se cargaba el final.
+            if (padre != null && padre.gameObject.activeInHierarchy)
+                padre.IniciarCarreraFinal(5f);
 
             NarracionManager.Instance?.Narrar("Viene hacia acá. Rápido.");
         }
@@ -224,6 +219,8 @@
         {
             padre?.Detener();
             player?.SetBloqueado(true);
+
+            LogrosManager.Instance?.Desbloquear("sotano", "Escapó del Sótano");
 
             if (luzLinterna != null)
             {

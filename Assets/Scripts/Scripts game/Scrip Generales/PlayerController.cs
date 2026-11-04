@@ -160,12 +160,8 @@ public class PlayerController : MonoBehaviour
                 SalaCocinaManager.Instance?.InteractuarTV();
             else if (hit.collider.CompareTag("PuertaCocina"))
                 SalaCocinaManager.Instance?.InteractuarPuertaCocina();
-            else if (hit.collider.CompareTag("Caja"))
-            {
-                var caja = hit.collider.GetComponent<CajaInteractuable>();
-                if (caja != null && caja.EstaActivo())
-                    caja.Interactuar();
-            }
+            // Las cajas las maneja InteractionSystem (IInteractuable); llamarlas también aquí
+            // las cogía y soltaba con la misma pulsación de E.
             else if (hit.collider.CompareTag("PuertaSotano")
                      && SalaCocinaManager.Instance != null
                      && SalaCocinaManager.Instance.PuedeEscapar())
