@@ -51,7 +51,6 @@ public class PadrePatrullador : MonoBehaviour
     private bool  investigando;
     private bool  jumpscareActivo;
     private bool  inicializado;
-    private bool  carreraFinal; // cuenta regresiva de la puerta: se acerca, pero ya no atrapa
 
     void Awake()
     {
@@ -116,15 +115,6 @@ public class PadrePatrullador : MonoBehaviour
         if (!inicializado || jumpscareActivo) return;
         if (player == null || agent == null)  return;
         if (!agent.isOnNavMesh) { ActualizarAnimacion(0f); return; }
-
-        // Escape final: corre hacia el jugador para meter presión, pero no puede atraparlo
-        if (carreraFinal)
-        {
-            agent.isStopped = false;
-            agent.SetDestination(player.position);
-            ActualizarAnimacion(agent.velocity.magnitude);
-            return;
-        }
 
         // Anti-atasco
         if (!agent.pathPending && agent.velocity.sqrMagnitude < 0.01f)
@@ -299,24 +289,6 @@ public class PadrePatrullador : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Llamado al iniciar la cuenta regresiva de la puerta metálica.
-    /// El padre corre hacia el jugador y se queda a un paso, pero ya no dispara el Game Over
-    /// (antes lo atrapaba mientras la narración bloqueaba al jugador y el final nunca llegaba).
-    /// </summary>
-    public void IniciarCarreraFinal(float velocidad)
-    {
-        if (agent == null || !agent.isActiveAndEnabled) return;
-
-        carreraFinal    = true;
-        persiguiendo    = false;
-        investigando    = false;
-        inicializado    = true;
-        agent.speed     = velocidad;
-        agent.stoppingDistance = catchDistance + 1f;
-        agent.isStopped = false;
-    }
-
     public void Detener()
     {
         SetBloqueado(true);
@@ -335,7 +307,7 @@ public class PadrePatrullador : MonoBehaviour
 
     void ResetearEstado()
     {
-        persiguiendo = investigando = jumpscareActivo = inicializado = carreraFinal = false;
+        persiguiendo = investigando = jumpscareActivo = inicializado = false;
         currentDetection = tiempoPerdido = tiempoAtascado = 0f;
     }
 

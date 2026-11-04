@@ -22,8 +22,7 @@ public class PuertaMetalica : MonoBehaviour, IInteractuable
     [Header("Configuración")]
     [SerializeField] private int fragmentosNecesarios = 3;
 
-    [Header("Cuenta regresiva")]
-    [SerializeField] private float tiempoCuentaRegresiva = 5f;
+    [Header("Texto (ya no hay cuenta regresiva; se deja vacío)")]
     [SerializeField] private TextMeshProUGUI textoCuenta;
 
     [Header("Luz de la puerta")]
@@ -157,26 +156,25 @@ public class PuertaMetalica : MonoBehaviour, IInteractuable
     // ─────────────────────────────────────────────
     private IEnumerator AbrirPuerta()
     {
-        Debug.Log("[PuertaMetalica] Iniciando cuenta regresiva.");
-
-        // Aquí sí el padre corre hacia la puerta
-        SotanoManager.Instance?.OnPuertaActivada();
-
-        float tiempoRestante = tiempoCuentaRegresiva;
-
-        while (tiempoRestante > 0f)
-        {
-            tiempoRestante -= Time.deltaTime;
-
-            if (textoCuenta != null)
-                textoCuenta.text = Mathf.CeilToInt(tiempoRestante).ToString();
-
-            yield return null;
-        }
+        Debug.Log("[PuertaMetalica] Abriendo puerta: transición al final.");
 
         if (textoCuenta != null)
             textoCuenta.text = "";
 
+        // La puerta se ilumina al abrirse mientras la pantalla se funde
+        if (luzPuerta != null)
+            luzPuerta.color = Color.white;
+
+        // SotanoManager hace toda la transición (~2 s) y carga la cinemática
         SotanoManager.Instance?.OnJugadorEscapo();
+
+        float t = 0f;
+        float inicio = luzPuerta != null ? luzPuerta.intensity : 0f;
+        while (luzPuerta != null && t < 2f)
+        {
+            t += Time.unscaledDeltaTime;
+            luzPuerta.intensity = Mathf.Lerp(inicio, 4f, t / 2f);
+            yield return null;
+        }
     }
 }

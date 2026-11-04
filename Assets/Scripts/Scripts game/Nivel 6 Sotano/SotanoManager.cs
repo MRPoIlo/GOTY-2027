@@ -37,6 +37,8 @@
         [Header("Finales")]
         [SerializeField] private string escenaFinalBueno = "FinalBueno";
         [SerializeField] private string escenaFinalMalo = "FinalMalo";
+        [Tooltip("Segundos desde que se abre la puerta hasta que empieza la cinemática")]
+        [SerializeField] private float duracionTransicionFinal = 2f;
 
         private bool finalBueno = false;
 
@@ -190,20 +192,6 @@
         }
 
         // ─────────────────────────────────────────────
-        // Puerta activada
-        // ─────────────────────────────────────────────
-        public void OnPuertaActivada()
-        {
-            // El padre corre hacia el jugador, pero ya no puede atraparlo:
-            // si lo atrapaba aquí, el Game Over pausaba el juego (timeScale 0),
-            // la cuenta regresiva se congelaba y nunca se cargaba el final.
-            if (padre != null && padre.gameObject.activeInHierarchy)
-                padre.IniciarCarreraFinal(5f);
-
-            NarracionManager.Instance?.Narrar("Viene hacia acá. Rápido.");
-        }
-
-        // ─────────────────────────────────────────────
         // Jugador escapó
         // ─────────────────────────────────────────────
         public void OnJugadorEscapo()
@@ -215,30 +203,70 @@
             StartCoroutine(TerminarNivel());
         }
 
+        /// <summary>
+        /// Transición única y corta (duracionTransicionFinal, ~2 s) hasta la cinemática:
+        /// el padre se detiene, la pantalla y el sonido se desvanecen suavemente y la
+        /// escena final se carga en segundo plano para entrar sin tirones.
+        /// (Antes: cuenta regresiva de 5 s + espera de narración + fundido, unos 7 s o más.)
+        /// </summary>
         private IEnumerator TerminarNivel()
         {
+            // Quitar cualquier narración en pantalla (Detener desbloquea al jugador, por eso va antes)
+            NarracionManager.Instance?.Detener();
             padre?.Detener();
             player?.SetBloqueado(true);
 
             LogrosManager.Instance?.Desbloquear("sotano", "Escapó del Sótano");
 
-            if (luzLinterna != null)
-            {
-                luzLinterna.color = Color.white;
-                luzLinterna.intensity = 2f;
-            }
-
-            yield return StartCoroutine(EsperarNarracion(12f));
-
-            yield return StartCoroutine(FadeBlanco(duracionFade));
-
-            string escenaDestino = finalBueno
-                ? escenaFinalBueno
-                : escenaFinalMalo;
-
+            string escenaDestino = finalBueno ? escenaFinalBueno : escenaFinalMalo;
             Debug.Log($"[SotanoManager] Cargando escena final: {escenaDestino}");
 
-            SceneManager.LoadScene(escenaDestino);
+            AsyncOperation carga = SceneManager.LoadSceneAsync(escenaDestino);
+            if (carga != null) carga.allowSceneActivation = false;
+
+            // El volumen vuelve a la normalidad en cuanto entra la cinemática
+            SceneManager.sceneLoaded += RestaurarVolumen;
+
+            float inicioFade = pantallaFade != null ? pantallaFade.alpha : 0f;
+            float inicioLuz = luzLinterna != null ? luzLinterna.intensity : 0f;
+            float duracion = Mathf.Max(0.1f, duracionTransicionFinal);
+            float t = 0f;
+
+            while (t < duracion)
+            {
+                t += Time.unscaledDeltaTime;
+                float k = Mathf.SmoothStep(0f, 1f, t / duracion); // arranca y termina suave
+
+                if (pantallaFade != null)
+                    pantallaFade.alpha = Mathf.Lerp(inicioFade, 1f, k);
+
+                if (luzLinterna != null)
+                {
+                    luzLinterna.color = Color.Lerp(luzLinterna.color, Color.white, k);
+                    luzLinterna.intensity = Mathf.Lerp(inicioLuz, 6f, k);
+                }
+
+                AudioListener.volume = 1f - k;
+                yield return null;
+            }
+
+            if (pantallaFade != null) pantallaFade.alpha = 1f;
+
+            if (carga != null)
+            {
+                while (carga.progress < 0.9f) yield return null;
+                carga.allowSceneActivation = true;
+            }
+            else
+            {
+                SceneManager.LoadScene(escenaDestino);
+            }
+        }
+
+        private static void RestaurarVolumen(Scene escena, LoadSceneMode modo)
+        {
+            SceneManager.sceneLoaded -= RestaurarVolumen;
+            AudioListener.volume = 1f;
         }
 
         // ─────────────────────────────────────────────
