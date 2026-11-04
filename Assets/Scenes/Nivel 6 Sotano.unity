@@ -2503,7 +2503,7 @@ Transform:
   m_GameObject: {fileID: 387477917}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 14.694, y: -1.89, z: -10.447}
+  m_LocalPosition: {x: 14.155, y: -1.943, z: -10.034}
   m_LocalScale: {x: 0.15, y: 0.15, z: 0.15}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4114,7 +4114,7 @@ Transform:
   m_GameObject: {fileID: 645673166}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.601, y: -2.314, z: 2.78}
+  m_LocalPosition: {x: 3.739, y: -1.569, z: 2.78}
   m_LocalScale: {x: 0.15, y: 0.15, z: 0.15}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4247,7 +4247,7 @@ Transform:
   m_GameObject: {fileID: 659458415}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 11.747, y: -1.552, z: -1.23}
+  m_LocalPosition: {x: 11.619, y: -1.375, z: -1.23}
   m_LocalScale: {x: 0.15, y: 0.15, z: 0.15}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5362,7 +5362,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PuertaMetalica
   fragmentosNecesarios: 3
-  tiempoCuentaRegresiva: 5
   textoCuenta: {fileID: 620872216}
   luzPuerta: {fileID: 1790083738}
 --- !u!1 &912354026
@@ -8213,7 +8212,7 @@ Transform:
   m_GameObject: {fileID: 1561166282}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 9.165, y: -1.53, z: -9.5}
+  m_LocalPosition: {x: 7.33, y: -1.081, z: -9.938}
   m_LocalScale: {x: 0.15, y: 0.15, z: 0.15}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -8571,7 +8570,7 @@ MonoBehaviour:
   puertaMetalica: {fileID: 909882551}
   spawnJugador: {fileID: 557486613}
   posicionInicialPadre: {fileID: 512473345}
-  luzLinterna: {fileID: 0}
+  luzLinterna: {fileID: 1388319163}
   fragmentos:
   - {fileID: 645673168}
   - {fileID: 659458420}
@@ -8580,6 +8579,7 @@ MonoBehaviour:
   - {fileID: 387477918}
   escenaFinalBueno: CinematicaBuena
   escenaFinalMalo: CinematicaMala
+  duracionTransicionFinal: 2
 --- !u!4 &1618675057
 Transform:
   m_ObjectHideFlags: 0
@@ -9802,7 +9802,7 @@ Transform:
   m_GameObject: {fileID: 1923070758}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 14.976, y: 1.413, z: -11.459}
+  m_LocalPosition: {x: 14.15, y: 2.48, z: -11.459}
   m_LocalScale: {x: 0.15, y: 0.15, z: 0.15}
   m_ConstrainProportionsScale: 0
   m_Children: []
